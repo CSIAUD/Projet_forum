@@ -2,6 +2,11 @@ package structs
 
 import "time"
 
+type Session struct {
+	Uuid			int
+	User_Id			int
+
+}
 
 type Cookie struct {
 	Name       		string
@@ -21,13 +26,12 @@ type Cookie struct {
 }
 
 type User struct {
-	// Id				int
+	Id				int
 	Username		string
 	Mail			string
-	Mdp				string
 	Avatar			string
-	// SessionToken	int
-	// Role			int
+	SessionToken	int
+	Role			int
 }
 
 type Commentaire struct {

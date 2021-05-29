@@ -12,21 +12,26 @@ import(
 var html string
 
 //set cookie en plus de donner un uuid
-func SetCookie(cookie *http.Cookie, err error, w http.ResponseWriter, r *http.Request) *http.Cookie {
+func SetCookie(w http.ResponseWriter, r *http.Request) *http.Cookie {
 
-	if cookie == nil {
+	cookie, err := r.Cookie("Session")
+
+	if err != nil {
 		id := uuid.New()
-		expiration := time.Now().Add(365 * 24 * time.Hour)
+		expiration := time.Now().Add(7 * 24 * time.Hour)
 		cookie = &http.Cookie{
-			Name: "logged-in",
+			Name: "Session",
 			Expires: expiration,
 			Value: id.String(),
 			HttpOnly: true,
 			Path: "/",
 		}
 		http.SetCookie(w, cookie)
-		
+
 	}
+	// if err != nil {
+	// 	http.Redirect(w, r, "/set", http.StatusSeeOther) // cookie delete quand on va dans une autre page ?
+	// }
 	// coookie, _ := r.Cookie("logged-in")
 	// fmt.Fprint(w, r, coookie)
 	fmt.Println(cookie)
@@ -36,20 +41,23 @@ func SetCookie(cookie *http.Cookie, err error, w http.ResponseWriter, r *http.Re
 
 //dans la requête POST du serveur,
 //si le mot de passe est bon et qu'il peut login
-// func LogInCookie(password string, cookie *http.Cookie) *http.Cookie{
-// 	//on compare l'input du mot de passe avec celle de la session de l'utilisateur
-
-// 	user := structs.User{}
-// 	if password == user.Mdp {
-// 		expiration := time.Now().Add(365 * 24 * time.Hour)
-// 		cookie = &http.Cookie{
-// 			Name: "logged-in",
-// 			Value: string(user.Id),
-// 			Expires: expiration,
-// 			HttpOnly: true,
-// 			Path: "/",
-// 		}
-// 	}
+func LogInCookie(w http.ResponseWriter, cookie *http.Cookie, r *http.Request, err error) *http.Cookie{
+	//on compare l'input du mot de passe avec celle de la session de l'utilisateur
+	if err != nil {
+		expiration := time.Now().Add(3 * 24 * time.Hour)
+		id := uuid.New()
+		cookie = &http.Cookie{
+			Name: "SessionToken",
+			Value: id.String(),
+			Expires: expiration,
+			HttpOnly: true,
+			// Path: "/",
+		}
+		http.SetCookie(w, cookie)
+	}
+	
+	return cookie
+}	
 // 	// if cookie.Value == string(user.Id) {
 // 	// 	html= `
 // 	// 	<!DOCTYPE html>
@@ -71,31 +79,30 @@ func SetCookie(cookie *http.Cookie, err error, w http.ResponseWriter, r *http.Re
 // 	// io.WriteString(r, html)
 // 	return cookie
 
-// }
 
 //log out et détruit le cookie
-func DestroyCookie(w http.ResponseWriter, r *http.Request) *http.Cookie {
+func DestroyCookie(w http.ResponseWriter, r *http.Request) {
 
-	cookie, err := r.Cookie("logged-in") 
+	// cookie, err := r.Cookie("SessionToken") 
 
 	if r.URL.Path == "/logout" {
-		expiration := time.Now().Add(365 * 24 * time.Hour)
-		cookie = &http.Cookie{
-			Name: "logged-in",
-			Expires: expiration,
-			Value: "0",
-			HttpOnly: true,
-			Path: "/logout",
+		// expiration := time.Now().Add(365 * 24 * time.Hour)
+		cookie := &http.Cookie{
+			Name: "SessionToken",
+			// Expires: expiration,
+			// Value: "0",
+			// HttpOnly: true,
+			// Path: "/logout",
 			MaxAge:-1,
 		}
 		http.SetCookie(w, cookie)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 
 	} else {
-		if err != nil {
-			http.Redirect(w, r, "/set", http.StatusSeeOther) // cookie delete quand on va dans une autre page ?
+		cookie := &http.Cookie{
+			Name: "Session",
+			MaxAge : -1,
 		}
-		cookie.MaxAge = -1 // delete cookie 
 		http.SetCookie(w, cookie)
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
@@ -114,5 +121,4 @@ func DestroyCookie(w http.ResponseWriter, r *http.Request) *http.Cookie {
 	// 	</html>`
 	// }
 	// io.WriteString(r, html)
-	return cookie
 }

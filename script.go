@@ -2,9 +2,12 @@ package main
 
 import (
 	bdd "Forum/static/go/bdd"
+	cookie "Forum/static/go/cookies"
 	"database/sql"
 	"fmt"
 	textTemplate "html/template"
+	session "Forum/static/go/session"
+	// structs "Forum/static/go/structs"
 
 	_ "github.com/mattn/go-sqlite3"
 
@@ -17,8 +20,10 @@ import (
 )
 
 	var db bdd.MyDB
+
 func main() {
 	var err error
+
 	// Charger les fichiers du dossier 'static' sur le serveur :
 	fs := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -55,6 +60,10 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	cookie.SetCookie(w, r)
+	cookies, err := r.Cookie("SessionToken")
+	cookie.LogInCookie(w, cookies, r, err)
+	session.GetUserByCookie(w, r)
 	
 	db.GetNbPost(5,0)
 
