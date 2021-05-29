@@ -1,13 +1,11 @@
 package main
 
 import (
-	bdd "Forum/static/go/bdd"
 	"database/sql"
+	bdd "Forum/static/go/bdd"
 	"fmt"
-	textTemplate "html/template"
-
 	_ "github.com/mattn/go-sqlite3"
-
+	textTemplate "html/template"
 	// "io/ioutil"
 	// "log"
 	"net/http"
@@ -16,9 +14,9 @@ import (
 	// guuid "github.com/google/uuid"
 )
 
-	var db bdd.MyDB
 func main() {
 	var err error
+	var db bdd.MyDB
 	// Charger les fichiers du dossier 'static' sur le serveur :
 	fs := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -29,10 +27,16 @@ func main() {
 		panic(err)
 	}
 
+	fmt.Println(db.GetUser(1))
+	fmt.Println(db.GetUser(2))
+	fmt.Println(db.GetUser(3))
+	fmt.Println(db.GetUser(4))
+
 	fmt.Println("Listening server at port 8000.")
 	http.ListenAndServe("localhost:8000", nil)
 	db.DB.Close()
 }
+
 
 func index(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
@@ -55,9 +59,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	
-	db.GetNbPost(5,0)
-
 	tmpl.Execute(w, nil)
 
 	// cookie, err := r.Cookie("session-id")
@@ -68,4 +69,5 @@ func index(w http.ResponseWriter, r *http.Request) {
 	// 	http.SetCookie(w, cookie)
 	// }
 	// fmt.Println(cookie)
+
 }

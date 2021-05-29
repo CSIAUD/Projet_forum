@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html> 
+<html>
     <head>
+        <script src="../js/Afficher.js"></script>
         <link rel="shortcut icon" href="../img/avatar.png">
         <title>Connexion MLC</title>
-        <script src="../js/Afficher.js"></script>
     </head>
     <link rel="stylesheet" href="../css/style.css">
     <div id="content1">
@@ -12,21 +12,17 @@
                 <div class="sidebar-content">
                     <p class="logo_container">
                         <img class="logo" src="../img/logo.png"></p>
-                    <h3 class="desktop-only">Bienvenue sur la plateforme MLC</h3>
+                    <h3 class="desktop-only">Bienvenue sur l'onglet de récupération de votre mot de passe</h3>
                     <p class="desktop-only">
-                        L'équipe du MLC vous invite à vous enregirstrer sur notre forum pour interagir avec d'autres utilisateurs !
+                        Nous vous conseillons de ne pas partager votre mot de passe avec d'autre utilisateurs !
                     </p>
-                </div>
-                <div class="sidebar-footer">
-                    <p class="desktop-only">
-                        <a class="button" href="Create-Cont.html">Créer un compte</a>
-                    </p>
+                    <a href="login.html"><img class="retour" src="../img/flècheretour.png"></a>
                 </div>
             </div>
             <div class="main">
                 <form id="login" method="post" action="/login/<%= service %>">
                     <div class="main-title">
-                        <h1>Connexion au Forum MLC</h1>
+                        <h1>Récupération du mot de passe</h1>
                     </div>
                     <!--<%
                     if (typeof error == 'string') {
@@ -49,29 +45,23 @@
                     }
                     %>-->
                     <div class="main-content">
-                        <div class="form">
+                        <div class="form">    
                             <div class="field">
-                                <label for="email">E-mail : </label>
-                                <input id="email" type="email" tabindex="1" accesskey="i" autocomplete="off" name="email" value="" required>
-                            </div>
-    
-                            <div class="field">
-                                <label for="password">Mot de passe : </label>
+                                <label for="password">Nouveau mot de passe </label>
                                 <input id="password" type="password" tabindex="2" accesskey="m" autocomplete="off" name="password" value="" required>
                             </div>
-                            <bouton onclick="Afficher('password')">
-                                <img id="Vue" src="../img/oeil non barre.png">
-                            </bouton>
                             <!--<%
                             if (typeof service == 'undefined') {
                             %>-->
-                            <input name="submit" type="submit" class="button" tabindex="6" accesskey="l" value="Se connecter">
+                            <div class="field">
+                                <label for="passwordConfirm">Confirmation du nouveau mot de passe </label>
+                                <input id="passwordConfirm" type="password" tabindex="2" accesskey="m" autocomplete="off" name="passwordConfirm" value="">
+                                <bouton onclick="Afficher('password')">
+                                    <img id="Vue" src="../img/oeil non barre.png">
+                                </bouton>
+                            </div>
+                            <input name="submit" type="submit" class="button" tabindex="6" accesskey="l" value="S'enregistrer">
                         </div>
-                        <ul>
-                            <li>
-                                <a href="MDP.html">Mot de passe oublié</a>
-                            </li>
-                        </ul>
                     </div>
                 </form>
             </div>
@@ -85,5 +75,4 @@
         </ul>
     </footer>
     <div class="frise"></div>
-
 </html>
