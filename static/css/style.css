@@ -32,17 +32,16 @@ p {
 }
 header{
     background-color: rgb(24, 24, 116);
+    padding: 10px;
     color: ivory;
     justify-content: space-between;
     background: linear-gradient(0.25turn, rgba(25,0,155,.8), rgba(1,204,254,.8));
     -webkit-box-shadow: inset 0px -25px 10px -10px var(--color-fond); 
     box-shadow: inset 0px -25px 10px -10px var(--color-fond);
     background-size: cover;
-    height: 125px;
 }
 header a{
     color: ivory;
-    margin: 0;
 }
 body,
 html{
@@ -56,8 +55,6 @@ body{
 }
 a{
     text-decoration: none;
-    margin-bottom: 10%;
-
 }
 main{
     display: flex;
@@ -129,38 +126,18 @@ header,
     width: 400px;
     margin-right: 5px;
     border-radius: 30px;
-    display: inline-block;
 }
 #search:focus-visible {
 	outline: none;
+}
+#menu{
+    display: none;
 }
 #deconnect{
     display: none;
 }
 #login{
-    padding: 1em 2em;
-}
-
-#content{
-    position: fixed;
-    left: 0px;
-    top:0px;
-    width: 100%;
-    height: 100%;
-    z-index:1;
-    display:none;
-    background-color: rgba(0,0 ,0 , 0.8);
-}
-#login:target{
-    display: block;
-}
-#content1{
-    position: fixed;
-    left: 0px;
-    top:0px;
-    width: 100%;
-    height: 100%;
-    z-index:1;
+    /* display: none; */
 }
 #account > *{
     margin: auto 0 auto auto;
@@ -218,7 +195,6 @@ div[id^=post]:not(#posts),
     margin: 0;
     list-style: none;
     width: 100%;
-
 }
 #categories ul li a{
     padding: 5px;
@@ -230,6 +206,10 @@ div[id^=post]:not(#posts),
     background-color: transparent;
     transition: all .5s ease-in-out;
     display: block;
+}
+#categories ul li a:hover{
+    transition: all 0s ease-in-out;
+    color: ivory;
 }
 
 #cat:hover {
@@ -255,31 +235,21 @@ div[id^=post]:not(#posts),
     background-color: var(--color-gaming);
 }
 
-
-#Vue{
-    height: 30px;
-    width: 30px;
-}
-#Vue-create{
-    height: 30px;
-    width: 30px;
-    margin-left: 80px;
-    margin-right: 90px;
-}
-#image{
-    height: 30px;
-    width: 30px;
-}
-a#btnClose.btnClose{
-    margin-left: 550px;
-    height: 30px;
-    width: 30px;
-    cursor: pointer;
-}
-a#login{
-    float: right;
+#cat7:hover {
+    background-color: var(--color-animaux);
 }
 
+#cat8:hover {
+    background-color: var(--color-voyage);
+}
+
+#cat9:hover {
+    background-color: var(--color-sante);
+}
+
+#cat10:hover {
+    background-color: var(--color-education);
+}
 
 /* Class ================================================ */
 .search {
@@ -288,7 +258,7 @@ a#login{
     border: 1px solid ;
     border-radius: 5px;
     color: #ffffff;
-    background: linear-gradient(-0.25turn, rgba(85, 56, 233, 0.8), rgba(8, 170, 211, 0.8));
+    background: linear-gradient(0.25turn, rgba(85, 56, 233, 0.8), rgba(8, 170, 211, 0.8));
     padding: 10px;
     min-width: 173px;
     cursor: pointer;
@@ -296,21 +266,13 @@ a#login{
     font-family: Montserrat,Helvetica,Arial,sans-serif;
     text-align: center;
     border-color: #FFFFFF;
-    margin: 0 auto;
+
 
 }
-img.retour{
-    height: 30px;
-    width: 30px;
-    margin-right: 300px;
-}
+
 .text {
     font-family: 'KoHo', sans-serif;
     text-align: justify;
-}
-
-.Avatar_Profil{
-    float: right;
 }
 .avatar{
     height: 55px;
@@ -348,7 +310,9 @@ img.retour{
   background-size: cover;
 }
 .container{
-    display: block;
+    width: 100%;
+    height: max-content;
+    display: flex;
     flex-direction: column;
 }
 .container > *{
@@ -403,7 +367,7 @@ img.retour{
     display: -ms-grid;
     -ms-grid-columns: 1fr 2fr;
     display: grid;
-    grid-gap: 0px;
+    grid-cap: 0px;
     grid-template-columns: 1fr 2fr;
     grid-template-rows: 1fr;
     grid-template-areas: "sidebar main";
@@ -419,16 +383,12 @@ img.retour{
     margin: 10px 0px 30px 0px;
 }
 input:focus,
+a:focus,
 button:focus,
 submit:focus {
     outline: none;
     border: 1px solid #ffffff !important;
     box-shadow: 0 0 3pt 2pt orangered !important;
-}
-.box .sidebar-content img.retour{
-    height: 30px;
-    width: 30px;
-    margin-right: 230px;
 }
 .box .sidebar input:focus,
 .box .sidebar a:focus,
@@ -577,14 +537,6 @@ submit:focus {
     grid-area: main;
     color: #666666;
     text-align: center;
-
-}
-#Vue{
-    max-width: 40px;
-    max-height: 40px;
-    margin-left: 130px;
-    margin-right: 130px;
-    
 }
 .box .main h1, .box .main h2 {
     color: black;
@@ -619,7 +571,7 @@ submit:focus {
     display: block;
 }
 .box .main .main-content {
-    margin: 10px;
+    margin: 20px;
 }
 .box .main .main-content .form {
     width: 400px;
@@ -688,52 +640,4 @@ submit:focus {
 }
 .footer ul li a {
     color: inherit;
-}
-span input {
-    height: 30px;
-    width: 30px;
-}
-div.Badges{
-    float: left;
-    margin-right: auto;
-}
-img#Avatar_Profil{
-    height: 600px;
-    width: 600px;
-    margin-left: 100px;
-    border: none;
-    -moz-border-image: 75px;
-    -webkit-border-radius : 75px;
-    border-radius : 300px;
-    display: flex;
-    
-
-
-}
-#Profil{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    padding: 1%;
-    justify-content: space-around;
-}
-
-div.Badges{
-    margin-left: 200px;
-    width: 800px;
-    max-width: 40%;
-    margin: 10vh auto 50px;
-    background-color: #FFFFFF;
-    border-radius: 10px;
-    display: -ms-grid;
-    -ms-grid-columns: 1fr 2fr;
-    display: grid;
-    grid-gap: 0px;
-    grid-template-columns: 1fr 2fr;
-    grid-template-rows: 1fr;
-    grid-template-areas: "sidebar main";
-
-    padding: 0;
-    overflow: hidden;
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
 }

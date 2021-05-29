@@ -3,10 +3,9 @@
     <head>
         <link rel="shortcut icon" href="../img/avatar.png">
         <title>Connexion MLC</title>
-        <script src="../js/Afficher.js"></script>
     </head>
     <link rel="stylesheet" href="../css/style.css">
-    <div id="content1">
+    <div id="content">
         <div class="box">
             <div class="sidebar">
                 <div class="sidebar-content">
@@ -19,14 +18,14 @@
                 </div>
                 <div class="sidebar-footer">
                     <p class="desktop-only">
-                        <a class="button" href="Create-Cont.html">Créer un compte</a>
+                        <a class="button" href="/register">Créer un compte</a>
                     </p>
                 </div>
             </div>
             <div class="main">
                 <form id="login" method="post" action="/login/<%= service %>">
                     <div class="main-title">
-                        <h1>Connexion au Forum MLC</h1>
+                        <h1>Connexion auForum MLC</h1>
                     </div>
                     <!--<%
                     if (typeof error == 'string') {
@@ -59,9 +58,6 @@
                                 <label for="password">Mot de passe : </label>
                                 <input id="password" type="password" tabindex="2" accesskey="m" autocomplete="off" name="password" value="" required>
                             </div>
-                            <bouton onclick="Afficher('password')">
-                                <img id="Vue" src="../img/oeil non barre.png">
-                            </bouton>
                             <!--<%
                             if (typeof service == 'undefined') {
                             %>-->
@@ -69,7 +65,7 @@
                         </div>
                         <ul>
                             <li>
-                                <a href="MDP.html">Mot de passe oublié</a>
+                                <a href="/forgot-password">Mot de passe oublié</a>
                             </li>
                         </ul>
                     </div>

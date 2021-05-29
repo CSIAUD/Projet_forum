@@ -3,6 +3,7 @@ module Forum
 go 1.15
 
 require (
+	git.maze.io/go/math32 v0.0.0-20181106113604-c78ed91899f1
 	github.com/google/uuid v1.2.0
 	github.com/mattn/go-sqlite3 v1.14.7
 	github.com/satori/go.uuid v1.2.0
