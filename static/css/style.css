@@ -238,23 +238,18 @@ div[id^=post]:not(#posts),
 #cat2:hover {
     background-color: var(--color-sport);
 }
-
 #cat3:hover {
     background-color: var(--color-culture);
 }
-
 #cat4:hover {
     background-color: var(--color-loisir);
 }
-
 #cat5:hover {
     background-color: var(--color-cinema);
 }
-
 #cat6:hover {
     background-color: var(--color-gaming);
 }
-
 
 #Vue{
     height: 30px;
@@ -352,6 +347,11 @@ img.retour{
     flex-direction: column;
 }
 .container > *{
+    margin: 10px 0;
+    width: 90%;
+    padding: 0 5%;
+}
+.container > img{
     margin: 10px auto;
     width: 90%;
 }
@@ -451,8 +451,6 @@ submit:focus {
     justify-content: center;
     align-content: center;
     font-size: 0.9em;
-}
-.box ul.blocks li {
 }
 .box ul.blocks li a {
     display: block;
@@ -591,8 +589,6 @@ submit:focus {
     margin-left: 5px;
     margin-right: 5px;
 }
-.box .main .main-error {
-}
 .box .main .main-error p {
     color: #ffffff;
     background-color: #000000;
@@ -645,10 +641,6 @@ submit:focus {
 .box .main .main-content .form input[type="submit"] {
     margin: 20px 4px;
     min-width: 192px
-}
-.box .main .main-content .form button:hover,
-.box .main .main-content .form input[type="submit"]:hover {
-
 }
 .box .main .main-content .full-width {
     margin: 0px -20px;
@@ -736,4 +728,21 @@ div.Badges{
     padding: 0;
     overflow: hidden;
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+}
+
+.display{
+    display: block;
+}
+
+.visible{
+    opacity: 1;
+    transition: opacity .5s linear;
+}
+#container.visible > *{
+    opacity: 1;
+    transition: opacity .5s linear;
+}
+#stats.visible > *{
+    opacity: 1;
+    transition: opacity .5s linear;
 }

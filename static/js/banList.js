@@ -1,6 +1,4 @@
 let bans = document.getElementsByClassName("userBan")
-
-
 for (ban of bans){
     let pos = ban.children[0].getBoundingClientRect()
     ban.children[1].style.left = pos.right + "px"
@@ -38,4 +36,10 @@ function check(){
             },550);
         }
     }
+}
+
+function cut(txt){
+    let temp = ""
+    for (let i=txt.length; i--; i>=0)temp += txt[i]
+    return txt.slice(0,(0 - temp.indexOf('/')))
 }

@@ -3,6 +3,7 @@
     flex-direction: column;
     margin: auto;
     width: 55%;
+    transition: width .25s cubic-bezier(.7,0,.27,1.55), opacity .25s linear;
 }
 
 #stats{
@@ -15,6 +16,9 @@
     border-radius: 0 10px 10px 10px;
     font-family: Quicksand;
     box-shadow: 5px 20px 15px 5px rgb(121, 121, 121);
+}
+#stats > *{
+    opacity: 0;
 }
 [id^="stat"]:not(#stats):not(:nth-child(4)){
     width: 45%;
@@ -69,10 +73,14 @@
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     color: black;
+    transition: color .5s linear;
+    transition: background-color .5s linear;
 }
 #menu > *.active{
     color: royalblue;
     background-color: var(--color-post);
+    transition: color .5s linear;
+    transition: background-color .25s linear;
 }
 
 [id^='popup']{

@@ -1,8 +1,11 @@
+
+
 #main{
     display: flex;
     flex-direction: column;
     margin: auto;
     width: 70%;
+    transition: width .25s cubic-bezier(.7,-0.5,.7,1), opacity .25s linear;
 }
 
 #menu{
@@ -21,10 +24,14 @@
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     color: black;
+    transition: color .5s linear;
+    transition: background-color .5s linear;
 }
 #menu > *.active{
     color: royalblue;
     background-color: var(--color-post);
+    transition: color .5s linear;
+    transition: background-color .25s linear;
 }
 
 #container{
@@ -43,6 +50,9 @@
     width: 100%;
     text-align: center;
     font-size: 40px;
+}
+#container > *{
+    opacity: 0;
 }
 
 #sub-container{

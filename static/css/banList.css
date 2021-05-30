@@ -15,10 +15,14 @@
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     color: black;
+    transition: color .5s linear;
+    transition: background-color .5s linear;
 }
 #menu > *.active{
     color: royalblue;
     background-color: var(--color-post);
+    transition: color .5s linear;
+    transition: background-color .25s linear;
 }
 
 #container{
@@ -44,11 +48,16 @@
     margin: 5px;
     padding: 0;
 }
+#container > *{
+    opacity: 0;
+}
+
 #main{
     display: flex;
     flex-direction: column;
     margin: auto;
     width: 55%;
+    transition: width .25s cubic-bezier(.7,0,.27,1.55), opacity .25s linear;
 }
 
 .userBan{
@@ -103,13 +112,4 @@
 .banDef{
     color: #fff;
     text-shadow: red 0 0 5px;
-}
-
-.display{
-    display: block;
-}
-
-.visible{
-    opacity: 1;
-    transition: opacity .5s linear;
 }

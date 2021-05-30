@@ -9,6 +9,7 @@ let statAll = document.querySelector("#statAll > #AllStats")
 let urlRegex = new RegExp("([0-9a-z:/\._]+)","gi")
 let urlTestRegex = new RegExp("\#","g")
 
+
 window.addEventListener('load', () => {
     if ((window.location.href).search(urlTestRegex) > 0){
         let url = (urlRegex.exec(window.location.href))[0]
@@ -51,3 +52,8 @@ statAll.addEventListener('click', () => {
         },10);
     document.body.style.overflow = "hidden"
 })
+function cut(txt){
+    let temp = ""
+    for (let i=txt.length; i--; i>=0)temp += txt[i]
+    return txt.slice(0,(0 - temp.indexOf('/')))
+}
