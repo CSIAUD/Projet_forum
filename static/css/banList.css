@@ -1,0 +1,115 @@
+
+#menu{
+    background-color: rgb(204,204,192);
+    width: max-content;
+    height: max-content;
+    padding: 10px 0;
+    margin: 0;
+}
+#menu > *{
+    padding: 10px;
+    font-family: Quicksand;
+}
+#menu,
+#menu > *{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: black;
+    transition: color .5s linear;
+    transition: background-color .5s linear;
+}
+#menu > *.active{
+    color: royalblue;
+    background-color: var(--color-post);
+    transition: color .5s linear;
+    transition: background-color .25s linear;
+}
+
+#container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+    background-color: var(--color-post);
+    border-radius: 0 10px 10px 10px;
+    font-family: Quicksand;
+    box-shadow: 5px 20px 15px 5px rgb(121, 121, 121);
+}
+#container h2{
+    margin: 0;
+    width: 100%;
+    text-align: center;
+}
+#container > div{
+    font-family: monospace;
+}
+#container > *:not(h2){
+    margin: 5px;
+    padding: 0;
+}
+#container > *{
+    opacity: 0;
+}
+
+#main{
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 55%;
+    transition: width .25s cubic-bezier(.7,0,.27,1.55), opacity .25s linear;
+}
+
+.userBan{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    cursor: default;
+    user-select: none;
+}
+.userBan > *{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 10px;
+}
+.userBan > h3{
+    flex: 1;
+}
+.userBan > ul{
+    position: absolute;
+    flex: 2;
+    background-color: rgb(204,204,192);
+    border-radius: 5px;
+    border: 5px outset rgb(185,185,172);
+    width: max-content;
+    height: max-content;
+}
+.userBan > div{
+    flex: 2;
+}
+
+.banList{
+    padding: 5px;
+    margin: 0;
+    opacity: 0;
+    display: none;
+    transition: opacity .5s linear;
+}
+.banList > *{
+    font-size: 15px;
+    margin: 5px 5px;
+    padding: 5px;
+    border-radius: 5px;
+    list-style: none;    
+}
+.banList > * > span{
+    font-size: 10px;
+    margin: auto auto auto 10px;
+}
+
+.banDef{
+    color: #fff;
+    text-shadow: red 0 0 5px;
+}

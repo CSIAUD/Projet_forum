@@ -8,17 +8,19 @@ package session
 
 import (
 	// "html/template"
-	"net/http"
 	structs "Forum/static/go/structs"
+	"net/http"
+
 	// cookies "Forum/static/go/cookies"
 	bdd "Forum/static/go/bdd"
-	"strconv"
 	"fmt"
+	"strconv"
 )
 
 var session structs.Session
 
 var db bdd.MyDB
+
 // var cookie *http.Cookie
 func GetUserByCookie(w http.ResponseWriter, r *http.Request) {
 
@@ -28,9 +30,7 @@ func GetUserByCookie(w http.ResponseWriter, r *http.Request) {
 
 	cookie, err := r.Cookie("SessionToken")
 	// cookies.LogInCookie(w, cookie, r, err)
-
-	if (cookie.Name == "SessionToken") {
-		
+	if cookie.Name == "SessionToken" {
 
 		if err != nil {
 			if err == http.ErrNoCookie {
@@ -46,7 +46,7 @@ func GetUserByCookie(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-	
+
 		//on compare l'uuid de l'utilisateur avec celui du cookie
 		if cookieV == user.SessionToken {
 			session = structs.Session{cookieV, user.Id}
@@ -56,7 +56,7 @@ func GetUserByCookie(w http.ResponseWriter, r *http.Request) {
 		user.Role = guest
 		fmt.Println("hello")
 	}
-	
+
 	Authorisation(user.Role)
 
 	// User := db.GetUser(session.User_Id)
@@ -66,46 +66,22 @@ func GetUserByCookie(w http.ResponseWriter, r *http.Request) {
 }
 
 func Authorisation(role int) {
-	
+
 	guest := 0
 	user := 1
 	modo := 2
 	admin := 3
 
 	if role == guest {
-		
-	}else if role == user {
-		
-	}else if role == modo {
-		
-	}else if role == admin {
-		
+
+	} else if role == user {
+
+	} else if role == modo {
+
+	} else if role == admin {
+
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // if err != nil {
 // 	if err == http.ErrNoCookie {
@@ -118,7 +94,6 @@ func Authorisation(role int) {
 // 	w.WriteHeader(http.StatusBadRequest)
 // 	return
 // }
-
 
 // var tpl *template.Template
 // var dbUsers = map[string]structs.User{} //ID utilisateur, struct User
@@ -138,7 +113,6 @@ func Authorisation(role int) {
 // 	var Un string
 // 	var maill string
 // 	var av string
-
 
 // 	//get the cookie
 // 	cookie, err := r.Cookie("logged-in")
@@ -169,5 +143,5 @@ func Authorisation(role int) {
 // }
 
 // func LogOut() {
-	
+
 // }

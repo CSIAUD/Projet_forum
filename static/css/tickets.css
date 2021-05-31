@@ -1,0 +1,106 @@
+
+
+#main{
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 70%;
+    transition: width .25s cubic-bezier(.7,-0.5,.7,1), opacity .25s linear;
+}
+
+#menu{
+    background-color: rgb(204,204,192);
+    width: max-content;
+    height: max-content;
+    padding: 10px 0;
+    margin: 0;
+}
+#menu > *{
+    padding: 10px;
+    font-family: Quicksand;
+}
+#menu,
+#menu > *{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: black;
+    transition: color .5s linear;
+    transition: background-color .5s linear;
+}
+#menu > *.active{
+    color: royalblue;
+    background-color: var(--color-post);
+    transition: color .5s linear;
+    transition: background-color .25s linear;
+}
+
+#container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+    background-color: var(--color-post);
+    border-radius: 0 10px 10px 10px;
+    font-family: Quicksand;
+    box-shadow: 5px 20px 15px 5px rgb(121, 121, 121);
+}
+#container h2{
+    margin: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 40px;
+}
+#container > *{
+    opacity: 0;
+}
+
+#sub-container{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+#sub-container > *{
+    width: 100%;
+    margin: 5px;
+    border-radius: 10px;
+    border: 5px solid black;
+}
+#sub-container > *:nth-child(1),
+#sub-container > *:nth-child(1) ul > li{
+    background-color: rgba(211, 56, 12,.5);
+}
+#sub-container > *:nth-child(2),
+#sub-container > *:nth-child(2) ul > li{
+    background-color: rgba(255, 155, 12,.5);
+}
+#sub-container > *:nth-child(3),
+#sub-container > *:nth-child(3) ul > li{
+    background-color: rgba(12, 174, 36,.5);
+}
+#sub-container > div > h3{
+    width: 100%;
+    text-align: center;
+    border-color: black;
+    border-width: 5px;
+    border-style: none none solid none;
+    padding: 10px 0;
+    margin: 0;
+}
+
+.list{
+    margin: 0;
+    padding: 0 10px;
+    font-family: monospace;
+    font-size: 20px;
+}
+.list > *{
+    margin: 10px 5px;
+    padding: 5px;
+    list-style: none;
+    border-radius: 10px;
+}
+.list li > span{
+    padding: 0 0 0 10px;
+    font-size: 15px;
+}

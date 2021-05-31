@@ -1,0 +1,43 @@
+{{template "layout" .}}
+{{define "main"}}
+
+<main id="main">
+    <div id="menu">
+        <a href="#" class="active">Statistiques</a>
+        <a href="banList.page.html">BanList</a>
+        <a href="tickets.page.html">Tickets</a>
+    </div>
+    <div id="stats">
+        <h2>Statistiques</h2>
+        <div id="statWeek">
+            <h3>Les 7 derniers jours</h3>
+            <p>Par catégories</p>
+            <div id="WeekStats"></div>
+            <div id="popupWeek">
+                <div id="popupWeekStats"></div>
+            </div>
+
+            <!-- <img src="../img/graph.png" alt=""> -->
+        </div>
+        <div id="statMonth">
+            <h3>Le mois passé</h3>
+            <p>Par catégories</p>
+            <div id="MonthStats"></div>
+            <div id="popupMonth">
+                <div id="popupMonthStats"></div>
+            </div>
+            <!-- <img src="../img/graph.png" alt=""> -->
+        </div>
+        <div id="statAll">
+            <h3>Tout</h3>
+            <p>Par catégories</p>
+            <div id="AllStats"></div>
+            <div id="popupAll">
+                <div id="AllStats"></div>
+            </div>
+            <!-- <img src="../img/graph.png" alt=""> -->
+        </div>
+    </div>
+</main>
+    
+{{end}}

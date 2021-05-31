@@ -1,0 +1,53 @@
+{{template "layout" .}}
+{{define "main"}}
+
+<main id="main">
+    <div id="menu">
+        <form action="/" method="get">
+            <input type="hidden" value="Le Chat" name="test">
+            <input type="submit" value="Tickets">
+        </form>
+        <!-- <a href="categorie_dashboard.page.html">Statistiques</a>
+        <a href="#" class="active">BanList</a>
+        <a href="tickets.page.html">Tickets</a> -->
+    </div>
+    <div id="container">
+        <h2>Banlist</h2>
+        <div class="userBan">
+            <h3 class="banDef">User1 (3)</h3>
+            <ul class="banList">
+                <li>Ban définitif depuis le 25/05/2021<br><span class="raison">Raison: Tu sers à rien</span></li>
+                <li>Du 01/02/2021 au 15/02/2021<br><span class="raison">Raison: Pas beau</span></li>
+                <li>Du 20/05/2021 au 25/05/2021<br><span class="raison">Raison: Je fais ce que je veux</span></li>
+            </ul>
+            <div></div>
+        </div>
+        <div class="userBan">
+            <h3>User2 (2)</h3>
+            <ul class="banList">
+                <li>Du 20/05/2021 au 25/05/2021<br><span class="raison">Raison: Je fais ce que je veux</span></li>
+            </ul>
+            <div></div>
+        </div>
+        <div class="userBan">
+            <h3 class="banDef">User3 (4)</h3>
+            <ul class="banList">
+                <li>Ban définitif depuis le 25/05/2021<br><span class="raison">Raison: Tu sers à rien</span></li>
+                <li>Du 01/02/2021 au 15/02/2021<br><span class="raison">Raison: Pas beau</span></li>
+                <li>Du 20/05/2021 au 25/05/2021<br><span class="raison">Raison: Je fais ce que je veux</span></li>
+                <li>Du 01/02/2021 au 15/02/2021<br><span class="raison">Raison: Pas beau</span></li>
+            </ul>
+            <div></div>
+        </div>
+        <div class="userBan">
+            <h3 class="banDef">User4 (1)</h3>
+            <ul class="banList">
+                <li>Ban définitif depuis le 25/05/2021<br><span class="raison">Raison: Tu sers à rien</span></li>
+                <li>Du 20/05/2021 au 25/05/2021<br><span class="raison">Raison: Je fais ce que je veux</span></li>
+            </ul>
+            <div></div>
+        </div>
+    </div>
+</main>
+
+{{end}}

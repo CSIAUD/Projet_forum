@@ -341,10 +341,10 @@ func (m MyDB) GetPost(uid int) *structs.Post {
 }
 func (m MyDB) GetNbPost(limit int, offset int) *[]structs.Post {
 	offset = offset * limit
-	post := structs.Post{}
-
 	rows, err := m.DB.Query("SELECT p.id, p.content, p.date, p.categorie_id, p.hidden, p.user_id, u.username, u.avatar FROM posts p LEFT JOIN users u ON u.id = p.user_id WHERE hidden!=1 ORDER BY date desc LIMIT ? OFFSET ?", limit, offset)
 	checkErr(err)
+
+	post := structs.Post{}
 	tab := []structs.Post{}
 
 	for rows.Next() {
@@ -566,7 +566,7 @@ func (m MyDB) DateConversion(date int) string {
 	diff := (now - date) / 60
 
 	temp := ""
-	
+
 	if diff < 60 {
 		temp += strconv.Itoa(diff) + " MIN.S"
 	} else if diff < 3600 {

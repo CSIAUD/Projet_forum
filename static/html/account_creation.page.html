@@ -1,0 +1,70 @@
+{{template "layout" .}}
+{{define "main"}}
+<body class="loginForm">
+<main role="main">
+    <div id="content1">
+        <div class="box">
+            <div class="sidebar">
+                <div class="sidebar-content">
+                    <p class="logo_container">
+                        <img class="logo" src="../img/logo.png"></p>
+                    <h3 class="desktop-only">Bienvenue sur la plateforme MLC</h3>
+                    <p class="desktop-only">
+                       L'équipe du MLC vous invite à créer un compte sur notre forum pour interagir avec d'autres utilisateurs !
+                    </p>
+                </div>
+                <div class="sidebar-footer">
+                    <p class="desktop-only">
+                        <a class="button" href="#login" :target>Acceuil</a>
+                    </p>
+                </div>
+            </div>
+            <div class="main">
+                <form id="loginForm" method="post" action="/register">
+                    <div class="main-title">
+                        <h1>Inscription MLC</h1>
+                    </div>
+                    <!--<%
+                    if (typeof error == 'string') {
+                    %>
+                    <div class="main-error">
+                        <p class="error">
+                            <strong><%= error %></strong>
+                        </p>
+                    </div>
+                    <%
+                    }
+                    %>-->
+                    <div class="main-content">
+                        <div class="form">
+                            <div class="field">
+                                <label for="Pseudo">Pseudo : </label>
+                                <input id="Pseudo" type="Pseudo" tabindex="1" accesskey="i" autocomplete="off" name="Pseudo" value="" required>
+                            </div>
+                            <div class="field">
+                                <label for="email">E-mail : </label>
+                                <input id="email" type="email" tabindex="1" accesskey="i" autocomplete="off" name="email" value="" required>
+                            </div>
+
+                            <div class="field">
+                                <label for="password">Mot de passe : </label>
+                                <input id="password" type="password" tabindex="2" accesskey="m" autocomplete="off" name="password" value="" required>
+                            </div>
+
+                            <div class="field">
+                                <label for="conf_password">Confirmation du mot de passe : </label>
+                                <input id="conf_password" type="password" tabindex="2" accesskey="m" autocomplete="off" name="conf_password" value="" required>
+                            </div>
+                            <bouton onclick="Afficher('password')">
+                                <img id="Vue-create" src="../img/oeil non barre.png">
+                            </bouton>
+
+                            <input name="submit" type="submit" class="button" tabindex="6" accesskey="l" value="S'inscrire">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+{{end}}
