@@ -2,6 +2,7 @@ package bdd
 
 import (
 	"database/sql"
+
 	// "fmt"
 	"strconv"
 
@@ -9,6 +10,8 @@ import (
 	// "strconv"
 	structs "Forum/static/go/structs"
 	"time"
+
+	"errors"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -246,17 +249,31 @@ func (m MyDB) GetBannedUser(user_id int) *[]structs.BanList {
 }
 
 //===================================================================================================
-func (m MyDB) CreateUser(username string, mail string, mdp string, avatar string, sessionToken string, role_id int) bool {
-	mdp, err := hashMdp(mdp)
+func (m MyDB) CreateUser(username string, mail string, mdp string, avatar string, sessionToken string) error {
+	rows, err := m.DB.Query("SELECT id FROM users where username like ?", username)
 	checkErr(err)
 
-	stmt, err := m.DB.Prepare("INSERT INTO users(username, mail, avatar, sessionToken, role_id) values(?,?,?,?,?)")
+	if rows.Next() {
+		return errors.New("error")
+	}
+
+	rows, err = m.DB.Query("SELECT id FROM users where mail like ?", mail)
 	checkErr(err)
 
-	_, err = stmt.Exec(username, mail, mdp, avatar, "TOKen", role_id)
+	if rows.Next() {
+		return errors.New("error")
+	}
+
+	mdp, err = hashMdp(mdp)
 	checkErr(err)
 
-	return true
+	stmt, err := m.DB.Prepare("INSERT INTO users(username, mail, mdp, avatar, sessionToken) values(?,?,?,?,?)")
+	checkErr(err)
+
+	_, err = stmt.Exec(username, mail, mdp, avatar, sessionToken)
+	checkErr(err)
+
+	return nil
 }
 func (m MyDB) UpdateUser(username string, mail string, avatar string, id int) bool {
 	stmt, err := m.DB.Prepare("update users set uername=?, mail=?, avatar=? where id=?")
@@ -277,12 +294,12 @@ func (m MyDB) DeleteUser(id int) bool {
 	return true
 }
 func (m MyDB) GetUser(id int) *structs.User {
-	rows, err := m.DB.Query("SELECT id,username,mail,avatar FROM users where id=?", id)
+	rows, err := m.DB.Query("SELECT id,username,mail,avatar, verif FROM users where id=?", id)
 	checkErr(err)
 	user := structs.User{}
 
 	if rows.Next() {
-		err = rows.Scan(&user.Id, &user.Username, &user.Mail, &user.Avatar)
+		err = rows.Scan(&user.Id, &user.Username, &user.Mail, &user.Avatar, &user.Verif)
 		checkErr(err)
 	}
 	return &user

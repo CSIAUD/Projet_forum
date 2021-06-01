@@ -130,9 +130,6 @@ header,
 #search:focus-visible {
 	outline: none;
 }
-#menu{
-    display: none;
-}
 #deconnect{
     display: none;
 }

@@ -3,7 +3,7 @@ package structs
 import "time"
 
 type Session struct {
-	Uuid    int
+	Uuid    string
 	User_Id int
 }
 
@@ -31,6 +31,7 @@ type User struct {
 	Avatar       string
 	SessionToken string
 	Role         int
+	Verif        int
 }
 
 type Commentaire struct {
