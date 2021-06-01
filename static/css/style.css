@@ -23,12 +23,14 @@ h3 {
     font-weight: bold;
 }
 p {
+    margin: 10px;
     display: block;
     font-size: 17px;
     margin-block-start: 100px;
     margin-block-end: 1em;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
+    
 }
 header{
     background-color: rgb(24, 24, 116);
@@ -38,11 +40,9 @@ header{
     -webkit-box-shadow: inset 0px -25px 10px -10px var(--color-fond); 
     box-shadow: inset 0px -25px 10px -10px var(--color-fond);
     background-size: cover;
-    height: 125px;
 }
 header a{
     color: ivory;
-    margin: 0;
 }
 body,
 html{
@@ -117,7 +117,6 @@ header,
 }
 #research{
     padding-left: calc((((100% / 3) - 400px) / 2) - 33px);
-    margin: 0;
 }
 #research > img{
     height: 40px;
@@ -133,6 +132,9 @@ header,
 }
 #search:focus-visible {
 	outline: none;
+}
+#menu{
+    display: none;
 }
 #deconnect{
     display: none;
@@ -151,7 +153,7 @@ header,
     display:none;
     background-color: rgba(0,0 ,0 , 0.8);
 }
-#login:target{
+#btnOpen:target{
     display: block;
 }
 #content1{
@@ -238,18 +240,23 @@ div[id^=post]:not(#posts),
 #cat2:hover {
     background-color: var(--color-sport);
 }
+
 #cat3:hover {
     background-color: var(--color-culture);
 }
+
 #cat4:hover {
     background-color: var(--color-loisir);
 }
+
 #cat5:hover {
     background-color: var(--color-cinema);
 }
+
 #cat6:hover {
     background-color: var(--color-gaming);
 }
+
 
 #Vue{
     height: 30px;
@@ -283,7 +290,7 @@ a#login{
     border: 1px solid ;
     border-radius: 5px;
     color: #ffffff;
-    background: linear-gradient(-0.25turn, rgba(85, 56, 233, 0.8), rgba(8, 170, 211, 0.8));
+    background: linear-gradient(0.25turn, rgba(85, 56, 233, 0.8), rgba(8, 170, 211, 0.8));
     padding: 10px;
     min-width: 173px;
     cursor: pointer;
@@ -347,11 +354,6 @@ img.retour{
     flex-direction: column;
 }
 .container > *{
-    margin: 10px 0;
-    width: 90%;
-    padding: 0 5%;
-}
-.container > img{
     margin: 10px auto;
     width: 90%;
 }
@@ -416,9 +418,10 @@ img.retour{
     color: inherit;
 }
 .box p {
-    margin: 10px 0px 30px 0px;
+    margin: 10px 0px 30px 10px;
 }
 input:focus,
+a:focus,
 button:focus,
 submit:focus {
     outline: none;
@@ -451,6 +454,8 @@ submit:focus {
     justify-content: center;
     align-content: center;
     font-size: 0.9em;
+}
+.box ul.blocks li {
 }
 .box ul.blocks li a {
     display: block;
@@ -589,6 +594,8 @@ submit:focus {
     margin-left: 5px;
     margin-right: 5px;
 }
+.box .main .main-error {
+}
 .box .main .main-error p {
     color: #ffffff;
     background-color: #000000;
@@ -642,6 +649,10 @@ submit:focus {
     margin: 20px 4px;
     min-width: 192px
 }
+.box .main .main-content .form button:hover,
+.box .main .main-content .form input[type="submit"]:hover {
+
+}
 .box .main .main-content .full-width {
     margin: 0px -20px;
 }
@@ -692,7 +703,6 @@ div.Badges{
 img#Avatar_Profil{
     height: 600px;
     width: 600px;
-    margin-left: 100px;
     border: none;
     -moz-border-image: 75px;
     -webkit-border-radius : 75px;
@@ -711,15 +721,59 @@ img#Avatar_Profil{
 }
 
 div.Badges{
-    margin-left: 200px;
-    width: 800px;
+    width: 400px;
     max-width: 40%;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    -ms-grid-columns: 1fr 2fr;
+    display: block;
+    grid-gap: 0px;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "sidebar main";
+    text-align: left;
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+    position: ;
+}
+.box_share {
+    width: 900px;
+    max-width: 90%;
     margin: 10vh auto 50px;
     background-color: #FFFFFF;
     border-radius: 10px;
     display: -ms-grid;
     -ms-grid-columns: 1fr 2fr;
-    display: grid;
+    grid-gap: 0px;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "sidebar main";
+    text-align: center;
+
+    padding: 0;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+}
+#box_share{
+    position: fixed;
+    left: 0px;
+    top:0px;
+    width: 100%;
+    height: 100%;
+    z-index:1;
+    display:none;
+    background-color: rgba(0,0 ,0 , 0.8);
+}
+#Sharebox {
+    width: 900px;
+    height: 600px;
+    max-width: 90%;
+    margin: 10vh auto 50px;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    display: -ms-grid;
+    -ms-grid-columns: 1fr 2fr;
+    display: block;
     grid-gap: 0px;
     grid-template-columns: 1fr 2fr;
     grid-template-rows: 1fr;
@@ -729,20 +783,58 @@ div.Badges{
     overflow: hidden;
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
 }
-
-.display{
+#shareimg{
+    width: auto;
+    height: auto;
     display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+#shareclose.shareclose{
+    margin-left: 10px;
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+}
+#sharep{
+    margin: 10px;
+    display: block;
+    font-size: 17px;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    text-align: center;
+}
+#share{
+ 
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: none;
+    background-color: rgba(0,0 ,0 , 0.8);
+}
+.js-copy {
+    height: 30px;
+    width: 30px;
+    margin-left: 10px;
+}
+#BadgesH3{
+    display: block;
+    font-size: 25px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    margin-left: 10px;
 }
 
-.visible{
-    opacity: 1;
-    transition: opacity .5s linear;
-}
-#container.visible > *{
-    opacity: 1;
-    transition: opacity .5s linear;
-}
-#stats.visible > *{
-    opacity: 1;
-    transition: opacity .5s linear;
+.container_Badges {
+    height: 400px;
+    width: 400px;
+    position: absolute;
+    left: 30px;
 }
