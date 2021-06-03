@@ -49,12 +49,13 @@ type Categorie struct {
 }
 
 type Post struct {
-	Id          int
-	Content     string
-	Date        string
-	User        User
-	CategorieId int
-	Hidden      bool
+	Id        int
+	Content   string
+	Date      string
+	User      User
+	Categorie string
+	Hidden    bool
+	Likes     int
 }
 
 type Autorisation struct {

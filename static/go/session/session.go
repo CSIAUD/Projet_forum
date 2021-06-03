@@ -8,24 +8,23 @@ import (
 	structs "Forum/static/go/structs"
 	"net/http"
 
-	// cookies "Forum/static/go/cookies"
-	bdd "Forum/static/go/bdd"
+	cookies "Forum/static/go/cookies"
 	"fmt"
+
+	bdd "Forum/static/go/bdd"
 	// "strconv"
 )
 
-var db bdd.MyDB
-
 // var cookie *http.Cookie
-func GetUserByCookie(w http.ResponseWriter, r *http.Request) {
+func GetUserByCookie(db bdd.MyDB, w http.ResponseWriter, r *http.Request) {
 
 	var session structs.Session
 	user := structs.User{}
 
-	cookie, err := r.Cookie("SessionToken")
+	cookie, err := r.Cookie("Session")
 	fmt.Println(cookie)
 	// cookies.LogInCookie(w, cookie, r, err)
-	if cookie.Name == "SessionToken" {
+	if cookie.Name == "Session" {
 
 		if err != nil {
 			if err == http.ErrNoCookie {
@@ -46,31 +45,43 @@ func GetUserByCookie(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("same")
 		} else {
 			fmt.Println("not same")
+			db.SetSession("sessionToken", 1)
 			user = structs.User{SessionToken: cookieV}
 			// fmt.Println("Session Token user :", user.SessionToken)
 			// fmt.Println("Cookie Value Session Token:", cookieV)
 		}
 
-		session = structs.Session{cookieV, user.Id}
+		session = structs.Session{Uuid: cookieV}
 		fmt.Println("je suis un session token cookie")
 
 	}
 
 	fmt.Println(session)
-
 }
 
-func LogIn(Name string, password string) {
-
-	user := structs.User{}
-
-	if Name == user.Username {
-		// bdd.db.compareMdp(password, user.Id)
+func LogIn(mail string, password string, db bdd.MyDB, w http.ResponseWriter, r *http.Request) bool {
+	fmt.Println(mail)
+	if db.UserExist(mail) {
+		err, id := db.CompareMdp(password, mail)
+		if err != nil {
+			session, _ := r.Cookie("Session")
+			db.SetSession(session.Value, id)
+			fmt.Println("session ok")
+			// GetUserByCookie(w, r)
+		} else {
+			fmt.Println("erreur1")
+			return false
+		}
 	} else {
-		fmt.Println("Pseudo ou email incorrect")
+		fmt.Println("erreur2")
+		return false
 	}
+	fmt.Println("connecté")
+	return true
 }
 
-func LogOut() {
-
+func LogOut(w http.ResponseWriter, r *http.Request) bool {
+	cookies.DestroyCookie(w, r)
+	http.Redirect(w, r, "/", 302)
+	return true
 }

@@ -1,13 +1,17 @@
 {{template "layout" .}}
+{{define "head"}}
+    <link rel="stylesheet" href="static/css/banList.css">
+    <script src="static/js/banList.js" defer></script>
+{{end}}
 {{define "main"}}
 
 <main id="main">
     <div id="menu">
-        <a href="categorie_dashboard">Statistiques</a>
+        <a href="dashBoard">Statistiques</a>
         <a href="banList" class="active">BanList</a>
         <a href="tickets">Tickets</a>
     </div>
-    <div id="container">
+    <div id="container" class="visible">
         <h2>Banlist</h2>
         <div class="userBan">
             <h3 class="banDef">User1 (3)</h3>

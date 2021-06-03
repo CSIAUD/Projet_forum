@@ -2,6 +2,7 @@ package bdd
 
 import (
 	"database/sql"
+	"fmt"
 
 	// "fmt"
 	"strconv"
@@ -249,7 +250,7 @@ func (m MyDB) GetBannedUser(user_id int) *[]structs.BanList {
 }
 
 //===================================================================================================
-func (m MyDB) CreateUser(username string, mail string, mdp string, avatar string, sessionToken string) error {
+func (m MyDB) CreateUser(username string, mail string, mdp string, avatar string) error {
 	rows, err := m.DB.Query("SELECT id FROM users where username like ?", username)
 	checkErr(err)
 
@@ -267,10 +268,10 @@ func (m MyDB) CreateUser(username string, mail string, mdp string, avatar string
 	mdp, err = hashMdp(mdp)
 	checkErr(err)
 
-	stmt, err := m.DB.Prepare("INSERT INTO users(username, mail, mdp, avatar, sessionToken) values(?,?,?,?,?)")
+	stmt, err := m.DB.Prepare("INSERT INTO users(username, mail, mdp, avatar) values(?,?,?,?)")
 	checkErr(err)
 
-	_, err = stmt.Exec(username, mail, mdp, avatar, sessionToken)
+	_, err = stmt.Exec(username, mail, mdp, avatar)
 	checkErr(err)
 
 	return nil
@@ -284,6 +285,16 @@ func (m MyDB) UpdateUser(username string, mail string, avatar string, id int) bo
 
 	return true
 }
+func (m MyDB) SetSession(session string, id int) bool {
+	stmt, err := m.DB.Prepare("update users set sessionToken=? where id=?")
+	checkErr(err)
+
+	_, err = stmt.Exec(session, id)
+	checkErr(err)
+
+	return true
+}
+
 func (m MyDB) DeleteUser(id int) bool {
 	stmt, err := m.DB.Prepare("delete from users where id=?")
 	checkErr(err)
@@ -294,7 +305,7 @@ func (m MyDB) DeleteUser(id int) bool {
 	return true
 }
 func (m MyDB) GetUser(id int) *structs.User {
-	rows, err := m.DB.Query("SELECT id,username,mail,avatar, verif FROM users where id=?", id)
+	rows, err := m.DB.Query("SELECT id,username,mail,avatar, verified FROM users where id=?", id)
 	checkErr(err)
 	user := structs.User{}
 
@@ -303,6 +314,34 @@ func (m MyDB) GetUser(id int) *structs.User {
 		checkErr(err)
 	}
 	return &user
+}
+func (m MyDB) UserExist(mail string) bool {
+	fmt.Println(m)
+	rows, err := m.DB.Query("SELECT * FROM users where id=8")
+	defer rows.Close()
+	fmt.Println("mail2 : ", mail)
+	if err != nil {
+		return false
+	}
+	if !rows.Next() {
+		return false
+	}
+	return true
+}
+func (m MyDB) UserVerified(mail string) bool {
+	rows, err := m.DB.Query("SELECT verified FROM users where mail=?", mail)
+	checkErr(err)
+	var verif int
+
+	checkErr(err)
+	if rows.Next() {
+		err = rows.Scan(&verif)
+		checkErr(err)
+	}
+	if verif == 1 {
+		return true
+	}
+	return false
 }
 
 //==================================================================================================================
@@ -346,10 +385,12 @@ func (m MyDB) GetPost(uid int) *structs.Post {
 	rows, err := m.DB.Query("SELECT p.id, p.content, p.date, p.categorie_id, p.hidden, p.user_id, u.username, u.avatar FROM posts p LEFT JOIN users u ON u.id = p.user_id WHERE p.id=?", uid)
 	checkErr(err)
 	var date int
+	var cat int
 
 	if rows.Next() {
-		err = rows.Scan(&post.Id, &post.Content, &date, &post.CategorieId, &post.Hidden, &post.User.Id, &post.User.Username, &post.User.Avatar)
+		err = rows.Scan(&post.Id, &post.Content, &date, &cat, &post.Hidden, &post.User.Id, &post.User.Username, &post.User.Avatar)
 		post.Date = m.DateConversion(date)
+		post.Categorie = m.GetCategory(cat)
 		checkErr(err)
 	}
 	rows.Close()
@@ -363,10 +404,12 @@ func (m MyDB) GetNbPost(limit int, offset int) *[]structs.Post {
 
 	post := structs.Post{}
 	tab := []structs.Post{}
+	var cat int
 
 	for rows.Next() {
-		err = rows.Scan(&post.Id, &post.Content, &post.Date, &post.CategorieId, &post.Hidden, &post.User.Id, &post.User.Username, &post.User.Avatar)
+		err = rows.Scan(&post.Id, &post.Content, &post.Date, &cat, &post.Hidden, &post.User.Id, &post.User.Username, &post.User.Avatar)
 		checkErr(err)
+		post.Categorie = m.GetCategory(cat)
 		tab = append(tab, post)
 	}
 	rows.Close()
@@ -547,32 +590,40 @@ func hashMdp(mdp string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(mdp), hashCost)
 	return string(bytes), err
 }
-func (m MyDB) compareMdp(password string, id int) bool {
-	rows, err := m.DB.Query("SELECT mdp FROM users where id=?", id)
-	checkErr(err)
+func (m MyDB) CompareMdp(password string, mail string) (error, int) {
+	id := 0
+	rows, err := m.DB.Query("SELECT mdp FROM users where mail=?", mail)
+	defer rows.Close()
+	if err != nil {
+		return err, 0
+	}
 	var mdp string
 
-	if rows.Next() {
-		err = rows.Scan(&mdp)
-		checkErr(err)
+	if !rows.Next() {
+		return errors.New("error"), id
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(mdp), []byte(password))
-	return err == nil
+	if err != nil {
+		return err, 0
+	}
+	return nil, id
 }
-func (m MyDB) updateMdp(old string, mdp string, id int) bool {
-	if !m.compareMdp(old, id) {
+func (m MyDB) updateMdp(old string, mdp string, mail string) bool {
+	err, _ := m.CompareMdp(old, mail)
+	if err != nil {
 		return false
 	}
-	stmt, err := m.DB.Prepare("update users set mdp=? where id=?")
+	stmt, err := m.DB.Prepare("update users set mdp=? where mail=?")
 	checkErr(err)
 
-	_, err = stmt.Exec(mdp, id)
+	_, err = stmt.Exec(mdp, mail)
 	checkErr(err)
 	return true
 }
 func checkErr(err error) {
 	if err != nil {
+		fmt.Println(err)
 		panic(err)
 	}
 }

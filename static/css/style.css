@@ -209,15 +209,21 @@ div[id^=post]:not(#posts),
     color: ivory;
 }
 
-#cat:hover {
+#cat:hover,
+.Business > span {
     background-color: var(--color-business);
+    border-color: var(--color-business);
 }
-#cat2:hover {
+#cat2:hover,
+.Sport > span {
     background-color: var(--color-sport);
+    border-color: var(--color-sport);
 }
 
-#cat3:hover {
+#cat3:hover,
+.Culture > span {
     background-color: var(--color-culture);
+    border-color: var(--color-culture);
 }
 
 #cat4:hover {
@@ -263,6 +269,7 @@ div[id^=post]:not(#posts),
     font-family: Montserrat,Helvetica,Arial,sans-serif;
     text-align: center;
     border-color: #FFFFFF;
+    margin: 0 auto;
 
 
 }
@@ -291,10 +298,9 @@ div[id^=post]:not(#posts),
     margin: auto 5px 10px;
 }
 .category span{
-    color: var(--color-business);
+    border: 3px solid black;
     border-radius: 50px;
     padding: 0 5px;
-    border: 3px solid var(--color-business);
     width: max-content;
 }
 .category span::before {
@@ -567,54 +573,6 @@ submit:focus {
 .box .main .main-error p span {
     display: block;
 }
-.box .main .main-content {
-    margin: 20px;
-}
-.box .main .main-content .form {
-    width: 400px;
-    max-width: 95%;
-    margin: 40px auto 0;
-}
-.box .main .main-content .form .field {
-    margin: 10px;
-}
-.box .main .main-content .form .field label {
-    display: block;
-    text-align: left;
-}
-.box .main .main-content .form .field input {
-    font-size: 1.2em;
-    padding: 10px;
-    width: 100%;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-}
-.box .main .main-content .form button,
-.box .main .main-content .form input[type="submit"] {
-    margin: 20px 4px;
-    min-width: 192px
-}
-.box .main .main-content .form button:hover,
-.box .main .main-content .form input[type="submit"]:hover {
-
-}
-.box .main .main-content .full-width {
-    margin: 0px -20px;
-}
-.box .main .main-content .form .g-recaptcha {
-    width: 304px;
-    margin: auto;
-}
-.box .main .main-content .form .field .field-warning {
-    margin: 0 0 -25px;
-    font-size: 0.8em;
-    line-height: 25px;
-}
-.box .main .main-content .form .field .field-warning i {
-    vertical-align: -25%;
-    font-size: 1.4em;
-}
 .footer {
     text-align: center;
     color: #ffffff;
@@ -637,4 +595,32 @@ submit:focus {
 }
 .footer ul li a {
     color: inherit;
+}
+
+#container.visible > *{
+    opacity: 1;
+}
+#stats.visible > *{
+    opacity: 1;
+}
+
+#menu > *.active{
+    color: royalblue;
+    background-color: var(--color-post);
+    transition: color .5s linear;
+    transition: background-color .25s linear;
+}
+#menu > *.active{
+    color: royalblue;
+    background-color: var(--color-post);
+    transition: color .5s linear;
+    transition: background-color .25s linear;
+}
+#menu,
+#menu > *{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: black;
+    transition: color .5s linear;
+    transition: background-color .5s linear;
 }

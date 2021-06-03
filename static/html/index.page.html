@@ -1,57 +1,42 @@
-    <main>
-        <div id="posts">
-            <div id="tri">
-                <div id="new">
-                    <img src="./static/img/new.png" alt="">
-                    <p>NEW</p>
-                </div>
-                <div id="top">
-                    <img src="./static/img/top.png" alt="">
-                    <p>TOP RATE</p>
-                </div>
+{{template "layout" .}}
+{{define "head"}}
+{{end}}
+{{define "main"}}
+<main>
+    <div id="posts">
+        <div id="tri">
+            <div id="new">
+                <img src="./static/img/new.png" alt="">
+                <a href="#">NEW</a>
             </div>
-
-            <div id="post1">
-                <div class="infos">
-                    <img class="avatar" src="./static/img/avatar.png" alt="avatar">
-                    <p>Par Cyprien Siaud Il y a 15min</p>
-                    <p class="category"><span>Business</span></p>
-                </div>
-                <div class="container">
-                    <img src="https://img-3.journaldesfemmes.fr/JRHeuU3dfNzTWV2zPL18MqHE-ZM=/748x499/smart/70294ab34b054cbd8d94ed45a6779d3e/recipe-jdf/398831.jpg" alt="">
-                    <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ullamcorper dictum nunc dapibus pulvinar. Nulla pulvinar metus at venenatis facilisis. Integer ut elit urna. Donec et feugiat enim, non pretium diam. Donec nisi odio, porttitor vel tristique a, venenatis a massa. Cras sagittis sed nibh vitae pellentesque. Morbi et erat tellus. Nam nec orci eu nisi vestibulum congue. Donec tincidunt ex in tortor bibendum fringilla. Aliquam non erat ut dolor luctus aliquet. Nullam tempus magna eu tortor ultrices, eu volutpat mi pulvinar. Proin ultricies sapien sed nulla lobortis condimentum. Donec fermentum eget nulla a maximus. </p>
-                </div>
-                <div class="control">
-                    <span>
-                        
-                        <img src="./static/img/like.png" alt="like" class="like">
-                        <img src="./static/img/dislike.png" alt="dislike" class="dislike">
-                    </span>
-                    <span>
-                        <img src="./static/img/comment.png" alt="comment">
-                        <img src="./static/img/share.png" alt="share">
-                    </span>
-                    <p>Liked by 5 users</p>
-                </div>
+            <div id="top">
+                <img src="./static/img/top.png" alt="">
+                <a href="#">TOP RATE</a>
             </div>
-            <div id="post2"></div>
-            <div id="post3"></div>
-            <div id="post4"></div>
-            <div id="post5"></div>
         </div>
-        <div id="categories">
-            <h2>Catégories :</h2>
-            <ul>
-                <li><a href="#cat" id="cat">Business</a></li>
-                <li><a href="#cat2" id="cat2">Sport</a></li>
-                <li><a href="#cat3" id="cat3">Culture</a></li>
-                <li><a href="#cat4" id="cat4">Loisirs</a></li>
-                <li><a href="#cat5" id="cat5">Cinéma</a></li>
-                <li><a href="#cat6" id="cat6">Gaming</a></li>
-                <li><a href="#cat7" id="cat7">Animaux</a></li>
-                <li><a href="#cat8" id="cat8">Voyage</a></li>
-                <li><a href="#cat9" id="cat9">Santé</a></li>
-                <li><a href="#cat10" id="cat10">Education</a></li>
-            </ul>
+        {{range .}}
+        <div id="post{{.Id}}">
+            <div class="infos">
+                <img class="avatar" src="./static/img/{{.User.Avatar}}" alt="avatar">
+                <p>Par {{.User.Username}} Il y a {{.Date}}</p>
+                <p class="category {{.Categorie}}"><span>{{.Categorie}}</span></p>
+            </div>
+            <div class="container">
+                <p>{{.Content}}</p>
+            </div>
+            <div class="control">
+                <span>
+                    <a href="#"><img src="./static/img/like.png" alt="like" class="like"></a>
+                    <a href="#"><img src="./static/img/dislike.png" alt="dislike" class="dislike"></a>
+                </span>
+                <span>
+                    <a href="#"><img src="./static/img/comment.png" alt="comment"></a>
+                    <a href="share?id={{.Id}}"><img src="./static/img/share.png" alt="share"></a>
+                </span>
+                <p>Liked by {{.Likes}} users</p>
+            </div>
         </div>
-    </main>
+        {{end}}
+    </div>
+</main>
+{{end}}

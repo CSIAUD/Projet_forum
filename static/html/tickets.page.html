@@ -1,12 +1,16 @@
 {{template "layout" .}}
+{{define "head"}}
+    <link rel="stylesheet" href="static/css/tickets.css">
+    <script src="static/js/tickets.js" defer></script>
+{{end}}
 {{define "main"}}
 <main id="main">
     <div id="menu">
-        <a href="categorie_dashboard">Statistiques</a>
+        <a href="dashBoard">Statistiques</a>
         <a href="banList">BanList</a>
         <a href="#" class="active">Tickets</a>
     </div>
-    <div id="container">
+    <div id="container" class="visible">
         <h2>Tickets</h2>
         <div id="sub-container">
             <div>

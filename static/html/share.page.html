@@ -1,0 +1,16 @@
+{{template "layout" .}}
+{{define "head"}}
+<script src="static/js/afficher.js" defer></script>
+<script src="static/js/copie.js" defer></script>
+{{end}}
+
+{{define "main" }}
+<div id="share">
+    <div id="Sharebox">
+            <a id="shareclose" class="shareclose">&times;</a>
+            <p id="sharep">Voici l'URL de partage : <span id="tocopy">https://test123lol </span><input type="image" class="js-copy" data-target="#tocopy" src="../img/copy-icon.png"></p><img id="shareimg" src="../img/5bkzlx.jpg">
+            
+    </div>
+
+</div>
+{{end}}

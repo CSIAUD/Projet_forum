@@ -4,9 +4,9 @@ import (
 	bdd "Forum/static/go/bdd"
 	cookie "Forum/static/go/cookies"
 	session "Forum/static/go/session"
-	template "html/template"
-
+	"Forum/static/go/structs"
 	"fmt"
+	template "html/template"
 	"net/http"
 	"path/filepath"
 
@@ -15,50 +15,86 @@ import (
 	// "io/iutil"
 	// "log"
 	// "time
-	// guuid gitub.com/google/uuid"
+	// guuidgitub.com/google/uuid"
 	// "net/ul"
 	"database/sql"
-	"strings"
 )
 
 var tmplCache map[string]*template.Template
 var db bdd.MyDB
 
-var location string
-
 func main() {
-	location = "tickets"
-
 	var err error
+	tmplCache, _ = newTemplateCache("./static/html/")
+
 	// Charger les fichiers du dossier 'static' ur le serveur :
 	fs := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	http.HandleFunc("/", loadPage)
+	http.HandleFunc("/", redirectToIndex)
+	http.HandleFunc("/index", index)
+	// http.Handle("/dashBoard", mwIsModo(http.HandlerFunc(dashBoard)))
+	http.HandleFunc("/banList", banList)
+	http.HandleFunc("/login", login)
+	http.HandleFunc("/comment", comment)
+	http.HandleFunc("/recupMdp", recupMdp)
+	http.HandleFunc("/post", post)
+	http.HandleFunc("/profil", profil)
+	http.HandleFunc("/search", search)
+	http.HandleFunc("/signup", signup)
+	http.HandleFunc("/tickets", tickets)
 
 	db.DB, err = sql.Open("sqlite3", "./SQLite/mlcData.db")
 	if err != nil {
 		panic(err)
 	}
-	tests()
-	tmplCache, err = newTemplateCache("./static/html/")
+	defer db.DB.Close()
+	// tests()
 
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("===========================")
 	fmt.Println(tmplCache)
-	fmt.Println("============================")
+	fmt.Println("===========================")
 
 	fmt.Println("Listening server at port 8000")
 	http.ListenAndServe("localhost:8000", nil)
-	db.DB.Close()
 }
+
+func mwIsLoggedIn(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewareOne")
+		next.ServeHTTP(w, r)
+		fmt.Println("Executing middlewareOne again")
+	})
+}
+
+// func mwIsModo(next http.Handler) http.Handler {
+// 	session := "cookieSession"
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		if (session.GetUserByCookie(w,r)).Role > 2 {
+// 			return
+// 		}
+
+// 		next.ServeHTTP(w, r)
+// 	})
+// }
+// func mwIsAdmin(next http.Handler) http.Handler {
+// 	session := "cookie"
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		if (session.GetUserByCookie(w, r)).Role > 1 {
+// 			return
+// 		}
+
+// 		next.ServeHTTP(w, r)
+// 	})
+// }
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {
 	// Initialize a new map to act as the cahe.
 	cache := map[string]*template.Template{}
-	// Use the filepath.Glob function to get a slice of all filepaths with
-	// the extension '.page.tmpl'. This essetially gives us a slice of all the
+	// Use the filepath.Glob function to geta slice of all filepaths with
+	// the extension '.page.tmpl'. This essetially gives us a slice of allthe
 	// 'page' templates for the application.
 	pages, err := filepath.Glob(filepath.Join(dir, "*.page.html"))
 	if err != nil {
@@ -66,11 +102,11 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 	}
 	// Loop through the pages on-by-one.
 	for _, page := range pages {
-		// Extract the file name (like 'home.pge.tmpl') from the full file path
+		// Extract the file name (lke 'home.pge.tmpl') from the full file path
 		// and assign it to the name variable.
 
 		name := filepath.Base(page)
-		// Parse the page template file in to a templae set.
+		// Parse the page template ile in to a templae set.
 		ts, err := template.New(name).ParseFiles(page)
 		if err != nil {
 			return nil, err
@@ -83,7 +119,7 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 			return nil, err
 		}
 		// Use the ParseGlob method to add any 'partial' templates to the
-		// templateset (in our case, it's just the 'footer' partial at the
+		// templateset (in our case, it's just the 'footer' partial at th
 		// moment).
 		ts, err = ts.ParseGlob(filepath.Join(dir, "*.partial.html"))
 		if err != nil {
@@ -97,16 +133,132 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 	return cache, nil
 }
 
-func loadPage(w http.ResponseWriter, r *http.Request) {
-	url := r.URL.String()
-	var temp string
-	for i := len(url) - 1; i >= 0; i-- {
-		temp += string(url[i])
-	}
-	position_slash := strings.Index(temp, "/")
-	location = url[len(url)-position_slash:]
+func index(w http.ResponseWriter, r *http.Request) {
+	temp := []structs.Post{}
+	post := structs.Post{}
+	user := structs.User{}
+	user.Id = 45
+	user.Username = "Cyprien"
+	user.Mail = "qsdfgs"
+	user.Avatar = "avatar.png"
+	user.SessionToken = "sdrfdudfujks"
+	user.Role = 1
+	user.Verif = 1
 
-	fmt.Println("page : " + location)
+	post.Id = 45
+	post.Content = "aetyzrthsgduetyuikzyae"
+	post.Date = "15H"
+	post.User = user
+	post.Categorie = "Business"
+	post.Hidden = false
+	post.Likes = 56
+	temp = append(temp, post)
+
+	user.Id = 45
+	user.Username = "zer"
+	user.Mail = "qsdfgs"
+	user.Avatar = "avatar.png"
+	user.SessionToken = "sdrfdudfujks"
+	user.Role = 1
+	user.Verif = 1
+
+	post.Id = 456
+	post.Content = "azretyuihdhj"
+	post.Date = "16H"
+	post.User = user
+	post.Categorie = "Sport"
+	post.Hidden = false
+	post.Likes = 12
+
+	temp = append(temp, post)
+	errorGestion(w, r, "index")
+	err := tmplCache["index.page.html"].Execute(w, temp)
+	if err != nil {
+		panic(err)
+	}
+}
+func redirectToIndex(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/index", 302)
+}
+func dashBoard(w http.ResponseWriter, r *http.Request) {
+	errorGestion(w, r, "dashBoard")
+	err := tmplCache["categorie_dashboard.page.html"].Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
+}
+func banList(w http.ResponseWriter, r *http.Request) {
+	errorGestion(w, r, "banList")
+	err := tmplCache["banList.page.html"].Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
+}
+func login(w http.ResponseWriter, r *http.Request) {
+	mail := r.FormValue("mail")
+	pass := r.FormValue("password")
+	if mail != "" {
+		session.LogIn(mail, pass, db, w, r)
+		fmt.Println("sdklfjghj")
+	}
+	errorGestion(w, r, "login")
+	err := tmplCache["login.page.html"].Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
+}
+func comment(w http.ResponseWriter, r *http.Request) {
+	errorGestion(w, r, "comment")
+	err := tmplCache["comment.page.html"].Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
+}
+func recupMdp(w http.ResponseWriter, r *http.Request) {
+	errorGestion(w, r, "mdp")
+	err := tmplCache["mdp.page.html"].Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
+}
+func post(w http.ResponseWriter, r *http.Request) {
+
+	errorGestion(w, r, "posts")
+	err := tmplCache["posts.page.html"].Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
+}
+func profil(w http.ResponseWriter, r *http.Request) {
+	errorGestion(w, r, "profil")
+	err := tmplCache["profil.page.html"].Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
+}
+func search(w http.ResponseWriter, r *http.Request) {
+	errorGestion(w, r, "search")
+	err := tmplCache["research.page.html"].Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
+}
+func signup(w http.ResponseWriter, r *http.Request) {
+	errorGestion(w, r, "signup")
+	err := tmplCache["signup.page.html"].Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
+}
+func tickets(w http.ResponseWriter, r *http.Request) {
+	errorGestion(w, r, "tickets")
+	err := tmplCache["tickets.page.html"].Execute(w, nil)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func errorGestion(w http.ResponseWriter, r *http.Request, location string) {
 
 	if r.URL.Path != "/"+location {
 		http.Error(w, "404 - page not found", http.StatusNotFound)
@@ -125,37 +277,73 @@ func loadPage(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error 500 - Internal Server Error", http.StatusInternalServerError)
 			return
 		}
-
 	}
-
 	cookie.SetCookie(w, r)
-	session.GetUserByCookie(w, r)
-
-	fmt.Println("----------------")
-	fmt.Println(location)
-	fmt.Println("+++++++++++++++++")
-
-	page := location + ".page.html"
-
-	err = tmplCache[page].Execute(w, nil)
-	fmt.Println("****************")
-	if err != nil {
-		panic(err)
-	}
-	// tmpl.Execute(w, nil)
 }
+
+// func loadPage(w http.ResponseWriter, r *http.Request) {
+
+// 	url := r.URL.String()
+// 	var temp string
+// 	for i := len(url) - 1; i >= 0; i-- {
+// 		temp += string(url[i])
+// 	}
+// 	position_slash := strings.Index(temp, "/")
+// 	location = url[len(url)-position_slash:]
+
+// 	fmt.Println("page : " + location)
+
+// 	if r.URL.Path != "/"+location {
+// 		http.Error(w, "404 - page not ound", http.StatusNotFound)
+// 	}
+// 	if r.URL.Path == "/login" {
+// 		fmt.Println("login")
+// 		// session.LogIn(mail, password, w, r)
+// 	}
+
+// 	_, err := template.ParseFiles("./static/html/layout.html")
+
+// 	if err != nil {
+// 		http.Error(w, "Error 400 - Bad Request!", http.StatusBadRequest)
+// 		return
+// 	}
+
+// 	switch r.Method {
+// 	case "POST":
+// 		if err != nil {
+// 			http.Error(w, "Error 500 - Internal Server Error", http.StatusInternalServerError)
+// 			return
+// 		}
+// 	}
+
+// 	tests()
+
+// 	cookie.SetCookie(w, r)
+// 	// session.GetUserByCokie(w, r)
+
+// 	page := location + ".page.html"
+// 	fmt.Println("----------------")
+// 	fmt.Println(page)
+// 	fmt.Println("++++++++++++++++")
+
+// 	err = tmplCache[page].Execute(w, nil)
+// 	fmt.Println("****************")
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	// tmpl.Execute(w, nil)
+// }
 func tests() {
-	username := "cyph"
-	mail := "azerty@azertyr.fr"
-	mdp := "coucou"
-	avatar := "lechat.png"
-	sessionToken := "zryzrytu-5z6sj6hg4"
-	err := db.CreateUser(username, mail, mdp, avatar, sessionToken)
+	// username : "cyp"
+	// mail := "csiaud83gmail.com"
+	// mdp := "Ynov"
+	// avatar := "lehat.png"
+	// err := db.CreateUser(uername, mail, mdp, avatar)
 
-	if err != nil {
-		fmt.Println("Username / Mail déjà utilisé")
-	} else {
-		fmt.Println("Bienvenue dans la secte")
-	}
-
+	// if err != nil {
+	// 	fmt.Println("Uername / Mail déjà utilisé")
+	// } else {
+	// 	fmt.Pritln("Bienvenue dans la secte")
+	// }
+	fmt.Println(db.GetUser(8))
 }

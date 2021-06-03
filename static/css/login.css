@@ -1,0 +1,67 @@
+#Vue{
+    width: 30px;
+    height: 30px;
+}
+
+
+#login {
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+}
+#login .form {
+    width: 400px;
+    max-width: 95%;
+    margin: 40px auto 0;
+}
+#login .field {
+    margin: 10px;
+    width: 100%;
+}
+#login .field label {
+    display: block;
+    text-align: left;
+}
+#login .field input {
+    font-size: 1.2em;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+#login .form button,
+#login .form input[type="submit"] {
+    margin: 20px 4px;
+    min-width: 192px
+}
+#login .form button:hover,
+#login .form input[type="submit"]:hover {
+
+}
+#login .full-width {
+    margin: 0px -20px;
+}
+#login .form .g-recaptcha {
+    width: 304px;
+    margin: auto;
+}
+#login .form .field .field-warning {
+    margin: 0 0 -25px;
+    font-size: 0.8em;
+    line-height: 25px;
+}
+#login .form .field .field-warning i {
+    vertical-align: -25%;
+    font-size: 1.4em;
+}
+
+#popup{
+    background-color: rgba(0, 0, 0, .8);
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}

@@ -1,4 +1,8 @@
 {{template "layout" .}}
+{{define "head"}}
+    <link rel="stylesheet" href="static/css/categorie.css">
+    <script src="static/js/categories.js" defer></script>
+{{end}}
 {{define "main"}}
 
 <main id="main">
@@ -7,7 +11,7 @@
         <a href="banList">BanList</a>
         <a href="tickets">Tickets</a>
     </div>
-    <div id="stats">
+    <div id="stats" class="visible">
         <h2>Statistiques</h2>
         <div id="statWeek">
             <h3>Les 7 derniers jours</h3>
