@@ -33,6 +33,10 @@ type User struct {
 	Role         int
 	Verif        int
 }
+type Users struct {
+	Users []User
+	Error bool
+}
 
 type Commentaire struct {
 	Id        int
@@ -42,10 +46,18 @@ type Commentaire struct {
 	Post      Post
 	CommentId int
 }
+type Commentaires struct {
+	Commentaires []Commentaire
+	Error        bool
+}
 
 type Categorie struct {
 	Id   int
 	Name string
+}
+type Categories struct {
+	Categories []Categorie
+	Error      bool
 }
 
 type Post struct {
@@ -57,15 +69,27 @@ type Post struct {
 	Hidden    bool
 	Likes     int
 }
+type Posts struct {
+	Posts []Post
+	Error bool
+}
 
 type Autorisation struct {
 	Id   int
 	Name string
 }
+type Autorisations struct {
+	Autorisations []Autorisation
+	Error         bool
+}
 
 type RoleAuth struct {
 	AutorisationId Autorisation
 	RoleId         Role
+}
+type RoleAuths struct {
+	RoleAuths []RoleAuth
+	Error     bool
 }
 
 type CommentLike struct {
@@ -73,11 +97,19 @@ type CommentLike struct {
 	CommentaireId Commentaire
 	Vote          int
 }
+type Commentlikes struct {
+	Commentlikes []CommentLike
+	Error        bool
+}
 
 type PostLike struct {
 	UserId User
 	PostId Post
 	Vote   int
+}
+type Postlikes struct {
+	Postlikes []PostLike
+	Error     bool
 }
 
 type Badge struct {
@@ -85,17 +117,28 @@ type Badge struct {
 	Name  string
 	Image string
 }
+type Badges struct {
+	Badges []Badge
+	Error  bool
+}
 
 type BadgeUser struct {
 	UserId  User
 	BadgeId Badge
+}
+type BadgeUsers struct {
+	BadgeUsers []BadgeUser
+	Error      bool
 }
 
 type Role struct {
 	Id   int
 	Name string
 }
-
+type Roles struct {
+	Roles []Role
+	Error bool
+}
 type Ticket struct {
 	Id        int
 	Content   string
@@ -104,6 +147,10 @@ type Ticket struct {
 	Categorie int
 	User      User
 	OpenBy    User
+}
+type Tickets struct {
+	Tickets []Ticket
+	Error   bool
 }
 
 type BanList struct {
@@ -115,8 +162,11 @@ type BanList struct {
 	BannedBy  User
 	UserId    User
 }
+type BanLists struct {
+	BanLists []BanList
+	Error    bool
+}
 
-type All struct {
-	Users User
-	Posts Post
+type Err0r struct {
+	Error bool
 }

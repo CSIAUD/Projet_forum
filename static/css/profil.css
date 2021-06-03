@@ -1,0 +1,52 @@
+#avatar_profil{
+    height: 600px;
+    width: 600px;
+    border: none;
+    -moz-border-image: 75px;
+    -webkit-border-radius : 75px;
+    border-radius : 300px;
+    display: flex;
+}
+#nameuser {
+    text-align: center;
+    font-size: 30px;
+}
+.container_badges {
+    height: 400px;
+    width: 400px;
+    position: absolute;
+    left: 30px;
+}
+#badgesh3 {
+    display: block;
+    font-size: 25px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+#profil {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 1%;
+    justify-content: space-around;
+}
+.badges {
+    width: 17vh;
+    margin: 10vh auto 50px;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    display: -ms-grid;
+    -ms-grid-columns: 1fr 2fr;
+    display: block;
+    grid-gap: 0px;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: "sidebar main";
+    padding: 0;
+    overflow: hidden;
+    box-shadow: 0px 0px 10px 0px rgb(0 0 0 / 20%);
+}

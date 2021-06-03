@@ -1,27 +1,51 @@
 {{template "layout" .}}
+{{define "head"}}
+<script src="static/js/menu.js" defer></script>
+<link rel="stylesheet" href="static/css/profil.css">
+{{end}}
 {{define "main"}}
-<main id="Profil">
-    <div class="container">
-        <div class="Badges">
-            <h3>Badges :</h3>
-            <ul>
-                <li>Badges 1</li>
-                <li>Badges 2</li>
-                <li>Badges 3</li>
-                <li>Badges 1</li>
-                <li>Badges 2</li>
-                <li>Badges 3</li>
-                <li>Badges 1</li>
-                <li>Badges 2</li>
-                <li>Badges 3</li>
-            </ul>
-        </div>
-    </div>
-    <div class="container">
-        <div class="Avatar_Profil">
-            <a><img src="../img/avatar.png" id="Avatar_Profil"></a>
-        </div>
+<main id="menu">
 
+    </div>
+    <div id="profil">
+        <div class="container_Badges">
+            <div class="badges">
+                <figure>
+                    <h3 id="badgesH3">Badges :</h3>
+                    <figcaption>
+                        <ul id="NbrBadges">
+                            <li>Badges 1</li>
+                            <li>Badges 2</li>
+                            <li>Badges 3</li>
+                            <li>Badges 1</li>
+                            <li>Badges 2</li>
+                            <li>Badges 3</li>
+                            <li>Badges 1</li>
+                            <li>Badges 2</li>
+                            <li>Badges 3</li>
+                        </ul>
+                    </figcaption>
+                    
+                </figure>
+                
+            </div>
+        </div>
+        
+        <div id="container_vatar">
+
+            <div class="avatar_Profil">
+                <figure>
+                    <img id="avatar_profil" src="static/img/avatar.png" >
+                    <figcaption id="nameuser">
+                        {{.Username}}                        
+                    </figcaption>
+                </figure>
+            </div>
+        </div>
+        <div id="menu">
+            <a href="postsmedia" class="active">Posts Media</a>
+            <a href="posts" >Posts</a>
+            <a href="infos">Infos</a>
     </div>
 </main>
 

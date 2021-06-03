@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css?family=Droid+Sans:400,700');
+
+.timer {
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 150px;
+  transform-style: preserve-3d;
+  svg {
+    max-width: 320px;
+    width: 100%;
+  }
+  @include maxBreak(600px) {
+    margin-top: 30px;
+  }
+}
+
+.logo {
+  top: 43px;
+  left: 50%;
+  transform: translateX(-50%);
+  position: absolute;
+  font-family: 'Droid Sans', sans-serif;
+  font-weight: 500;
+  color: #1F295C;
+}
+
+#wt{
+  left: 50%;
+  position: absolute;
+  display: block;
+  color: #272727;
+  font-weight: 700;
+  font-family: 'Droid Sans', sans-serif;
+  transform: translateX(-50%);
+  width: 280px;
+  text-align: center;
+  margin-top: 25px;
+  font-size: 20px;
+  text-transform: uppercase;
+}
+
+p {
+  font-family: 'Droid Sans', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  text-align: center;
+}
+
+.svg-wrap {
+  position: relative;
+  width: 310px;
+  overflow: hidden;
+  left: 50%;
+  color: #272727;
+  margin-top: 90px;
+  font-family: 'Droid Sans', sans-serif;
+  transform: translateX(-50%);
+}
+
+.eyeball {
+  animation: eyeball 2s infinite ease-in-out alternate;
+}
+
+#fish {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  margin-top: 20px;
+  transform: translateY(-50%);
+}
+
+.bubbles {
+  opacity: 0.4;
+  animation: bubble 11s infinite ease-in-out alternate;
+}
+
+.st49,
+.st20,
+.st74,
+.st87,
+.st14,
+.st18,
+.boatpart,
+.boat {
+  animation: boat 1.7s infinite ease-in-out alternate;
+}
+
+@keyframes boat {
+  0 {
+    transform: translateY(12px) translateX(0px) skew(0deg);
+  }
+  100% {
+    transform: translateY(-5px) translateX(-12px) skew(2.3deg);
+  }
+}
+
+@keyframes eyeball {
+  0 {
+    transform: translateX(0px) translateY(0px);
+  }
+  30% {
+    transform: translateX(2px) translateY(1px);
+  }
+  60% {
+    transform: translateX(-2px) translateY(-1px);
+  }
+  100% {
+    transform: translateX(0px) translateY(0px);
+  }
+}
+
+@keyframes bubble {
+  0 {
+    transform: translateY(0px);
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.1;
+    transform: translateY(-50px);
+  }
+}
+
+.fin {
+  animation: fin 0.9s ease-in-out infinite alternate;
+  transform-style: preserve-3d;
+}
+
+.tail {
+  animation: tail 1s ease-in-out infinite alternate;
+  transform-style: preserve-3d;
+}
+
+@keyframes fin {
+  from {
+    transform: skew(2deg) scale(1.0);
+  }
+  to {
+    transform: skew(-2deg) scale(1.009);
+  }
+}
+
+@keyframes tail {
+  from {
+    transform: skew(2deg) scale(1.0);
+  }
+  to {
+    transform: skew(-2deg) scale(1.009);
+  }
+}
+#wt{
+    text-align: center;
+
+}
+#imgerr {
+  height: 90px;
+  width: 90px;
+  align-items: center;
+}  
+body {
+  display: unset;
+  height: 100%;
+}
+body {
+  display: block;
+  margin: 0px;
+}
+#main {
+  background: linear-gradient(rgba(1, 204, 254, 0.8), rgba(18, 1, 102, 0.8));
+}
+.ptext{
+  font-size: 20px;
+  font-family: Snell Roundhand, cursive;
+}
+#texterr {
+  font-family: Snell Roundhand, cursive;
+  font-size: 40px;
+}
+#first {
+  transform: rotate(0deg);
+}
+#second {
+  transform: rotate(50deg);
+}
+#third {
+  transform: rotate(70deg);
+}
+#texterr #first #second #third {
+  float: left;
+}

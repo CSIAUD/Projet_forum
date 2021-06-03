@@ -1,8 +1,11 @@
 package SetCookie
 
 import (
+	// "Forum/static/go/structs"
+	// "fmt"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -13,110 +16,83 @@ import (
 var html string
 
 //set cookie en plus de donner un uuid
-func SetCookie(w http.ResponseWriter, r *http.Request) *http.Cookie {
+func SetCookie(name string, value string, w http.ResponseWriter, r *http.Request) *http.Cookie {
 
-	cookie, err := r.Cookie("Session")
+	cookie, err := r.Cookie(name)
 
 	if err != nil {
-		id := uuid.New()
-		expiration := time.Now().Add(7 * 24 * time.Hour)
+		if name == "Session" {
+			value = (uuid.New()).String()
+		}
+		expiration := time.Now().Add(5 * time.Second)
 		cookie = &http.Cookie{
-			Name:     "Session",
+			Name:     name,
 			Expires:  expiration,
-			Value:    id.String(),
+			Value:    value,
 			HttpOnly: true,
 			Path:     "/",
 		}
 		http.SetCookie(w, cookie)
 
 	}
-	fmt.Println(cookie)
 	return cookie
 
 }
 
-//dans la requête POST du serveur,
-//si le mot de passe est bon et qu'il peut login
-// func LogInCookie(w http.ResponseWriter, r *http.Request) *http.Cookie {
-// 	//on compare l'input du mot de passe avec celle de la session de l'utilisateur
-// 	cookie, err := r.Cookie("SessionToken")
+func CookieActu(w http.ResponseWriter, r *http.Request, url string) *http.Cookie {
 
-// 	if err != nil {
-// 		expiration := time.Now().Add(3 * 24 * time.Hour)
-// 		id := uuid.New()
-// 		cookie = &http.Cookie{
-// 			Name:     "SessionToken",
-// 			Value:    id.String(),
-// 			Expires:  expiration,
-// 			HttpOnly: true,
-// 			// Path: "/",
-// 		}
-// 		http.SetCookie(w, cookie)
-// 	}
+	cookie, err := r.Cookie("Reference")
 
-// 	return cookie
-// }
+	if err != nil {
+		// CookiePosts(w, r)
 
-// 	// if cookie.Value == string(user.Id) {
-// 	// 	html= `
-// 	// 	<!DOCTYPE html>
-// 	// 	<html lang="fr">
-// 	// 	<head>
-// 	// 		<meta charset="UTF-8">
-// 	// 		<title></title>
-// 	// 	</head>
-// 	// 	<body>
-// 	// 	<h1>CONNEXION</h1>
-// 	// 	<form method="post" action="/">
-// 	// 		<h3>Nom d'utilisateur</h3>
-// 	// 		<input type="text" name="pseudo">
-// 	// 		<h3>Mot de Passe</h3>
-// 	// 		<input type="text" name="mdp">
-// 	// 	</body>
-// 	// 	</html>`
-// 	// }
-// 	// io.WriteString(r, html)
-// 	return cookie
+	} else if url == cookie.Path {
 
-//log out et détruit le cookie
+	} else if url != cookie.Path {
+		cookie.Path = url
+		cookie.Value = "0"
+	}
+	return cookie
+
+}
+
+func IncCookieVal(w http.ResponseWriter, r *http.Request) *http.Cookie {
+	cookie, err := GetCookieR(w, r)
+
+	if err != nil {
+		SetCookie("Reference", "0", w, r)
+	} else {
+		val, _ := strconv.ParseInt(cookie.Value, 10, 0)
+		cookie.Value = strconv.Itoa(int(val) + 1)
+
+	}
+	return cookie
+}
+
+func GetCookieR(w http.ResponseWriter, r *http.Request) (*http.Cookie, error) {
+	cookie, err := r.Cookie("Reference")
+	return cookie, err
+
+}
+
 func DestroyCookie(w http.ResponseWriter, r *http.Request) {
-
+	fmt.Println("destroy Function")
 	// cookie, err := r.Cookie("SessionToken")
 
 	if r.URL.Path == "/logout" {
-		// expiration := time.Now().Add(365 * 24 * time.Hour)
 		cookie := &http.Cookie{
-			Name: "Session",
-			// Expires: expiration,
-			// Value: "0",
-			// HttpOnly: true,
-			// Path: "/logout",
+			Name:   "Session",
 			MaxAge: -1,
 		}
 		http.SetCookie(w, cookie)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
-	// } else {
-	// 	cookie := &http.Cookie{
-	// 		Name:   "Session",
-	// 		MaxAge: -1,
-	// 	}
-	// 	http.SetCookie(w, cookie)
-	// 	http.Redirect(w, r, "/", http.StatusSeeOther)
-	// }
 
-	// if cookie.Value == "0" {
-	// 	html= `
-	// 	<!DOCTYPE html>
-	// 	<html lang="fr">
-	// 	<head>
-	// 		<meta charset="UTF-8">
-	// 		<title></title>
-	// 	</head>
-	// 	<body>
-	// 	<h1><a href="/logout">DECONNEXION</a></h1>
-	// 	</body>
-	// 	</html>`
-	// }
-	// io.WriteString(r, html)
+	} else {
+		cookie2 := &http.Cookie{
+			Name:   "Reference",
+			MaxAge: -1,
+		}
+		http.SetCookie(w, cookie2)
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

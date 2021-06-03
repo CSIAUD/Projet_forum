@@ -15,7 +15,9 @@
         {{end}}
 </head>
 <body>
-    {{template "header" .}}
+    {{if not .Error}}
+        {{template "header" .}}
+    {{end}}
     {{template "main" .}}
 </body>
 </html>

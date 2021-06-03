@@ -4,7 +4,9 @@ import (
 	bdd "Forum/static/go/bdd"
 	cookie "Forum/static/go/cookies"
 	session "Forum/static/go/session"
-	"Forum/static/go/structs"
+	structs "Forum/static/go/structs"
+	"encoding/json"
+	"errors"
 	"fmt"
 	template "html/template"
 	"net/http"
@@ -30,7 +32,7 @@ func main() {
 	// Charger les fichiers du dossier 'static' ur le serveur :
 	fs := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	http.HandleFunc("/", redirectToIndex)
+	http.HandleFunc("/", redirectTo404)
 	http.HandleFunc("/index", index)
 	// http.Handle("/dashBoard", mwIsModo(http.HandlerFunc(dashBoard)))
 	http.HandleFunc("/banList", banList)
@@ -42,6 +44,7 @@ func main() {
 	http.HandleFunc("/search", search)
 	http.HandleFunc("/signup", signup)
 	http.HandleFunc("/tickets", tickets)
+	http.HandleFunc("/404", error404)
 
 	db.DB, err = sql.Open("sqlite3", "./SQLite/mlcData.db")
 	if err != nil {
@@ -72,13 +75,14 @@ func mwIsLoggedIn(next http.Handler) http.Handler {
 // func mwIsModo(next http.Handler) http.Handler {
 // 	session := "cookieSession"
 // 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		if (session.GetUserByCookie(w,r)).Role > 2 {
+// 		if (session.GetUserByCookie(w, r)).Role > 2 {
 // 			return
 // 		}
 
 // 		next.ServeHTTP(w, r)
 // 	})
 // }
+
 // func mwIsAdmin(next http.Handler) http.Handler {
 // 	session := "cookie"
 // 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -134,52 +138,72 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	temp := []structs.Post{}
-	post := structs.Post{}
-	user := structs.User{}
-	user.Id = 45
-	user.Username = "Cyprien"
-	user.Mail = "qsdfgs"
-	user.Avatar = "avatar.png"
-	user.SessionToken = "sdrfdudfujks"
-	user.Role = 1
-	user.Verif = 1
+	cookiePost, err := cookie.GetCookieR(w, r)
 
-	post.Id = 45
-	post.Content = "aetyzrthsgduetyuikzyae"
-	post.Date = "15H"
-	post.User = user
-	post.Categorie = "Business"
-	post.Hidden = false
-	post.Likes = 56
-	temp = append(temp, post)
+	// nbPosts := 10
+	// {page:'index', nb:0}
+	// var tab []structs.Post
 
-	user.Id = 45
-	user.Username = "zer"
-	user.Mail = "qsdfgs"
-	user.Avatar = "avatar.png"
-	user.SessionToken = "sdrfdudfujks"
-	user.Role = 1
-	user.Verif = 1
+	if err != nil {
+		cookie.SetCookie("Reference", "0", w, r)
+		cookiePost, err = cookie.GetCookieR(w, r)
+		if err == nil {
+			fmt.Println("value : ", (cookiePost).Value)
+		}
+	} else {
+		cookie.IncCookieVal(w, r)
+		cookiePost, err = cookie.GetCookieR(w, r)
+		if err == nil {
+			fmt.Println("value : ", (cookiePost).Value)
+		}
+	}
 
-	post.Id = 456
-	post.Content = "azretyuihdhj"
-	post.Date = "16H"
-	post.User = user
-	post.Categorie = "Sport"
-	post.Hidden = false
-	post.Likes = 12
+	type testCookie struct {
+		Page string
+		Nb   int
+	}
+	var cookietest testCookie
+	path := []byte("{Page:'index', Nb:0}")
+	json.Unmarshal(path, &cookietest)
+	fmt.Printf("page : %s\nnb : %d\n", cookietest.Page, cookietest.Nb)
+	// if cookie.page == url {
+	// 	cookie.nb++
+	// }
+	// for i := 0; i < cookie.nb; i++ {
+	// 	temp := db.GetNbPost(nbPosts, i)
+	// 	for j := 0; j < nbPosts; j++ {
+	// 		tab = append(tab, (*temp)[j])
+	// 	}
+	// }
 
-	temp = append(temp, post)
-	errorGestion(w, r, "index")
-	err := tmplCache["index.page.html"].Execute(w, temp)
+	var temp structs.Posts
+	temp.Posts = (*db.GetNbPost(10, 0))
+	temp.Error = false
+	err = errorGestion(w, r, "index")
+	if err != nil {
+		http.Redirect(w, r, "/404", 302)
+	} else {
+		err = tmplCache["index.page.html"].Execute(w, temp)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func redirectTo404(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/404", 302)
+}
+
+func error404(w http.ResponseWriter, r *http.Request) {
+	temp := structs.Err0r{}
+	temp.Error = true
+	errorGestion(w, r, "error")
+	err := tmplCache["error.page.html"].Execute(w, temp)
 	if err != nil {
 		panic(err)
 	}
 }
-func redirectToIndex(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/index", 302)
-}
+
 func dashBoard(w http.ResponseWriter, r *http.Request) {
 	errorGestion(w, r, "dashBoard")
 	err := tmplCache["categorie_dashboard.page.html"].Execute(w, nil)
@@ -258,27 +282,28 @@ func tickets(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func errorGestion(w http.ResponseWriter, r *http.Request, location string) {
+func errorGestion(w http.ResponseWriter, r *http.Request, location string) error {
 
-	if r.URL.Path != "/"+location {
-		http.Error(w, "404 - page not found", http.StatusNotFound)
-	}
+	// if r.URL.Path != "/"+location {
+	// 	http.Error(w, "404 - page not found", http.StatusNotFound)
+	// }
 
 	_, err := template.ParseFiles("./static/html/layout.html")
 
 	if err != nil {
 		http.Error(w, "Error 400 - Bad Request!", http.StatusBadRequest)
-		return
+		return errors.New("error")
 	}
 
 	switch r.Method {
 	case "POST":
 		if err != nil {
 			http.Error(w, "Error 500 - Internal Server Error", http.StatusInternalServerError)
-			return
+			return errors.New("error")
 		}
 	}
-	cookie.SetCookie(w, r)
+	cookie.SetCookie("Session", "", w, r)
+	return nil
 }
 
 // func loadPage(w http.ResponseWriter, r *http.Request) {

@@ -1,16 +1,19 @@
 {{template "layout" .}}
+{{define "head"}}
+    <script src="static/js/afficher.js" defer></script>
+{{end}}
 {{define "main"}}
 <div id="content1">
     <div class="box">
         <div class="sidebar">
             <div class="sidebar-content">
                 <p class="logo_container">
-                    <img class="logo" src="../img/logo.png"></p>
+                    <img class="logo" src="static/img/logo.png"></p>
                 <h3 class="desktop-only">Bienvenue sur l'onglet de récupération de votre mot de passe</h3>
                 <p class="desktop-only">
                     Nous vous conseillons de ne pas partager votre mot de passe avec d'autre utilisateurs !
                 </p>
-                <a href="login.page.html"><img class="retour" src="../img/flècheretour.png"></a>
+                <a href="login.page.html"><img class="retour" src="static/img/flècheretour.png"></a>
             </div>
         </div>
         <div class="main">
@@ -51,7 +54,7 @@
                             <label for="passwordConfirm">Confirmation du nouveau mot de passe </label>
                             <input id="passwordConfirm" type="password" tabindex="2" accesskey="m" autocomplete="off" name="passwordConfirm" value="">
                             <bouton onclick="Afficher('password')">
-                                <img id="Vue" src="../img/oeil non barre.png">
+                                <img id="Vue" src="static/img/oeil non barre.png">
                             </bouton>
                         </div>
                         <input name="submit" type="submit" class="button" tabindex="6" accesskey="l" value="S'enregistrer">

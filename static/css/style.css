@@ -3,15 +3,25 @@
     --color-post: rgb(254,240,236);
 
     --color-business: rgb(255,140,53);
-    --color-sport: rgb(33, 18, 122); 
-    --color-culture: rgb(182, 51, 84);
-    --color-loisir: rgb(228, 39, 253);
-    --color-cinema: rgb(156, 4, 4);
-    --color-gaming:rgb(148, 10, 212) ;
-    --color-animaux: rgb(109, 58, 58);
-    --color-voyage: rgb(67, 188, 245);
-    --color-sante: rgb(45, 192, 94); 
-    --color-education: rgb(206, 226, 93);
+    --color-sport: rgb(33, 18, 122,);
+    --color-culture: rgb(182, 51, 84,);
+    --color-loisir: rgb(228, 39, 253,);
+    --color-cinema: rgb(156, 4, 4,);
+    --color-gaming:rgb(148, 10, 212,);
+    --color-animaux: rgb(109, 58, 58,);
+    --color-voyage: rgb(67, 188, 245,);
+    --color-sante: rgb(45, 192, 94,);
+    --color-education: rgb(206, 226, 93,);
+    --color-business3: rgba(255,140,53,.3);
+    --color-sport3: rgba(33, 18, 122,.3);
+    --color-culture3: rgba(182, 51, 84,.3);
+    --color-loisir3: rgba(228, 39, 253,.3);
+    --color-cinema3: rgba(156, 4, 4,.3);
+    --color-gaming3:rgba(148, 10, 212,.3);
+    --color-animaux3: rgba(109, 58, 58,.3);
+    --color-voyage3: rgba(67, 188, 245,.3);
+    --color-sante3: rgba(45, 192, 94,.3);
+    --color-education3: rgba(206, 226, 93,.3);
 }
 h3 {
     display: block;
@@ -204,54 +214,76 @@ div[id^=post]:not(#posts),
     transition: all .5s ease-in-out;
     display: block;
 }
-#categories ul li a:hover{
-    transition: all 0s ease-in-out;
-    color: ivory;
+.category{
+    width: 100%;
+    text-align: right;
+    font-size: 22px;
+    margin: auto 5px 10px;
+}
+.category span{
+    border: 3px solid black;
+    border-radius: 50px;
+    padding: 0 5px;
+    width: max-content;
+}
+.category span::before {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-business);
+  filter: opacity(25%);
+  background-size: cover;
 }
 
-#cat:hover,
 .Business > span {
-    background-color: var(--color-business);
     border-color: var(--color-business);
+    background-color: var(--color-business3);
 }
-#cat2:hover,
+
 .Sport > span {
-    background-color: var(--color-sport);
     border-color: var(--color-sport);
+    background-color: var(--color-sport3);
 }
 
-#cat3:hover,
 .Culture > span {
-    background-color: var(--color-culture);
     border-color: var(--color-culture);
+    background-color: var(--color-culture3);
 }
 
-#cat4:hover {
-    background-color: var(--color-loisir);
+.Loisir > span {
+    border-color: var(--color-loisir);
+    background-color: var(--color-loisir3);
 }
 
-#cat5:hover {
-    background-color: var(--color-cinema);
+.Cinema > span {
+    border-color: var(--color-cinema);
+    background-color: var(--color-cinema3);
 }
 
-#cat6:hover {
-    background-color: var(--color-gaming);
+.Gaming > span {
+    border-color: var(--color-gaming);
+    background-color: var(--color-gaming3);
 }
 
-#cat7:hover {
-    background-color: var(--color-animaux);
+.Animaux > span {
+    border-color: var(--color-animaux);
+    background-color: var(--color-animaux3);
 }
 
-#cat8:hover {
-    background-color: var(--color-voyage);
+.Voyage > span{
+    border-color: var(--color-voyage);
+    background-color: var(--color-voyage3);
 }
 
-#cat9:hover {
-    background-color: var(--color-sante);
+.Santé > span {
+    border-color: var(--color-sante);
+    background-color: var(--color-sante3);
 }
 
-#cat10:hover {
-    background-color: var(--color-education);
+.Education > span {
+    border-color: var(--color-education);
+    background-color: var(--color-education3);
 }
 
 /* Class ================================================ */
@@ -290,27 +322,6 @@ div[id^=post]:not(#posts),
 }
 .infos p:not(.category){
     margin: auto 5px 0;
-}
-.category{
-    width: 100%;
-    text-align: right;
-    font-size: 22px;
-    margin: auto 5px 10px;
-}
-.category span{
-    border: 3px solid black;
-    border-radius: 50px;
-    padding: 0 5px;
-    width: max-content;
-}
-.category span::before {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--color-business);
-  filter: opacity(25%);
-  background-size: cover;
 }
 .container{
     width: 100%;
@@ -623,4 +634,8 @@ submit:focus {
     color: black;
     transition: color .5s linear;
     transition: background-color .5s linear;
+}
+#imgpost{
+    max-width : 100%;
+    display: block;
 }
