@@ -8,41 +8,42 @@
     <div id="menu">
         <a href="dashBoard">Statistiques</a>
         <a href="banList">BanList</a>
-        <a href="#" class="active">Tickets</a>
+        <a href="tickets" class="active">Tickets</a>
     </div>
     <div id="container" class="visible">
         <h2>Tickets</h2>
         <div id="sub-container">
             <div>
+                
                 <h3>En attente</h3>
+                {{range .Tickets}}
+                {{if eq .Ticket "0"}}
                 <ul class="list">
-                    <li class="list-elem">Je n'arrive pas à me connecter<br><span>Par Cyp</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">Le chat est fou<br><span>Par Marie-Laure</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">Ils Sont totalement tarrés<br><span>Par Lina</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">wesxdrcfvtgybh<br><span>Par azerty</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">dcfgvhbjnkertt<br><span>Par poiuytr</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">zerfcdrtyytghj<br><span>Par zedfgbn</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">ujfdsxcvghyuii<br><span>Par hgfds</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">azdfghujiokjht<br><span>Par dfghjj</span><br><span>Le 28/05/2021 à 21h30</span></li>
+                    <li class="list-elem">Catégorie : {{.Categorie}}<span>{{.Content}}</span><br><span>Par {{.User.Username}}</span><br><span>Le {{.Date}}</span></li>
+                 
                 </ul>
+                {{end}}
+                {{end}}
             </div>
             <div>
                 <h3>Ouverts</h3>
+                {{range .Tickets}}
+                {{if eq .Ticket "1"}}
                 <ul class="list">
-                    <li class="list-elem">azertgvcxs<br><span>Par azerty</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">azertyjbvb<br><span>Par poijkjhg</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">jhgvfdfghh<br><span>Par fghjhfd</span><br><span>Le 28/05/2021 à 21h30</span></li>
+                    <li class="list-elem">Ouvert par {{.OpenBy}}<span>Catégorie : {{.Categorie}}</span><span>{{.Content}}</span><br><span>Par {{.User.Username}}</span><br><span>Le {{.Date}}</span></li>
                 </ul>
+                {{end}}
+                {{end}}
             </div>
             <div>
                 <h3>Fermés</h3>
+                {{range .Tickets}}
+                {{if eq .Ticket "2"}}
                 <ul class="list">
-                    <li class="list-elem">qsdrftyghjhgf<br><span>Par zerty</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">zertghgfd<br><span>Par zertgfd</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">zertgfdz<br><span>Par zertgf</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">zertyuiolkjh<br><span>Par zergf</span><br><span>Le 28/05/2021 à 21h30</span></li>
-                    <li class="list-elem">zsdfb<br><span>Par zertg</span><br><span>Le 28/05/2021 à 21h30</span></li>
+                    <li class="list-elem">Fermé par {{.OpenBy}}<span>Catégorie : {{.Categorie}}</span><span>{{.Content}}</span><br><span>Par {{.User.Username}}</span><br><span>Le {{.Date}}</span></li>
                 </ul>
+                {{end}}
+                {{end}}
             </div>
         </div>
     </div>

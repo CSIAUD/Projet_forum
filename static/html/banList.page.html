@@ -13,16 +13,25 @@
     </div>
     <div id="container" class="visible">
         <h2>Banlist</h2>
+        {{.BanLists}}
+        {{range .BanLists}}
         <div class="userBan">
-            <h3 class="banDef">User1 (3)</h3>
+            <h3 {{if eq .BanDef "1" }}class="banDef"{{end}}>{{.User.Username}}</h3>
             <ul class="banList">
-                <li>Ban définitif depuis le 25/05/2021<br><span class="raison">Raison: Tu sers à rien</span></li>
-                <li>Du 01/02/2021 au 15/02/2021<br><span class="raison">Raison: Pas beau</span></li>
-                <li>Du 20/05/2021 au 25/05/2021<br><span class="raison">Raison: Je fais ce que je veux</span></li>
+                <li>{{if .BanDef}}
+                        {{.BanDef}} depuis le {{.StartDate}} 
+                    {{else}} 
+                        Du {{.StartDate}} au {{.EndDate}} 
+                    {{end}}
+                    <br><span class="parki"> Par {{.BannedBy.Username}}</span>
+                    <span class="raison">Raison: {{.Raison}}</span></li>
+                <!-- <li>Du 01/02/2021 au 15/02/2021<br><span class="raison">Raison: Pas beau</span></li>
+                <li>Du 20/05/2021 au 25/05/2021<br><span class="raison">Raison: Je fais ce que je veux</span></li> -->
             </ul>
             <div></div>
         </div>
-        <div class="userBan">
+        {{end}}
+        <!-- <div class="userBan">
             <h3>User2 (2)</h3>
             <ul class="banList">
                 <li>Du 20/05/2021 au 25/05/2021<br><span class="raison">Raison: Je fais ce que je veux</span></li>
@@ -46,7 +55,7 @@
                 <li>Du 20/05/2021 au 25/05/2021<br><span class="raison">Raison: Je fais ce que je veux</span></li>
             </ul>
             <div></div>
-        </div>
+        </div> -->
     </div>
 </main>
 

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Stacked Bar Chart</title>
+<link rel="stylesheet" type="text/css" href="./inspector.css">
+<body>
+    <div id="testsWeek"></div>
+    <div id="testsMonth"></div>
+    <div id="testsAll"></div>
+    <script type="module">
+
+        import Weekdefine from "./week.js";
+        import {Runtime, Library, Inspector} from "./runtime.js";
+
+        const weekruntime = new Runtime();
+        const weekmain = weekruntime.module(Weekdefine, Inspector.into(document.getElementById("testsWeek")));
+
+
+        import Monthdefine from "./month.js";
+
+        const monthruntime = new Runtime();
+        const monthmain = monthruntime.module(Monthdefine, Inspector.into(document.getElementById("testsMonth")));
+
+
+        import Alldefine from "./all.js";
+
+        const allruntime = new Runtime();
+        const allmain = allruntime.module(Alldefine, Inspector.into(document.getElementById("testsAll")));
+
+    </script>

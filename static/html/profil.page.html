@@ -8,22 +8,16 @@
 
     </div>
     <div id="profil">
-        <div class="container_Badges">
+        <div class="container_badges">
             <div class="badges">
                 <figure>
                     <h3 id="badgesH3">Badges :</h3>
                     <figcaption>
+                        {{range .Badge}}
                         <ul id="NbrBadges">
-                            <li>Badges 1</li>
-                            <li>Badges 2</li>
-                            <li>Badges 3</li>
-                            <li>Badges 1</li>
-                            <li>Badges 2</li>
-                            <li>Badges 3</li>
-                            <li>Badges 1</li>
-                            <li>Badges 2</li>
-                            <li>Badges 3</li>
+                            <li><img class="BadgeImage" src="{{.Badge .Image}}"/> {{.Badges .Name}}</li>
                         </ul>
+                        {{end}}
                     </figcaption>
                     
                 </figure>
@@ -31,22 +25,22 @@
             </div>
         </div>
         
-        <div id="container_vatar">
+        <div id="avatar_profil">
 
             <div class="avatar_Profil">
                 <figure>
-                    <img id="avatar_profil" src="static/img/avatar.png" >
-                    <figcaption id="nameuser">
-                        {{.Username}}                        
+                    {{range .Badge}}
+                    <img id="avatar_profil" src="{{.User .Avatar}}"/>
+                    {{end}}
+                    <figcaption id="nameuser">                      
                     </figcaption>
                 </figure>
             </div>
         </div>
         <div id="menu">
-            <a href="postsmedia" class="active">Posts Media</a>
-            <a href="posts" >Posts</a>
-            <a href="infos">Infos</a>
+            <a id="menu1" href="posts_media">Posts Media</a>
+            <a id="menu2" href="posts" >Posts</a>
+            <a id="menu3" href="infos">Infos</a>
     </div>
 </main>
-
 {{end}}

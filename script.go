@@ -11,13 +11,14 @@ import (
 	template "html/template"
 	"net/http"
 	"path/filepath"
+	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
 
 	// "io/iutil"
 	// "log"
 	// "time
-	// guuidgitub.com/google/uuid"
+
 	// "net/ul"
 	"database/sql"
 )
@@ -27,23 +28,28 @@ var db bdd.MyDB
 
 func main() {
 	var err error
-	tmplCache, _ = newTemplateCache("./static/html/")
+	tmplCache, err = newTemplateCache("./static/html/")
+	if err != nil {
+		fmt.Printf("Cache Error : %s\n", err)
+	}
 
 	// Charger les fichiers du dossier 'static' ur le serveur :
 	fs := http.FileServer(http.Dir("./static/"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	http.HandleFunc("/", redirectTo404)
 	http.HandleFunc("/index", index)
-	// http.Handle("/dashBoard", mwIsModo(http.HandlerFunc(dashBoard)))
+	http.Handle("/dashBoard", http.HandlerFunc(dashBoard))
 	http.HandleFunc("/banList", banList)
-	http.HandleFunc("/login", login)
 	http.HandleFunc("/comment", comment)
 	http.HandleFunc("/recupMdp", recupMdp)
 	http.HandleFunc("/post", post)
-	http.HandleFunc("/profil", profil)
+	http.Handle("/profil", http.HandlerFunc(profil))
 	http.HandleFunc("/search", search)
-	http.HandleFunc("/signup", signup)
 	http.HandleFunc("/tickets", tickets)
+	http.HandleFunc("/signup", signup)
+	http.HandleFunc("/login", login)
+	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/404", error404)
 
 	db.DB, err = sql.Open("sqlite3", "./SQLite/mlcData.db")
@@ -51,7 +57,6 @@ func main() {
 		panic(err)
 	}
 	defer db.DB.Close()
-	// tests()
 
 	if err != nil {
 		panic(err)
@@ -59,40 +64,63 @@ func main() {
 	fmt.Println("===========================")
 	fmt.Println(tmplCache)
 	fmt.Println("===========================")
+	// tests()
 
 	fmt.Println("Listening server at port 8000")
 	http.ListenAndServe("localhost:8000", nil)
 }
 
-func mwIsLoggedIn(next http.Handler) http.Handler {
+func mwIsLogged(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("Executing middlewareOne")
+		_, err := session.GetUserByCookie(db, w, r)
+		if err != nil {
+			return
+		}
+		InitialCookie(w, r)
 		next.ServeHTTP(w, r)
-		fmt.Println("Executing middlewareOne again")
+	})
+}
+func mwIsNotLogged(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Executing middlewareLogin")
+		next.ServeHTTP(w, r)
+		fmt.Println("Executing middlewareLogin again")
 	})
 }
 
-// func mwIsModo(next http.Handler) http.Handler {
-// 	session := "cookieSession"
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		if (session.GetUserByCookie(w, r)).Role > 2 {
-// 			return
-// 		}
+func mwIsModo(next http.Handler) http.Handler {
+	modoId := 2
 
-// 		next.ServeHTTP(w, r)
-// 	})
-// }
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		user, err := session.GetUserByCookie(db, w, r)
+		fmt.Println(user)
+		fmt.Println(user.Role)
+		if err != nil {
+			fmt.Println(err)
+			return
+		} else if user.Role > modoId {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println("ok")
 
-// func mwIsAdmin(next http.Handler) http.Handler {
-// 	session := "cookie"
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		if (session.GetUserByCookie(w, r)).Role > 1 {
-// 			return
-// 		}
+		next.ServeHTTP(w, r)
+	})
+}
 
-// 		next.ServeHTTP(w, r)
-// 	})
-// }
+func mwIsAdmin(next http.Handler) http.Handler {
+	adminId := 1
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		user, err := session.GetUserByCookie(db, w, r)
+		if err != nil {
+			return
+		} else if user.Role > adminId {
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
 
 func newTemplateCache(dir string) (map[string]*template.Template, error) {
 	// Initialize a new map to act as the cahe.
@@ -138,25 +166,22 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	cookiePost, err := cookie.GetCookieR(w, r)
+	// InitialCookie(w, r)
+	// cookiePost, err := cookie.GetCookie("Reference", w, r)
 
-	// nbPosts := 10
-	// {page:'index', nb:0}
-	// var tab []structs.Post
-
-	if err != nil {
-		cookie.SetCookie("Reference", "0", w, r)
-		cookiePost, err = cookie.GetCookieR(w, r)
-		if err == nil {
-			fmt.Println("value : ", (cookiePost).Value)
-		}
-	} else {
-		cookie.IncCookieVal(w, r)
-		cookiePost, err = cookie.GetCookieR(w, r)
-		if err == nil {
-			fmt.Println("value : ", (cookiePost).Value)
-		}
-	}
+	// if err != nil {
+	// 	cookie.SetCookie("Reference", "0", w, r)
+	// 	cookiePost, err = cookie.GetCookie("Reference", w, r)
+	// 	if err == nil {
+	// 		fmt.Println("value : ", (cookiePost).Value)
+	// 	}
+	// } else {
+	// 	cookie.IncCookieVal(w, r)
+	// 	cookiePost, err = cookie.GetCookie("Reference", w, r)
+	// 	if err == nil {
+	// 		fmt.Println("value : ", (cookiePost).Value)
+	// 	}
+	// }
 
 	type testCookie struct {
 		Page string
@@ -165,7 +190,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	var cookietest testCookie
 	path := []byte("{Page:'index', Nb:0}")
 	json.Unmarshal(path, &cookietest)
-	fmt.Printf("page : %s\nnb : %d\n", cookietest.Page, cookietest.Nb)
+	// fmt.Printf("page : %s\nnb : %d\n", cookietest.Page, cookietest.Nb)
 	// if cookie.page == url {
 	// 	cookie.nb++
 	// }
@@ -179,7 +204,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 	var temp structs.Posts
 	temp.Posts = (*db.GetNbPost(10, 0))
 	temp.Error = false
-	err = errorGestion(w, r, "index")
+	user, err := session.GetUserByCookie(db, w, r)
+	if err != nil {
+		temp.User = structs.User{}
+	} else {
+		temp.User = user
+	}
+	err = errorGestion(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/404", 302)
 	} else {
@@ -191,103 +222,196 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func redirectTo404(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/404", 302)
+	if r.URL.Path == "/" {
+		http.Redirect(w, r, "/index", 302)
+	} else {
+		http.Redirect(w, r, "/404", 302)
+	}
 }
 
 func error404(w http.ResponseWriter, r *http.Request) {
 	temp := structs.Err0r{}
 	temp.Error = true
-	errorGestion(w, r, "error")
+	errorGestion(w, r)
 	err := tmplCache["error.page.html"].Execute(w, temp)
 	if err != nil {
 		panic(err)
 	}
 }
 
+func logout(w http.ResponseWriter, r *http.Request) {
+	session.LogOut(w, r)
+}
 func dashBoard(w http.ResponseWriter, r *http.Request) {
-	errorGestion(w, r, "dashBoard")
-	err := tmplCache["categorie_dashboard.page.html"].Execute(w, nil)
+	errorGestion(w, r)
+	err := tmplCache["categorie_dashboard.page.html"].Execute(w, structs.Err0r{})
 	if err != nil {
 		panic(err)
 	}
 }
 func banList(w http.ResponseWriter, r *http.Request) {
-	errorGestion(w, r, "banList")
-	err := tmplCache["banList.page.html"].Execute(w, nil)
+	ban := structs.BanLists{}
+
+	ban.BanLists = (*db.GetAllBans())
+	ban.Error = false
+	err := errorGestion(w, r)
 	if err != nil {
-		panic(err)
+		http.Redirect(w, r, "/404", 302)
+	} else {
+		err := tmplCache["banList.page.html"].Execute(w, ban)
+		if err != nil {
+			panic(err)
+		}
 	}
+
 }
 func login(w http.ResponseWriter, r *http.Request) {
+	temp := structs.Err0r{}
+	user, err := session.GetUserByCookie(db, w, r)
+	if err != nil {
+		temp.User = structs.User{}
+	} else {
+		temp.User = user
+	}
 	mail := r.FormValue("mail")
 	pass := r.FormValue("password")
 	if mail != "" {
 		session.LogIn(mail, pass, db, w, r)
 		fmt.Println("sdklfjghj")
 	}
-	errorGestion(w, r, "login")
-	err := tmplCache["login.page.html"].Execute(w, nil)
+	errorGestion(w, r)
+	err = tmplCache["login.page.html"].Execute(w, temp)
 	if err != nil {
 		panic(err)
 	}
 }
 func comment(w http.ResponseWriter, r *http.Request) {
-	errorGestion(w, r, "comment")
-	err := tmplCache["comment.page.html"].Execute(w, nil)
-	if err != nil {
-		panic(err)
+	var com structs.Commentaires
+	// post := structs.Post{}
+	// like := structs.PostLike{}
+
+	keys, ok := r.URL.Query()["id"]
+	if !ok || len(keys[0]) < 1 {
+		fmt.Println("Url Param 'key' is missing")
 	}
+
+	clef := keys[0]
+	fmt.Println(clef)
+	idPost, err := strconv.Atoi(clef)
+	if err != nil {
+		fmt.Printf("Convert key error : %s", err)
+	}
+
+	//mettre l'id du post dans l'url pour pouvoir ensuite le récupérer et le mettre en argument dans les fonctions pour get
+	// -> quand on clique sur le post, on transmet l'id du post liés à ses commentaires pour les afficher
+	com.Commentaires = (*db.GetComment(idPost))
+	com.Error = false
+	// like = (*db.GetPostLike(idPost))
+	// post = (*db.GetPost(idPost))
+	err = errorGestion(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/404", 302)
+	} else {
+		fmt.Println("T3mPl4t3")
+		err = tmplCache["comment.page.html"].Execute(w, structs.Err0r{})
+		if err != nil {
+			panic(err)
+		}
+	}
+
 }
 func recupMdp(w http.ResponseWriter, r *http.Request) {
-	errorGestion(w, r, "mdp")
-	err := tmplCache["mdp.page.html"].Execute(w, nil)
+	errorGestion(w, r)
+	err := tmplCache["mdp.page.html"].Execute(w, structs.Err0r{})
 	if err != nil {
 		panic(err)
 	}
 }
 func post(w http.ResponseWriter, r *http.Request) {
 
-	errorGestion(w, r, "posts")
-	err := tmplCache["posts.page.html"].Execute(w, nil)
+	err := errorGestion(w, r)
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = tmplCache["posts.page.html"].Execute(w, structs.Err0r{})
 	if err != nil {
 		panic(err)
 	}
 }
 func profil(w http.ResponseWriter, r *http.Request) {
-	errorGestion(w, r, "profil")
-	err := tmplCache["profil.page.html"].Execute(w, nil)
+	var badge structs.BadgeUser
+	// var badges []structs.Badge
+	err := errorGestion(w, r)
+	if err != nil {
+		fmt.Println(err)
+	}
+	user, _ := session.GetUserByCookie(db, w, r)
+	temp := db.GetBadgeUser(user)
+	badge.User = temp.User
+	badge.Badges = temp.Badges
+	badge.Error = false
+
+	err = tmplCache["profil.page.html"].Execute(w, temp)
 	if err != nil {
 		panic(err)
 	}
 }
 func search(w http.ResponseWriter, r *http.Request) {
-	errorGestion(w, r, "search")
-	err := tmplCache["research.page.html"].Execute(w, nil)
+	errorGestion(w, r)
+	err := tmplCache["research.page.html"].Execute(w, structs.Err0r{})
 	if err != nil {
 		panic(err)
 	}
 }
 func signup(w http.ResponseWriter, r *http.Request) {
-	errorGestion(w, r, "signup")
-	err := tmplCache["signup.page.html"].Execute(w, nil)
+	errorGestion(w, r)
+	err := tmplCache["signup.page.html"].Execute(w, structs.Err0r{})
 	if err != nil {
 		panic(err)
 	}
 }
 func tickets(w http.ResponseWriter, r *http.Request) {
-	errorGestion(w, r, "tickets")
-	err := tmplCache["tickets.page.html"].Execute(w, nil)
+	var ticket structs.Tickets
+
+	ticket.Tickets = (*db.GetAllTickt())
+	ticket.Error = false
+	err := errorGestion(w, r)
+	if err != nil {
+		fmt.Println(err)
+	}
+	err = tmplCache["tickets.page.html"].Execute(w, structs.Err0r{})
 	if err != nil {
 		panic(err)
 	}
 }
 
-func errorGestion(w http.ResponseWriter, r *http.Request, location string) error {
+func InitialCookie(w http.ResponseWriter, r *http.Request) {
+	cookiePost, err := cookie.GetCookie("Session", w, r)
 
-	// if r.URL.Path != "/"+location {
-	// 	http.Error(w, "404 - page not found", http.StatusNotFound)
-	// }
+	if err != nil {
+		cookie.SetCookie("Session", "0", w, r)
+		cookiePost, err = cookie.GetCookie("Session", w, r)
+		if err == nil {
+			fmt.Println("value : ", (cookiePost).Value)
+		}
+	} else {
+		if cookiePost.Value == "0" {
+			cookie.SetCookie("Session", "0", w, r)
+			cookiePost, err = cookie.GetCookie("Session", w, r)
+			if err == nil {
+				fmt.Println("value : ", (cookiePost).Value)
+			}
+		} else {
+			cookie.IncCookieVal(w, r)
+			cookiePost, err = cookie.GetCookie("Session", w, r)
+			if err == nil {
+				fmt.Println("value : ", (cookiePost).Value)
+			}
+		}
+	}
+}
 
+func errorGestion(w http.ResponseWriter, r *http.Request) error {
 	_, err := template.ParseFiles("./static/html/layout.html")
 
 	if err != nil {
@@ -302,7 +426,11 @@ func errorGestion(w http.ResponseWriter, r *http.Request, location string) error
 			return errors.New("error")
 		}
 	}
-	cookie.SetCookie("Session", "", w, r)
+	_, err = r.Cookie("Session")
+	if err != nil {
+		cookie.SetCookie("Session", "", w, r)
+	}
+	fmt.Println("404 => ", err)
 	return nil
 }
 
@@ -359,16 +487,16 @@ func errorGestion(w http.ResponseWriter, r *http.Request, location string) error
 // 	// tmpl.Execute(w, nil)
 // }
 func tests() {
-	// username : "cyp"
-	// mail := "csiaud83gmail.com"
-	// mdp := "Ynov"
-	// avatar := "lehat.png"
-	// err := db.CreateUser(uername, mail, mdp, avatar)
+	username := "cyp83"
+	mail := "csiaud83@gmail.com"
+	mdp := "YnovAix13100#"
+	avatar := "lechat.png"
+	err := db.CreateUser(username, mail, mdp, avatar)
 
-	// if err != nil {
-	// 	fmt.Println("Uername / Mail déjà utilisé")
-	// } else {
-	// 	fmt.Pritln("Bienvenue dans la secte")
-	// }
+	if err != nil {
+		fmt.Println("Uername / Mail déjà utilisé")
+	} else {
+		fmt.Println("Bienvenue dans la secte")
+	}
 	fmt.Println(db.GetUser(8))
 }

@@ -4,11 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 
-	// "fmt"
 	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
-	// "strconv"
+
 	structs "Forum/static/go/structs"
 	"time"
 
@@ -24,7 +23,7 @@ type MyDB struct {
 const userRole = 3
 const hashCost = 1
 
-//===================================================================================================
+//==================================================================================================
 func (m MyDB) CreateCommentLike(userid int, commentid int, vote int) bool {
 	stmt, err := m.DB.Prepare("INSERT INTO commentLike(user_id, comment_id, vote) values(?,?,?)")
 	checkErr(err)
@@ -59,12 +58,12 @@ func (m MyDB) GetCommentLike(id int) *[]structs.CommentLike {
 	commentLike := structs.CommentLike{}
 	tab := []structs.CommentLike{}
 
+	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(commentLike.UserId, &commentLike.CommentaireId, &commentLike.Vote)
 		checkErr(err)
 		tab = append(tab, commentLike)
 	}
-	rows.Close()
 
 	return &tab
 }
@@ -98,22 +97,23 @@ func (m MyDB) DeletePostLike(id int) bool {
 	return true
 }
 func (m MyDB) GetPostLike(id int) *[]structs.PostLike {
-	rows, err := m.DB.Query("SELECT user_id, comment_id, vote FROM postLike where id=?", id)
+	rows, err := m.DB.Query("SELECT user_id, comment_id, sum(vote) FROM postLike group by post_id where id=?", id)
 	checkErr(err)
 	postLike := structs.PostLike{}
 	tab := []structs.PostLike{}
 
+	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(postLike.UserId, &postLike.PostId, &postLike.Vote)
 		checkErr(err)
 		tab = append(tab, postLike)
 	}
-	rows.Close()
 
 	return &tab
+
 }
 
-//===================================================================================================
+//==================================================================================================
 func (m MyDB) AddBadgeUser(user_id int, badge_id int) bool {
 	stmt, err := m.DB.Prepare("INSERT INTO badgeUser(user_id, badge_id) values(?,?)")
 	checkErr(err)
@@ -132,20 +132,21 @@ func (m MyDB) DeleteBadgeUser(id int) bool {
 
 	return true
 }
-func (m MyDB) GetBadgeUser(id int) *[]structs.BadgeUser {
-	rows, err := m.DB.Query("SELECT user_id, badge_id FROM badgeUser where id=?", id)
+func (m MyDB) GetBadgeUser(user structs.User) *structs.BadgeUser {
+	rows, err := m.DB.Query("SELECT badge_id FROM badgeUser where user_id=?", user.Id)
 	checkErr(err)
 	badgeUser := structs.BadgeUser{}
-	tab := []structs.BadgeUser{}
+	badgeUser.User = user
+	var badge int
 
+	defer rows.Close()
 	for rows.Next() {
-		err = rows.Scan(badgeUser.UserId, &badgeUser.BadgeId)
+		err = rows.Scan(&badge)
+		badgeUser.Badges = append(badgeUser.Badges, (*m.GetBadge(badge)))
 		checkErr(err)
-		tab = append(tab, badgeUser)
 	}
-	rows.Close()
 
-	return &tab
+	return &badgeUser
 }
 
 func (m MyDB) GetBadge(id int) *structs.Badge {
@@ -153,11 +154,11 @@ func (m MyDB) GetBadge(id int) *structs.Badge {
 	checkErr(err)
 	temp := structs.Badge{}
 
+	defer rows.Close()
 	if rows.Next() {
 		err = rows.Scan(&temp.Name, &temp.Image)
 		checkErr(err)
 	}
-	rows.Close()
 
 	return &temp
 }
@@ -167,6 +168,7 @@ func (m MyDB) GetAuth(id int) string {
 	checkErr(err)
 	var name string
 
+	defer rows.Close()
 	if rows.Next() {
 		err = rows.Scan(&name)
 		checkErr(err)
@@ -180,6 +182,7 @@ func (m MyDB) GetRole(id int) string {
 	checkErr(err)
 	var name string
 
+	defer rows.Close()
 	if rows.Next() {
 		err = rows.Scan(&name)
 		checkErr(err)
@@ -188,7 +191,7 @@ func (m MyDB) GetRole(id int) string {
 	return name
 }
 
-//===================================================================================================
+//==================================================================================================
 func (m MyDB) Ban(endDate int, raison string, user_id int, bannedBy int) bool {
 	stmt, err := m.DB.Prepare("INSERT INTO banList(endDate, raison, bannedBy, userid) values(?,?,?,?)")
 	checkErr(err)
@@ -207,49 +210,75 @@ func (m MyDB) BanDef(raison string, user_id int, bannedBy int) bool {
 
 	return true
 }
-func (m MyDB) UnBan(user_id int) bool {
-	rows, err := m.DB.Query("SELECT id, startDate, raison, banDef, user_id, bannedBy FROM banList where user_id=? ORDER BY startDate desc LIMIT 1", user_id)
-	checkErr(err)
-	ban := structs.BanList{}
 
-	if rows.Next() {
-		err = rows.Scan(&ban.Id, &ban.StartDate, &ban.Raison, &ban.BanDef, &ban.UserId, &ban.BannedBy)
-		checkErr(err)
-	}
-	rows.Close()
+// func (m MyDB) UnBan(user_id int) bool {
+// 	rows, err := m.DB.Query("SELECT id, startDate, raison, banDef, user_id, bannedBy FROM banList where user_id=? ORDER BY startDate desc LIMIT 1", user_id)
+// 	checkErr(err)
+// 	ban := structsBanList{}
+// 	var userid int
+// 	var bannedBy int
 
-	stmt, err := m.DB.Prepare("delete from banList where id=?")
-	checkErr(err)
+// 	if rows.Next() {
+// 		err = rows.Scan(&ban.Id, &ban.StartDae, &ban.Raison, &ban.BanDef, userid, bannedBy)
+// 		ban.BannedBy = *(m.GetUser(banndBy))
+// 		ban.User = *(.GetUser(userid))
+// 		heckErr(err)
+// 	}
+// 	rows.Close()
 
-	_, err = stmt.Exec((&ban).Id)
-	checkErr(err)
+// 	stmt, err := m.DB.Prepare("delete from banList where id=?")
+// 	checkErr(err)
 
-	stmt, err = m.DB.Prepare("INSERT INTO banList(startDate, raison, user_id, bannedBy) values(?,?,?,?)")
-	checkErr(err)
+// 	_, err = stmtExec((&ban).Id)
+//	checkErr(err)
 
-	_, err = stmt.Exec((&ban).StartDate, (&ban).Raison, (&ban).UserId, (&ban).BannedBy)
-	checkErr(err)
+// 	stmt, err = mDB.Prepare("INSERT INTO banList(startDate, raison, user_id, bannedBy) values(?,?,?,?)")
+// 	checkErr(err)
 
-	return true
-}
+// 	_, err = stmtExec((&ban).StartDate, (&ban).Raison, (&ban).UserId, (&ban).BannedBy)
+// 	checkErr(err)
+
+// 	eturn true
+// }
 func (m MyDB) GetBannedUser(user_id int) *[]structs.BanList {
 	rows, err := m.DB.Query("SELECT id,startDate,endDate,raison,anDef,bannedBy,user_id FROM banList where user_id=$1 ORDER BY startDate desc", user_id)
 	checkErr(err)
 
 	ban := structs.BanList{}
 	banList := []structs.BanList{}
+	var userid int
 
+	defer rows.Close()
 	for rows.Next() {
-		err = rows.Scan(ban.Id, &ban.StartDate, &ban.EndDate, &ban.Raison, &ban.BanDef, &ban.BannedBy, &ban.UserId)
+		err = rows.Scan(ban.Id, &ban.StartDate, &ban.EndDate, &ban.Raison, &ban.BanDef, &ban.BannedBy, &userid)
 		checkErr(err)
 		banList = append(banList, ban)
 	}
-	rows.Close()
 
 	return &banList
 }
 
-//===================================================================================================
+func (m MyDB) GetAllBans() *[]structs.BanList {
+	tik := structs.BanList{}
+	tab := []structs.BanList{}
+	rows, err := m.DB.Query("SELECT t.startdate, t.enddate, t.raison, t.bandef, t.bannedby, user_id FROM banlist t LEFT JOIN users u ON t.user_id=u.id ORDER BY t.StartDate ASC")
+	checkErr(err)
+	var bannedby int
+	var user int
+
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&tik.StartDate, &tik.EndDate, &tik.Raison, &tik.BanDef, &bannedby, &user)
+		checkErr(err)
+		tik.BannedBy = (*(m.GetUser(bannedby)))
+		tik.User = (*(m.GetUser(user)))
+		tab = append(tab, tik)
+	}
+
+	return &tab
+}
+
+//==================================================================================================
 func (m MyDB) CreateUser(username string, mail string, mdp string, avatar string) error {
 	rows, err := m.DB.Query("SELECT id FROM users where username like ?", username)
 	checkErr(err)
@@ -276,7 +305,7 @@ func (m MyDB) CreateUser(username string, mail string, mdp string, avatar string
 
 	return nil
 }
-func (m MyDB) UpdateUser(username string, mail string, avatar string, id int) bool {
+func (m MyDB) UpdasteUser(username string, mail string, avatar string, id int) bool {
 	stmt, err := m.DB.Prepare("update users set uername=?, mail=?, avatar=? where id=?")
 	checkErr(err)
 
@@ -309,17 +338,31 @@ func (m MyDB) GetUser(id int) *structs.User {
 	checkErr(err)
 	user := structs.User{}
 
+	defer rows.Close()
 	if rows.Next() {
 		err = rows.Scan(&user.Id, &user.Username, &user.Mail, &user.Avatar, &user.Verif)
 		checkErr(err)
 	}
 	return &user
 }
+func (m MyDB) GetUserBySession(token string) *structs.User {
+	rows, err := m.DB.Query("SELECT id,username,mail,avatar,role_id,verified FROM users where sessionToken=?", token)
+	checkErr(err)
+	user := structs.User{}
+
+	defer rows.Close()
+	if rows.Next() {
+		err = rows.Scan(&user.Id, &user.Username, &user.Mail, &user.Avatar, &user.Role, &user.Verif)
+		checkErr(err)
+	}
+	return &user
+}
 func (m MyDB) UserExist(mail string) bool {
 	fmt.Println(m)
-	rows, err := m.DB.Query("SELECT * FROM users where id=8")
+	rows, err := m.DB.Query("SELECT * FROM users where mail=?", mail)
+
 	defer rows.Close()
-	fmt.Println("mail2 : ", mail)
+	fmt.Println("mal2 : ", mail)
 	if err != nil {
 		return false
 	}
@@ -334,6 +377,7 @@ func (m MyDB) UserVerified(mail string) bool {
 	var verif int
 
 	checkErr(err)
+	defer rows.Close()
 	if rows.Next() {
 		err = rows.Scan(&verif)
 		checkErr(err)
@@ -344,7 +388,7 @@ func (m MyDB) UserVerified(mail string) bool {
 	return false
 }
 
-//==================================================================================================================
+//=================================================================================================================
 func (m MyDB) CreatePost(content string, userID int, categorieID int) bool {
 
 	stmt, err := m.DB.Prepare("INSERT INTO posts(content, user_id, categorie_id) values(?,?,?)")
@@ -374,7 +418,7 @@ func (m MyDB) DeletePost(id int) bool {
 	// stmt, err := m.DB.Prepare("delete from posts where id=?")
 	// checkErr(err)
 
-	// _, err = stmt.Exec(id)
+	// _, err = stmtExec(id)
 	// checkErr(err)
 
 	return true
@@ -387,14 +431,13 @@ func (m MyDB) GetPost(uid int) *structs.Post {
 	var date int
 	var cat int
 
+	defer rows.Close()
 	if rows.Next() {
 		err = rows.Scan(&post.Id, &post.Content, &date, &cat, &post.Hidden, &post.User.Id, &post.User.Username, &post.User.Avatar)
 		post.Date = m.DateConversion(date)
 		post.Categorie = m.GetCategory(cat)
 		checkErr(err)
 	}
-	rows.Close()
-
 	return &post
 }
 func (m MyDB) GetNbPost(limit int, offset int) *[]structs.Post {
@@ -407,6 +450,7 @@ func (m MyDB) GetNbPost(limit int, offset int) *[]structs.Post {
 	var cat int
 	var date int
 
+	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(&post.Id, &post.Content, &date, &cat, &post.Hidden, &post.User.Id, &post.User.Username, &post.User.Avatar)
 		checkErr(err)
@@ -414,7 +458,6 @@ func (m MyDB) GetNbPost(limit int, offset int) *[]structs.Post {
 		post.Date = m.DateConversion(date)
 		tab = append(tab, post)
 	}
-	rows.Close()
 
 	return &tab
 }
@@ -464,18 +507,18 @@ func (m MyDB) GetComment(uid int) *[]structs.Commentaire {
 	var date int
 
 	checkErr(err)
+	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(&comment.Id, &comment.Content, &date, &comment.User.Id, &comment.User.Username, &comment.User.Avatar)
 		comment.Date = m.DateConversion((date))
 		checkErr(err)
 		tab = append(tab, comment)
 	}
-	rows.Close()
 
 	return &tab
 }
 
-//==============================================================================================
+//=============================================================================================
 func (m MyDB) CreateCategory(name string) bool {
 	stmt, err := m.DB.Prepare("INSERT INTO categories(name) values(?)")
 	checkErr(err)
@@ -509,6 +552,7 @@ func (m MyDB) GetCategory(id int) string {
 	checkErr(err)
 	var name string
 
+	defer rows.Close()
 	if rows.Next() {
 		err = rows.Scan(&name)
 		checkErr(err)
@@ -548,7 +592,7 @@ func (m MyDB) CloseTicket(id int) bool {
 
 	return true
 }
-func (m MyDB) GetAllTicket() *[]structs.Ticket {
+func (m MyDB) GetAllTickt() *[]structs.Ticket {
 	tik := structs.Ticket{}
 	tab := []structs.Ticket{}
 	rows, err := m.DB.Query("SELECT t.id, t.content, t.date, t.etat, t.categorie_id, t.openBy, u.id user FROM tickets t LEFT JOIN users u ON t.user_id=u.id ORDER BY date ASC")
@@ -556,6 +600,7 @@ func (m MyDB) GetAllTicket() *[]structs.Ticket {
 	var openBy int
 	var user int
 
+	defer rows.Close()
 	for rows.Next() {
 		err = rows.Scan(&tik.Id, &tik.Content, &tik.Date, &tik.Etat, &tik.Categorie, &openBy, &user)
 		checkErr(err)
@@ -563,56 +608,55 @@ func (m MyDB) GetAllTicket() *[]structs.Ticket {
 		tik.OpenBy = *(m.GetUser(openBy))
 		tab = append(tab, tik)
 	}
-	rows.Close()
 
 	return &tab
-
 }
-func (m MyDB) GetTicket(tid int) *structs.Ticket {
+func (m MyDB) GetTicket(id int) *structs.Ticket {
 	tik := structs.Ticket{}
-	rows, err := m.DB.Query("SELECT t.id, t.content, t.date, t.etat, t.categorie_id, t.openBy, u.id user FROM tickets t LEFT JOIN users u ON t.user_id=u.id WHERE t.id=? ORDER BY date ASC", tid)
+	rows, err := m.DB.Query("SELECT t.id, t.content, t.date, t.etat, t.categorie_id, t.openBy, u.id user FROM tickets t LEFT JOIN users u ON t.user_id=u.id WHERE t.id=? ORDER BY date ASC", id)
 	checkErr(err)
 	var openBy int
 	var user int
 
+	defer rows.Close()
 	if rows.Next() {
 		err = rows.Scan(&tik.Id, &tik.Content, &tik.Date, &tik.Etat, &tik.Categorie, &openBy, &user)
 		checkErr(err)
-		tik.User = *(m.GetUser(user))
-		tik.OpenBy = *(m.GetUser(openBy))
+		tik.User = (*m.GetUser(user))
+		tik.OpenBy = (*m.GetUser(openBy))
 	}
-	rows.Close()
 
 	return &tik
-
 }
 
-//==============================================================================
+//=============================================================================
 func hashMdp(mdp string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(mdp), hashCost)
 	return string(bytes), err
 }
-func (m MyDB) CompareMdp(password string, mail string) (error, int) {
+func (m MyDB) CompareMdp(password string, mail string) (int, error) {
 	id := 0
-	rows, err := m.DB.Query("SELECT mdp FROM users where mail=?", mail)
+	rows, err := m.DB.Query("SELECT id, mdp FROM users where mail=?", mail)
 	defer rows.Close()
 	if err != nil {
-		return err, 0
+		return 0, err
 	}
 	var mdp string
 
 	if !rows.Next() {
-		return errors.New("error"), id
+		return id, errors.New("error")
 	}
+	err = rows.Scan(&id, &mdp)
+	checkErr(err)
 
 	err = bcrypt.CompareHashAndPassword([]byte(mdp), []byte(password))
 	if err != nil {
-		return err, 0
+		return 0, err
 	}
-	return nil, id
+	return id, nil
 }
 func (m MyDB) updateMdp(old string, mdp string, mail string) bool {
-	err, _ := m.CompareMdp(old, mail)
+	_, err := m.CompareMdp(old, mail)
 	if err != nil {
 		return false
 	}
@@ -639,34 +683,33 @@ func (m MyDB) DateConversion(date int) string {
 	if diff < 60 {
 		temp += "moins d'une minute"
 	} else {
-		diff /= 60 // On passe en Minutes
+		diff /= 60 // n passe en Minutes
 		if diff < 60 {
 			temp += strconv.Itoa(diff) + " minutes"
 		} else {
-			diff /= 60 // On passe en heures
+			diff /= 60 // n passe en heures
 			if diff == 1 {
 				temp += "1 heure"
 			} else if diff < 24 {
 				temp += strconv.Itoa(diff) + " heures"
 			} else {
-				diff /= 24 // On passe en jours
+				diff /= 24 // n passe en jours
 				if diff == 1 {
 					temp += "1 jour"
 				} else if diff < 30 {
 					temp += strconv.Itoa(diff) + " jours"
 				} else {
-					diff /= 30 // On passe en mois
+					diff /= 30 // n passe en mois
 					if diff < 12 {
 						temp += strconv.Itoa(diff) + " mois"
 					} else {
-						diff /= 12 // On passe en années
+						diff /= 12 // n passe en années
 						if diff == 1 {
 							temp += "1 an"
 						} else {
 							temp += strconv.Itoa(diff) + " ans"
 						}
 					}
-
 				}
 
 			}
@@ -675,31 +718,31 @@ func (m MyDB) DateConversion(date int) string {
 
 	// if diff < 60 {
 	// 	fmt.Println(diff)
-	// 	temp += strconv.Itoa(diff) + " Min.s"
+	// 	temp +=strconv.Itoa(diff) + " Min.s"
 	// } else {
 	// 	diff /= 60
 	// 	if diff < 60 {
 	// 		fmt.Println(diff)
-	// 		temp += strconv.Itoa(diff) + " H"
+	// 		temp +=strconv.Itoa(diff) + " H"
 	// 	} else {
 	// 		diff /= 60
 	// 		if diff < 24 {
 	// 			fmt.Println(diff)
-	// 			temp += strconv.Itoa(diff) + " Jour.s"
+	// 			temp +=strconv.Itoa(diff) + " Jour.s"
 	// 		} else {
-	// 			fmt.Println(diff)
+	// 			fmt.Printl(diff)
 	// 			diff /= 24
 	// 			if diff < 30 {
 	// 				fmt.Println(diff)
-	// 				temp += strconv.Itoa(diff) + " Mois"
+	// 				temp +=strconv.Itoa(diff) + " Mois"
 	// 			} else {
 	// 				diff /= 30
 	// 				diff /= 12
 	// 				fmt.Println(diff)
-	// 				temp += strconv.Itoa(diff) + " An.s"
-	// 			}
-	// 		}
-	// 	}
+	// 				emp += strconv.Itoa(diff) + " An.s"
+	//
+	//
+	//
 	// }
 
 	return temp

@@ -2,12 +2,33 @@
 {{define "head"}}
     <link rel="stylesheet" href="static/css/categorie.css">
     <script src="static/js/categories.js" defer></script>
+
+    <script type="module" defer>
+        import {Runtime, Library, Inspector} from "./static/graph/barrestack/runtime.js";
+    
+        import Weekdefine from "./static/graph/barrestack/week.js";
+        const weekruntime = new Runtime();
+        const weekmain = weekruntime.module(Weekdefine, Inspector.into(document.getElementById("WeekStats")));
+        
+    
+        import Monthdefine from "./static/graph/barrestack/month.js";
+    
+        const monthruntime = new Runtime();
+        const monthmain = monthruntime.module(Monthdefine, Inspector.into(document.getElementById("MonthStats")));
+    
+    
+        import Alldefine from "./static/graph/barrestack/all.js";
+    
+        const allruntime = new Runtime();
+        const allmain = allruntime.module(Alldefine, Inspector.into(document.getElementById("AllStats")));
+    
+    </script>
 {{end}}
 {{define "main"}}
 
 <main id="main">
     <div id="menu">
-        <a href="categorie_dashboard" class="active">Statistiques</a>
+        <a href="dashBoard" class="active">Statistiques</a>
         <a href="banList">BanList</a>
         <a href="tickets">Tickets</a>
     </div>
@@ -21,7 +42,7 @@
                 <div id="popupWeekStats"></div>
             </div>
 
-            <!-- <img src="../img/graph.png" alt=""> -->
+            <!-- <img src="./static/img/graph.png" alt=""> -->
         </div>
         <div id="statMonth">
             <h3>Le mois passé</h3>
@@ -30,7 +51,7 @@
             <div id="popupMonth">
                 <div id="popupMonthStats"></div>
             </div>
-            <!-- <img src="../img/graph.png" alt=""> -->
+            <!-- <img src="./static/img/graph.png" alt=""> -->
         </div>
         <div id="statAll">
             <h3>Tout</h3>
@@ -39,7 +60,7 @@
             <div id="popupAll">
                 <div id="AllStats"></div>
             </div>
-            <!-- <img src="../img/graph.png" alt=""> -->
+            <!-- <img src="./static/img/graph.png" alt=""> -->
         </div>
     </div>
 </main>

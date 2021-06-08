@@ -1,0 +1,24 @@
+{{template "layout" .}}
+{{define "head"}}
+    <link href="static/css/infos.css">
+{{end}}
+{{define "main"}}
+<main>
+    <div id="box">
+        {{range .User}}
+        <div id="infos">
+            <figure>
+                <p>Email :</p>
+                <figcaption>{{.Mail}}</figcaption>
+            </figure>
+            <figure>
+                Pseudo :
+                <figcaption>
+                    {{.Username}}
+                </figcaption>
+            </figure>
+        </div>
+        {{end}}
+    </div>
+</main>
+{{end}}

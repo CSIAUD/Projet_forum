@@ -35,7 +35,7 @@ h3 {
 p {
     display: block;
     font-size: 17px;
-    margin-block-start: 100px;
+    /* margin-block-start: 100px; */
     margin-block-end: 1em;
     margin-inline-start: 0px;
     margin-inline-end: 0px;
@@ -140,9 +140,9 @@ header,
 #search:focus-visible {
 	outline: none;
 }
-#deconnect{
+/* #deconnect{
     display: none;
-}
+} */
 #login{
     /* display: none; */
 }
@@ -396,22 +396,7 @@ div[id^=post]:not(#posts),
 .box p {
     margin: 10px 0px 30px 0px;
 }
-input:focus,
-a:focus,
-button:focus,
-submit:focus {
-    outline: none;
-    border: 1px solid #ffffff !important;
-    box-shadow: 0 0 3pt 2pt orangered !important;
-}
-.box .sidebar input:focus,
-.box .sidebar a:focus,
-.box .sidebar button:focus,
-.box .sidebar submit:focus {
-    outline: none;
-    border: 1px solid orangered !important;
-    box-shadow: 0 0 3pt 2pt #ffffff !important;
-}
+
 .box ul {
     padding: 0;
 }
@@ -618,24 +603,25 @@ submit:focus {
 #menu > *.active{
     color: royalblue;
     background-color: var(--color-post);
-    transition: color .5s linear;
-    transition: background-color .25s linear;
+    transition: color .5s linear, background-color .25s linear;
 }
 #menu > *.active{
     color: royalblue;
     background-color: var(--color-post);
-    transition: color .5s linear;
-    transition: background-color .25s linear;
+    transition: color .5s linear, background-color .25s linear;
 }
 #menu,
 #menu > *{
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     color: black;
-    transition: color .5s linear;
-    transition: background-color .5s linear;
+    transition: color .5s linear, background-color .5s linear;
 }
 #imgpost{
     max-width : 100%;
     display: block;
+}
+#like, #dislike, #share, #comment {
+    height: 30px;
+    width: 30px;
 }

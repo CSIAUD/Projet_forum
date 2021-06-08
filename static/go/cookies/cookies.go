@@ -3,14 +3,12 @@ package SetCookie
 import (
 	// "Forum/static/go/structs"
 	// "fmt"
-	"fmt"
+
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/google/uuid"
 	// "io"
-	// structs "Forum/static/go/structs"
 )
 
 var html string
@@ -24,19 +22,17 @@ func SetCookie(name string, value string, w http.ResponseWriter, r *http.Request
 		if name == "Session" {
 			value = (uuid.New()).String()
 		}
-		expiration := time.Now().Add(5 * time.Second)
 		cookie = &http.Cookie{
 			Name:     name,
-			Expires:  expiration,
 			Value:    value,
 			HttpOnly: true,
 			Path:     "/",
+			SameSite: http.SameSiteLaxMode,
 		}
 		http.SetCookie(w, cookie)
 
 	}
 	return cookie
-
 }
 
 func CookieActu(w http.ResponseWriter, r *http.Request, url string) *http.Cookie {
@@ -53,11 +49,10 @@ func CookieActu(w http.ResponseWriter, r *http.Request, url string) *http.Cookie
 		cookie.Value = "0"
 	}
 	return cookie
-
 }
 
 func IncCookieVal(w http.ResponseWriter, r *http.Request) *http.Cookie {
-	cookie, err := GetCookieR(w, r)
+	cookie, err := GetCookie("Reference", w, r)
 
 	if err != nil {
 		SetCookie("Reference", "0", w, r)
@@ -69,20 +64,21 @@ func IncCookieVal(w http.ResponseWriter, r *http.Request) *http.Cookie {
 	return cookie
 }
 
-func GetCookieR(w http.ResponseWriter, r *http.Request) (*http.Cookie, error) {
-	cookie, err := r.Cookie("Reference")
+func GetCookie(name string, w http.ResponseWriter, r *http.Request) (*http.Cookie, error) {
+	cookie, err := r.Cookie(name)
 	return cookie, err
-
 }
 
 func DestroyCookie(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("destroy Function")
 	// cookie, err := r.Cookie("SessionToken")
 
 	if r.URL.Path == "/logout" {
 		cookie := &http.Cookie{
-			Name:   "Session",
-			MaxAge: -1,
+			Name:     "Session",
+			Value:    "0",
+			HttpOnly: true,
+			Path:     "/",
+			SameSite: http.SameSiteLaxMode,
 		}
 		http.SetCookie(w, cookie)
 
@@ -94,5 +90,5 @@ func DestroyCookie(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, cookie2)
 	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, "index", 302)
 }

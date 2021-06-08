@@ -5,72 +5,56 @@ package session
 
 import (
 	// "html/template"
-	structs "Forum/static/go/structs"
-	"net/http"
-
-	cookies "Forum/static/go/cookies"
-	"fmt"
-
 	bdd "Forum/static/go/bdd"
+	cookies "Forum/static/go/cookies"
+	structs "Forum/static/go/structs"
+	"errors"
+	"fmt"
+	"net/http"
 	// "strconv"
 )
 
 // var cookie *http.Cookie
-func GetUserByCookie(db bdd.MyDB, w http.ResponseWriter, r *http.Request) {
+func GetUserByCookie(db bdd.MyDB, w http.ResponseWriter, r *http.Request) (structs.User, error) {
 
-	var session structs.Session
 	user := structs.User{}
-
 	cookie, err := r.Cookie("Session")
 	fmt.Println(cookie)
-	// cookies.LogInCookie(w, cookie, r, err)
-	if cookie.Name == "Session" {
-
-		if err != nil {
-			if err == http.ErrNoCookie {
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			return
+	if err != nil {
+		if err == http.ErrNoCookie {
+			w.WriteHeader(http.StatusUnauthorized)
+			return user, errors.New("error")
 		}
-
-		//on converti la valeur du uuid du cookie en int
-		cookieV := cookie.Value
-
-		fmt.Println("cookie : ", cookieV)
-		fmt.Println("session : ", user.SessionToken)
-		//on compare l'uuid de l'utilisateur avec celui du cookie
-		if cookieV == user.SessionToken {
-			fmt.Println("same")
-		} else {
-			fmt.Println("not same")
-			db.SetSession("sessionToken", 1)
-			user = structs.User{SessionToken: cookieV}
-			// fmt.Println("Session Token user :", user.SessionToken)
-			// fmt.Println("Cookie Value Session Token:", cookieV)
-		}
-
-		session = structs.Session{Uuid: cookieV}
-		fmt.Println("je suis un session token cookie")
-
+		w.WriteHeader(http.StatusBadRequest)
+		return user, errors.New("error")
 	}
 
-	fmt.Println(session)
+	//on converti la valeur du uuid du cookie en int
+	cookieV := cookie.Value
+	user = (*db.GetUserBySession(cookieV))
+
+	return user, nil
 }
 
 func LogIn(mail string, password string, db bdd.MyDB, w http.ResponseWriter, r *http.Request) bool {
-	fmt.Println(mail)
 	if db.UserExist(mail) {
-		err, id := db.CompareMdp(password, mail)
+		id, err := db.CompareMdp(password, mail)
 		if err != nil {
-			session, _ := r.Cookie("Session")
-			db.SetSession(session.Value, id)
-			fmt.Println("session ok")
-			// GetUserByCookie(w, r)
-		} else {
+			fmt.Println(err)
 			fmt.Println("erreur1")
 			return false
+		} else {
+			session, err := r.Cookie("Session")
+			if err != nil {
+				fmt.Print("cookieError :")
+				fmt.Println(err)
+			} else {
+				fmt.Println(session)
+				fmt.Println(id)
+
+				db.SetSession(session.Value, id)
+				fmt.Println("session ok")
+			}
 		}
 	} else {
 		fmt.Println("erreur2")
@@ -82,6 +66,5 @@ func LogIn(mail string, password string, db bdd.MyDB, w http.ResponseWriter, r *
 
 func LogOut(w http.ResponseWriter, r *http.Request) bool {
 	cookies.DestroyCookie(w, r)
-	http.Redirect(w, r, "/", 302)
 	return true
 }

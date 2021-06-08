@@ -107,3 +107,11 @@
 g[font-size]{
     font-size: 15px;
 }
+
+.observablehq{
+    display: none;
+}
+.observablehq:nth-child(2),
+.observablehq:nth-child(3){
+    display: unset;
+}

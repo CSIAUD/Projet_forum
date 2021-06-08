@@ -7,6 +7,15 @@ type Session struct {
 	User_Id int
 }
 
+type SameSite int
+
+const (
+	SameSiteDefaultMode SameSite = iota + 1
+	SameSiteLaxMode
+	SameSiteStrictMode
+	SameSiteNoneMode
+)
+
 type Cookie struct {
 	Name       string
 	Value      string
@@ -19,6 +28,7 @@ type Cookie struct {
 	// MaxAge>0 means Max-Age attribute present and given in seconds
 	MaxAge   int
 	Secure   bool
+	SameSite SameSite
 	HttpOnly bool
 	Raw      string
 	Unparsed []string // Raw text of unparsed attribute-value pairs
@@ -49,6 +59,7 @@ type Commentaire struct {
 type Commentaires struct {
 	Commentaires []Commentaire
 	Error        bool
+	User         User
 }
 
 type Categorie struct {
@@ -72,6 +83,7 @@ type Post struct {
 type Posts struct {
 	Posts []Post
 	Error bool
+	User  User
 }
 
 type Autorisation struct {
@@ -117,18 +129,11 @@ type Badge struct {
 	Name  string
 	Image string
 }
-type Badges struct {
-	Badges []Badge
-	Error  bool
-}
 
 type BadgeUser struct {
-	UserId  User
-	BadgeId Badge
-}
-type BadgeUsers struct {
-	BadgeUsers []BadgeUser
-	Error      bool
+	User   User
+	Badges []Badge
+	Error  bool
 }
 
 type Role struct {
@@ -143,7 +148,7 @@ type Ticket struct {
 	Id        int
 	Content   string
 	Date      string
-	Etat      bool
+	Etat      int
 	Categorie int
 	User      User
 	OpenBy    User
@@ -160,13 +165,15 @@ type BanList struct {
 	Raison    string
 	BanDef    string
 	BannedBy  User
-	UserId    User
+	User      User
 }
 type BanLists struct {
 	BanLists []BanList
 	Error    bool
+	User     User
 }
 
 type Err0r struct {
 	Error bool
+	User  User
 }
