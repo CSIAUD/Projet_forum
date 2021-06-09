@@ -243,6 +243,8 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	session.LogOut(w, r)
 }
 func dashBoard(w http.ResponseWriter, r *http.Request) {
+	// stats, _ := db.GetStats()
+	// fmt.Println(stats)
 	errorGestion(w, r)
 	err := tmplCache["categorie_dashboard.page.html"].Execute(w, structs.Err0r{})
 	if err != nil {
@@ -351,7 +353,7 @@ func profil(w http.ResponseWriter, r *http.Request) {
 	badge.Badges = temp.Badges
 	badge.Error = false
 
-	err = tmplCache["profil.page.html"].Execute(w, temp)
+	err = tmplCache["profil.page.html"].Execute(w, structs.Err0r{})
 	if err != nil {
 		panic(err)
 	}
@@ -434,8 +436,8 @@ func errorGestion(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-// func loadPage(w http.ResponseWriter, r *http.Request) {
-
+// func loadPage(w http.ResponseWriter, r *http.Request) {-
+//
 // 	url := r.URL.String()
 // 	var temp string
 // 	for i := len(url) - 1; i >= 0; i-- {
@@ -443,9 +445,9 @@ func errorGestion(w http.ResponseWriter, r *http.Request) error {
 // 	}
 // 	position_slash := strings.Index(temp, "/")
 // 	location = url[len(url)-position_slash:]
-
+//
 // 	fmt.Println("page : " + location)
-
+//
 // 	if r.URL.Path != "/"+location {
 // 		http.Error(w, "404 - page not ound", http.StatusNotFound)
 // 	}
@@ -453,14 +455,14 @@ func errorGestion(w http.ResponseWriter, r *http.Request) error {
 // 		fmt.Println("login")
 // 		// session.LogIn(mail, password, w, r)
 // 	}
-
+//
 // 	_, err := template.ParseFiles("./static/html/layout.html")
-
+//
 // 	if err != nil {
 // 		http.Error(w, "Error 400 - Bad Request!", http.StatusBadRequest)
 // 		return
 // 	}
-
+//
 // 	switch r.Method {
 // 	case "POST":
 // 		if err != nil {
@@ -468,17 +470,17 @@ func errorGestion(w http.ResponseWriter, r *http.Request) error {
 // 			return
 // 		}
 // 	}
-
+//
 // 	tests()
-
+//
 // 	cookie.SetCookie(w, r)
 // 	// session.GetUserByCokie(w, r)
-
+//
 // 	page := location + ".page.html"
 // 	fmt.Println("----------------")
 // 	fmt.Println(page)
 // 	fmt.Println("++++++++++++++++")
-
+//
 // 	err = tmplCache[page].Execute(w, nil)
 // 	fmt.Println("****************")
 // 	if err != nil {

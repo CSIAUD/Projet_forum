@@ -217,7 +217,7 @@ func (m MyDB) BanDef(raison string, user_id int, bannedBy int) bool {
 // 	ban := structsBanList{}
 // 	var userid int
 // 	var bannedBy int
-
+//
 // 	if rows.Next() {
 // 		err = rows.Scan(&ban.Id, &ban.StartDae, &ban.Raison, &ban.BanDef, userid, bannedBy)
 // 		ban.BannedBy = *(m.GetUser(banndBy))
@@ -225,19 +225,19 @@ func (m MyDB) BanDef(raison string, user_id int, bannedBy int) bool {
 // 		heckErr(err)
 // 	}
 // 	rows.Close()
-
+//
 // 	stmt, err := m.DB.Prepare("delete from banList where id=?")
 // 	checkErr(err)
-
+//
 // 	_, err = stmtExec((&ban).Id)
 //	checkErr(err)
-
+//
 // 	stmt, err = mDB.Prepare("INSERT INTO banList(startDate, raison, user_id, bannedBy) values(?,?,?,?)")
 // 	checkErr(err)
-
+//
 // 	_, err = stmtExec((&ban).StartDate, (&ban).Raison, (&ban).UserId, (&ban).BannedBy)
 // 	checkErr(err)
-
+//
 // 	eturn true
 // }
 func (m MyDB) GetBannedUser(user_id int) *[]structs.BanList {
@@ -747,3 +747,42 @@ func (m MyDB) DateConversion(date int) string {
 
 	return temp
 }
+
+// func (m MyDB) GetStats() (string, error) {
+// 	rows, err := m.DB.Query("SELECT id, name from categories")
+// 	checkErr(err)
+// 	var ids []int
+// 	var names []string
+// 	var id int
+// 	var name string
+// 	result := "Categories,Users,Modos,Admins\n"
+
+// 	defer rows.Close()
+// 	for rows.Next() {
+// 		err = rows.Scan(&id, &name)
+// 		checkErr(err)
+// 		names = append(names, name)
+// 		ids = append(ids, id)
+// 	}
+
+// 	t := time.Now()
+// 	wait := sync.WaitGroup{​​​​​​​​}​​​​​​​​
+// 	lock := sync.Mutex{​​​​​​​​}​​​​​​​​
+// 	for i:=0; i<len(ids); i++{
+// 		wait.Add(1)
+// 		go func(index int) {​​​​​​​​
+// 			getFromDatabase(index)
+// 			lock.Lock()
+// 			categories = append(categories, index)
+// 			lock.Unlock()
+// 			wait.Done()
+// 		}​​​​​​​​(i)
+// 	}​​​​​​​​
+// 	wait.Wait()
+
+// 	fmt.Printf("ça nous a pris : %d ms", time.Now().Sub(t).Milliseconds())
+// 	fmt.Println(names)
+// 	fmt.Println(ids)
+
+// 	return result, nil
+// }

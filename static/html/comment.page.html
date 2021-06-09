@@ -4,50 +4,37 @@
 {{end}}
 {{define "main"}}
 <main>
+    {{range .Posts}}
+    <div id="post{{.Id}}">
+        <div id="block1">
+            <!--<div class="posts">
+                <img class="postimg" src="static/img/" alt="postimg">
+            </div> -->
 
 
-    <div class="main">
-        {{range .Post}}
-         <div class="user">
-             {{.User.Avatar}}
-             {{.User.Username}}
-         </div>
-         <div class="category">
-             {{.Categorie.Name}}
-         </div>
-         <div class="date">
-            {{.Date}}
-        </div>
-                
-        <div class="Posts">
-
-        </div>
-        <div class="Descriptif">
-            {{.Content}}
-        </div>
-        {{end}}
-
-
-        {{range .PostLike}}
-        <div class="Likes">
-            {{.Vote}}
+            <div class="descriptif">
+                <div class="infos">
+                    <img class="avatar" src="static/img/{{.User.Avatar}}" alt="avatar">
+                    <p>Par {{.User.Username}} Il y a {{.Date}}</p>
+                    <p class="category"><span>{{.Categorie}}</span></p>
+                </div>
+                <div class="text">
+                <p>{{.Content}}</p>
+                </div>
+                <p id="like">Liked by {{.Likes}} users</p>
+            </div>     
         </div>
         {{end}}
-
-
         {{range .Commentaires}}
-        <div class="Comment">
-            {.Commentaire}}
-            <!-- subcomment à masquer  -->
-            <div {{if not .CommentaireId nil}} class="subcomment" {{end}}>
-                {{.Commentaire}}
-                        
-            </div>
-            <div class="like">
-            </div>
-        </div>
+        <div class="comment">
+        
+            <p id="par">Par {{.User.Username}} Il y a {{.Date}}</p>
+            <p id="text-par">{{.Content}}</p>
+       
+        </div> 
         {{end}}
     </div>
+    
 </main>
 
 {{end}}

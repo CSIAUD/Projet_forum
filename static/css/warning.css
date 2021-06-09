@@ -156,15 +156,14 @@ p {
   height: 90px;
   width: 90px;
   align-items: center;
-}  
-body {
-  display: unset;
-  height: 110%;
-  background: linear-gradient(rgba(1, 204, 254, 0.8), rgba(18, 1, 102, 0.8));
 }
 body {
+  display: unset;
+  height: 100vh;
+  background: linear-gradient(rgba(1, 204, 254, 0.8), rgba(18, 1, 102, 0.8));
   display: block;
   margin: 0px;
+  overflow: hidden;
   
 }
 
