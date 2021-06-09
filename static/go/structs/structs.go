@@ -3,9 +3,18 @@ package structs
 import "time"
 
 type Session struct {
-	Uuid    int
+	Uuid    string
 	User_Id int
 }
+
+type SameSite int
+
+const (
+	SameSiteDefaultMode SameSite = iota + 1
+	SameSiteLaxMode
+	SameSiteStrictMode
+	SameSiteNoneMode
+)
 
 type Cookie struct {
 	Name       string
@@ -19,6 +28,7 @@ type Cookie struct {
 	// MaxAge>0 means Max-Age attribute present and given in seconds
 	MaxAge   int
 	Secure   bool
+	SameSite SameSite
 	HttpOnly bool
 	Raw      string
 	Unparsed []string // Raw text of unparsed attribute-value pairs
@@ -29,8 +39,13 @@ type User struct {
 	Username     string
 	Mail         string
 	Avatar       string
-	SessionToken int
+	SessionToken string
 	Role         int
+	Verif        int
+}
+type Users struct {
+	Users []User
+	Error bool
 }
 
 type Commentaire struct {
@@ -38,32 +53,55 @@ type Commentaire struct {
 	Content   string
 	Date      string
 	User      User
-	PostId    Post
+	Post      Post
 	CommentId int
+}
+type Commentaires struct {
+	Commentaires []Commentaire
+	Error        bool
+	User         User
 }
 
 type Categorie struct {
 	Id   int
 	Name string
 }
+type Categories struct {
+	Categories []Categorie
+	Error      bool
+}
 
 type Post struct {
-	Id          int
-	Content     string
-	Date        string
-	User        User
-	CategorieId int
-	Hidden      bool
+	Id        int
+	Content   string
+	Date      string
+	User      User
+	Categorie string
+	Hidden    bool
+	Likes     int
+}
+type Posts struct {
+	Posts []Post
+	Error bool
+	User  User
 }
 
 type Autorisation struct {
 	Id   int
 	Name string
 }
+type Autorisations struct {
+	Autorisations []Autorisation
+	Error         bool
+}
 
 type RoleAuth struct {
 	AutorisationId Autorisation
 	RoleId         Role
+}
+type RoleAuths struct {
+	RoleAuths []RoleAuth
+	Error     bool
 }
 
 type CommentLike struct {
@@ -71,11 +109,19 @@ type CommentLike struct {
 	CommentaireId Commentaire
 	Vote          int
 }
+type Commentlikes struct {
+	Commentlikes []CommentLike
+	Error        bool
+}
 
 type PostLike struct {
 	UserId User
 	PostId Post
 	Vote   int
+}
+type Postlikes struct {
+	Postlikes []PostLike
+	Error     bool
 }
 
 type Badge struct {
@@ -85,23 +131,34 @@ type Badge struct {
 }
 
 type BadgeUser struct {
-	UserId  User
-	BadgeId Badge
+	User   User
+	Badges []Badge
+	Error  bool
 }
 
 type Role struct {
 	Id   int
 	Name string
 }
-
+type Roles struct {
+	Roles []Role
+	Error bool
+}
 type Ticket struct {
 	Id        int
 	Content   string
 	Date      string
-	Etat      bool
+	Etat      int
+	Categorie int
 	User      User
 	OpenBy    User
-	Categorie int
+}
+type Tickets struct {
+	Wait 	[]Ticket
+	Open 	[]Ticket
+	Close	[]Ticket
+	Error   bool
+	User 	User
 }
 
 type BanList struct {
@@ -111,10 +168,15 @@ type BanList struct {
 	Raison    string
 	BanDef    string
 	BannedBy  User
-	UserId    User
+	User      User
+}
+type BanLists struct {
+	BanLists []BanList
+	Error    bool
+	User     User
 }
 
-type All struct {
-	Users User
-	Posts Post
+type Err0r struct {
+	Error bool
+	User  User
 }
