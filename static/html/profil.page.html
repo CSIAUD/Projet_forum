@@ -12,10 +12,11 @@
             <div class="badges">
                 <figure>
                     <h3 id="badgesH3">Badges :</h3>
+
                     <figcaption>
-                        {{range .Badge}}
+                        {{range .Badges}}
                         <ul id="NbrBadges">
-                            <li><img class="BadgeImage" src="{{.Badge .Image}}"/> {{.Badges .Name}}</li>
+                            <li><img class="BadgeImage" src="{{.Image}}"/> {{.Name}}</li>
                         </ul>
                         {{end}}
                     </figcaption>
@@ -29,9 +30,9 @@
 
             <div class="avatar_Profil">
                 <figure>
-                    {{range .Badge}}
-                    <img id="avatar_profil" src="{{.User .Avatar}}"/>
-                    {{end}}
+                    
+                    <img id="avatar_profil" src="{{.User.Avatar}}"/>
+                    
                     <figcaption id="nameuser">                      
                     </figcaption>
                 </figure>
@@ -43,4 +44,5 @@
             <a id="menu3" href="infos">Infos</a>
     </div>
 </main>
+
 {{end}}

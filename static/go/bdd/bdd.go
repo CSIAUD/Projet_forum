@@ -3,7 +3,7 @@ package bdd
 import (
 	"database/sql"
 	"fmt"
-
+	"strings"
 	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -592,10 +592,10 @@ func (m MyDB) CloseTicket(id int) bool {
 
 	return true
 }
-func (m MyDB) GetAllTickt() *[]structs.Ticket {
+func (m MyDB) GetAllTickt(etat int) *[]structs.Ticket {
 	tik := structs.Ticket{}
 	tab := []structs.Ticket{}
-	rows, err := m.DB.Query("SELECT t.id, t.content, t.date, t.etat, t.categorie_id, t.openBy, u.id user FROM tickets t LEFT JOIN users u ON t.user_id=u.id ORDER BY date ASC")
+	rows, err := m.DB.Query("SELECT t.id, t.content, t.date, t.etat, t.categorie_id, t.openBy, u.id user FROM tickets t LEFT JOIN users u ON t.user_id=u.id WHERE etat=? ORDER BY date ASC", etat)
 	checkErr(err)
 	var openBy int
 	var user int
@@ -606,6 +606,25 @@ func (m MyDB) GetAllTickt() *[]structs.Ticket {
 		checkErr(err)
 		tik.User = *(m.GetUser(user))
 		tik.OpenBy = *(m.GetUser(openBy))
+		// tik.Date = time.Date(tik.Date)
+		tNow := time.Unix(int64(1623234148),int64(0))
+
+		tUnix := tNow.Unix()
+	
+		timeT := time.Unix(tUnix, 0)
+		
+		temp := timeT.String()
+		
+		fmt.Println(temp)
+	
+		temp = (strings.Split(temp," "))[0]
+		tab3 := strings.Split(temp,"-")
+		var tab2 []string
+		tab2 =append(tab2,tab3[2])
+		tab2 =append(tab2,tab3[1])
+		tab2 =append(tab2,tab3[0])
+		tik.Date = strings.Join(tab2,"/")
+
 		tab = append(tab, tik)
 	}
 

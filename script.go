@@ -315,7 +315,7 @@ func comment(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/404", 302)
 	} else {
 		fmt.Println("T3mPl4t3")
-		err = tmplCache["comment.page.html"].Execute(w, structs.Err0r{})
+		err = tmplCache["comment.page.html"].Execute(w, com)
 		if err != nil {
 			panic(err)
 		}
@@ -347,13 +347,18 @@ func profil(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	user, _ := session.GetUserByCookie(db, w, r)
-	temp := db.GetBadgeUser(user)
-	badge.User = temp.User
-	badge.Badges = temp.Badges
-	badge.Error = false
+	user, err := session.GetUserByCookie(db, w, r)
+	if err != nil {
+		badge.User = structs.User{}
+	} else {
+		badge.User = user
+	}
+	badge = (*db.GetBadgeUser(user))
+	// badge.User = temp.User
+	// badge.Badges = temp.Badges
+	// badge.Error = false
 
-	err = tmplCache["profil.page.html"].Execute(w, structs.Err0r{})
+	err = tmplCache["profil.page.html"].Execute(w, badge)
 	if err != nil {
 		panic(err)
 	}
@@ -375,13 +380,22 @@ func signup(w http.ResponseWriter, r *http.Request) {
 func tickets(w http.ResponseWriter, r *http.Request) {
 	var ticket structs.Tickets
 
-	ticket.Tickets = (*db.GetAllTickt())
+	ticket.Wait = (*db.GetAllTickt(0))
+	ticket.Open = (*db.GetAllTickt(1))
+	ticket.Close = (*db.GetAllTickt(2))
 	ticket.Error = false
-	err := errorGestion(w, r)
+	user, err := session.GetUserByCookie(db, w, r)
+	if err != nil {
+		ticket.User = structs.User{}
+	} else {
+		ticket.User = user
+	}
+	fmt.Println("user: ", ticket.User)
+	err = errorGestion(w, r)
 	if err != nil {
 		fmt.Println(err)
 	}
-	err = tmplCache["tickets.page.html"].Execute(w, structs.Err0r{})
+	err = tmplCache["tickets.page.html"].Execute(w, ticket)
 	if err != nil {
 		panic(err)
 	}
