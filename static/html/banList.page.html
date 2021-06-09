@@ -13,7 +13,7 @@
     </div>
     <div id="container" class="visible">
         <h2>Banlist</h2>
-        {{.BanLists}}
+        <!-- {{.BanLists}} -->
         {{range .BanLists}}
         <div class="userBan">
             <h3 {{if eq .BanDef "1" }}class="banDef"{{end}}>{{.User.Username}}</h3>
