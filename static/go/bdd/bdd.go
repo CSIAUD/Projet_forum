@@ -281,7 +281,8 @@ func (m MyDB) GetAllBans() *[]structs.BanList {
 }
 
 //==================================================================================================
-func (m MyDB) CreateUser(username string, mail string, mdp string) error {
+func (m MyDB) CreateUser(username string, mail string, mdp string)  error {
+
 	rows, err := m.DB.Query("SELECT id FROM users where username like ?", username)
 	checkErr(err)
 
@@ -308,7 +309,7 @@ func (m MyDB) CreateUser(username string, mail string, mdp string) error {
 	return nil
 }
 func (m MyDB) UpdateUser(username string, mail string, avatar string, id int) bool {
-	stmt, err := m.DB.Prepare("update users set uername=?, mail=?, avatar=? where id=?")
+	stmt, err := m.DB.Prepare("update users set username=?, mail=?, avatar=? where id=?")
 	checkErr(err)
 
 	_, err = stmt.Exec(username, mail, avatar, id)
@@ -343,6 +344,18 @@ func (m MyDB) GetUser(id int) *structs.User {
 	defer rows.Close()
 	if rows.Next() {
 		err = rows.Scan(&user.Id, &user.Username, &user.Mail, &user.Avatar, &user.Verif)
+		checkErr(err)
+	}
+	return &user
+}
+func (m MyDB) GetUserByName(username string) *structs.User {
+	rows, err := m.DB.Query("SELECT id,username,mail, verified FROM users where username=?", username)
+	checkErr(err)
+	user := structs.User{}
+
+	defer rows.Close()
+	if rows.Next() {
+		err = rows.Scan(&user.Id, &user.Username, &user.Mail, &user.Verif)
 		checkErr(err)
 	}
 	return &user
@@ -386,20 +399,14 @@ func (m MyDB) UserExist(mail string) bool {
 	return true
 }
 func (m MyDB) UserVerified(mail string) bool {
-	rows, err := m.DB.Query("SELECT verified FROM users where mail=?", mail)
+	stmt, err := m.DB.Prepare("update users set verified=1 where mail=?")
 	checkErr(err)
-	var verif int
 
+
+	_, err = stmt.Exec(mail)
 	checkErr(err)
-	defer rows.Close()
-	if rows.Next() {
-		err = rows.Scan(&verif)
-		checkErr(err)
-	}
-	if verif == 1 {
-		return true
-	}
-	return false
+
+	return true
 }
 
 //=================================================================================================================
