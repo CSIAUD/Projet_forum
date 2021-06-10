@@ -1,14 +1,16 @@
 package main
 
 import (
-	bdd "Forum/static/go/bdd"
 	cookie "Forum/static/go/cookies"
+
+	"database/sql"
+	bdd "Forum/static/go/bdd"
+	"fmt"
+	template "html/template"
 	session "Forum/static/go/session"
 	structs "Forum/static/go/structs"
 	"encoding/json"
 	"errors"
-	"fmt"
-	template "html/template"
 	"net/http"
 	"net/smtp"
 	"path/filepath"
@@ -21,7 +23,6 @@ import (
 	// "time
 
 	// "net/ul"
-	"database/sql"
 )
 
 var tmplCache map[string]*template.Template
@@ -69,7 +70,7 @@ func main() {
 	fmt.Println("===========================")
 	// tests()
 
-	fmt.Println("Listening server at port 8000")
+	fmt.Println("Listening server at port 8000.")
 	http.ListenAndServe("localhost:8000", nil)
 }
 
@@ -167,6 +168,7 @@ func newTemplateCache(dir string) (map[string]*template.Template, error) {
 	// Return the map
 	return cache, nil
 }
+
 
 func index(w http.ResponseWriter, r *http.Request) {
 	// InitialCookie(w, r)
@@ -494,13 +496,12 @@ func SendEmail(mail string, username string, w http.ResponseWriter, r *http.Requ
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
 	
-	userC, err := session.GetUserByCookie(db, w, r)
-	if err != nil {
-		fmt.Println("No user cookie")
-		return
-	}
-
-	url := fmt.Sprintf("http://localhost:8000/verif?id=%s", userC.Id)
+	user:= (*db.GetUserByName(username))
+	// if err != nil {
+	// 	fmt.Println("No user cookie")
+	// 	return
+	// }
+	url := fmt.Sprintf("http://localhost:8000/verif?id=%d", user.Id)
 	body := fmt.Sprintf("Subject: Confirmation de l'email\nBonjour %s,\n\nBienvenue sur MLC Forum! Afin de finaliser votre inscription, veuillez cliquer sur le lien ci-dessous pour confirmer votre adresse mail:\n%s\n\nEn vous souhaitant une agréable navigation au sein de notre petit navire!\n\n-L'equipe MLC Forum", username, url)
 	// Message.
 	message := []byte(body)
@@ -509,7 +510,7 @@ func SendEmail(mail string, username string, w http.ResponseWriter, r *http.Requ
 	auth := smtp.PlainAuth("", from, password, smtpHost)
 
 	// Sending email.
-	err = smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -526,7 +527,7 @@ func verifEmail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	clef := keys[0]
-	fmt.Println(clef)
+	fmt.Println("Voici la clef",clef)
 	idUser, err := strconv.Atoi(clef)
 	if err != nil {
 		fmt.Printf("Convert key error : %s", err)
@@ -538,10 +539,13 @@ func verifEmail(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Redirect(w, r, "/404", 302)
 	} else {
-
-		err = tmplCache["verif.page.html"].Execute(w, user)
+		err = tmplCache["verif.page.html"].Execute(w, structs.Err0r{})
 		if err != nil {
 			panic(err)
+		} else {
+			db.UserVerified(user.Mail)
+			fmt.Println("mail vérifié!!!")
+			fmt.Println(user)
 		}
 	}
 }
