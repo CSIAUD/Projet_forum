@@ -392,7 +392,7 @@ func signup(w http.ResponseWriter, r *http.Request) {
 		confMdp = keys["conf_password"][0]
 		if mdp == confMdp {
 			db.CreateUser(username, email, mdp)
-			SendEmail(email, username)
+			SendEmail(email, username, w, r)
 		}
 	}
 	fmt.Println(username)
@@ -479,7 +479,7 @@ func errorGestion(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func SendEmail(mail string, username string) {
+func SendEmail(mail string, username string, w http.ResponseWriter, r *http.Request) {
 	// Sender data.
 
 	from := "themlcforum@gmail.com"
@@ -493,9 +493,15 @@ func SendEmail(mail string, username string) {
 	// smtp server configuration.
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
+	
+	userC, err := session.GetUserByCookie(db, w, r)
+	if err != nil {
+		fmt.Println("No user cookie")
+		return
+	}
 
-	url := "biuerb"
-	body := fmt.Sprintf("Subject: Confirmation de l'email\nBonjour %s,\nBienvenue sur MLC Forum! Afin de finaliser votre inscription, veuillez cliquer sur le lien ci-dessous pour confirmer votre adresse mail:\n%s\nEn vous souhaitant une agréable navigation au sein de notre petit navire!", username, url)
+	url := fmt.Sprintf("http://localhost:8000/verif?id=%s", userC.Id)
+	body := fmt.Sprintf("Subject: Confirmation de l'email\nBonjour %s,\n\nBienvenue sur MLC Forum! Afin de finaliser votre inscription, veuillez cliquer sur le lien ci-dessous pour confirmer votre adresse mail:\n%s\n\nEn vous souhaitant une agréable navigation au sein de notre petit navire!\n\n-L'equipe MLC Forum", username, url)
 	// Message.
 	message := []byte(body)
 
@@ -503,7 +509,7 @@ func SendEmail(mail string, username string) {
 	auth := smtp.PlainAuth("", from, password, smtpHost)
 
 	// Sending email.
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
+	err = smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -512,7 +518,32 @@ func SendEmail(mail string, username string) {
 }
 
 func verifEmail(w http.ResponseWriter, r *http.Request) {
+	var user structs.User
 
+	keys, ok := r.URL.Query()["id"]
+	if !ok || len(keys[0]) < 1 {
+		fmt.Println("Url Param 'key' is missing")
+	}
+
+	clef := keys[0]
+	fmt.Println(clef)
+	idUser, err := strconv.Atoi(clef)
+	if err != nil {
+		fmt.Printf("Convert key error : %s", err)
+	}
+
+	user = (*db.GetUser(idUser))
+
+	err = errorGestion(w, r)
+	if err != nil {
+		http.Redirect(w, r, "/404", 302)
+	} else {
+
+		err = tmplCache["verif.page.html"].Execute(w, user)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
 // func loadPage(w http.ResponseWriter, r *http.Request) {-
