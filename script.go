@@ -10,6 +10,7 @@ import (
 	"fmt"
 	template "html/template"
 	"net/http"
+	"net/smtp"
 	"path/filepath"
 	"strconv"
 
@@ -51,6 +52,8 @@ func main() {
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/404", error404)
+	http.HandleFunc("/getStats", getStat)
+	http.Handle("/verif", http.HandlerFunc(verifEmail))
 
 	db.DB, err = sql.Open("sqlite3", "./SQLite/mlcData.db")
 	if err != nil {
@@ -204,13 +207,10 @@ func index(w http.ResponseWriter, r *http.Request) {
 	var temp structs.Posts
 	temp.Posts = (*db.GetNbPost(10, 0))
 	temp.Error = false
-	user, err := session.GetUserByCookie(db, w, r)
-	if err != nil {
-		temp.User = structs.User{}
-	} else {
-		temp.User = user
-	}
-	err = errorGestion(w, r)
+	user, _ := session.GetUserByCookie(db, w, r)
+	temp.User = user
+
+	err := errorGestion(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/404", 302)
 	} else {
@@ -251,6 +251,14 @@ func dashBoard(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 }
+func getStat(w http.ResponseWriter, r *http.Request) {
+	stats, _ := db.GetStats()
+	errorGestion(w, r)
+	err := tmplCache["stats.page.html"].Execute(w, stats)
+	if err != nil {
+		panic(err)
+	}
+}
 func banList(w http.ResponseWriter, r *http.Request) {
 	ban := structs.BanLists{}
 
@@ -279,7 +287,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	pass := r.FormValue("password")
 	if mail != "" {
 		session.LogIn(mail, pass, db, w, r)
-		fmt.Println("sdklfjghj")
+
 	}
 	errorGestion(w, r)
 	err = tmplCache["login.page.html"].Execute(w, temp)
@@ -289,8 +297,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 }
 func comment(w http.ResponseWriter, r *http.Request) {
 	var com structs.Commentaires
-	// post := structs.Post{}
-	// like := structs.PostLike{}
 
 	keys, ok := r.URL.Query()["id"]
 	if !ok || len(keys[0]) < 1 {
@@ -308,8 +314,8 @@ func comment(w http.ResponseWriter, r *http.Request) {
 	// -> quand on clique sur le post, on transmet l'id du post liés à ses commentaires pour les afficher
 	com.Commentaires = (*db.GetComment(idPost))
 	com.Error = false
-	// like = (*db.GetPostLike(idPost))
-	// post = (*db.GetPost(idPost))
+	com.Post = (*db.GetPost(idPost))
+
 	err = errorGestion(w, r)
 	if err != nil {
 		http.Redirect(w, r, "/404", 302)
@@ -371,6 +377,29 @@ func search(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func signup(w http.ResponseWriter, r *http.Request) {
+
+	username := ""
+	email := ""
+	mdp := ""
+	confMdp := ""
+
+	keys := r.URL.Query()
+
+	if len(keys) > 0 {
+		username = keys["username"][0]
+		email = keys["email"][0]
+		mdp = keys["password"][0]
+		confMdp = keys["conf_password"][0]
+		if mdp == confMdp {
+			db.CreateUser(username, email, mdp)
+			SendEmail(email, username)
+		}
+	}
+	fmt.Println(username)
+	fmt.Println(email)
+	fmt.Println(mdp)
+	fmt.Println(confMdp)
+
 	errorGestion(w, r)
 	err := tmplCache["signup.page.html"].Execute(w, structs.Err0r{})
 	if err != nil {
@@ -450,6 +479,42 @@ func errorGestion(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+func SendEmail(mail string, username string) {
+	// Sender data.
+
+	from := "themlcforum@gmail.com"
+	password := "YnovAix13100#"
+	// subject:= "Confirmation de l'email"
+	// Receiver email address.
+	to := []string{
+		mail,
+	}
+
+	// smtp server configuration.
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	url := "biuerb"
+	body := fmt.Sprintf("Subject: Confirmation de l'email\nBonjour %s,\nBienvenue sur MLC Forum! Afin de finaliser votre inscription, veuillez cliquer sur le lien ci-dessous pour confirmer votre adresse mail:\n%s\nEn vous souhaitant une agréable navigation au sein de notre petit navire!", username, url)
+	// Message.
+	message := []byte(body)
+
+	// Authentication.
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	// Sending email.
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, message)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("Email Sent Successfully!")
+}
+
+func verifEmail(w http.ResponseWriter, r *http.Request) {
+
+}
+
 // func loadPage(w http.ResponseWriter, r *http.Request) {-
 //
 // 	url := r.URL.String()
@@ -502,17 +567,17 @@ func errorGestion(w http.ResponseWriter, r *http.Request) error {
 // 	}
 // 	// tmpl.Execute(w, nil)
 // }
-func tests() {
-	username := "cyp83"
-	mail := "csiaud83@gmail.com"
-	mdp := "YnovAix13100#"
-	avatar := "lechat.png"
-	err := db.CreateUser(username, mail, mdp, avatar)
+// func tests() {
+// 	username := "cyp83"
+// 	mail := "csiaud83@gmail.com"
+// 	mdp := "YnovAix13100#"
+// 	// avatar := "lechat.png"
+// 	// err := db.CreateUser(username, mail, mdp)
 
-	if err != nil {
-		fmt.Println("Uername / Mail déjà utilisé")
-	} else {
-		fmt.Println("Bienvenue dans la secte")
-	}
-	fmt.Println(db.GetUser(8))
-}
+// 	if err != nil {
+// 		fmt.Println("Uername / Mail déjà utilisé")
+// 	} else {
+// 		fmt.Println("Bienvenue dans la secte")
+// 	}
+// 	fmt.Println(db.GetUser(8))
+// }

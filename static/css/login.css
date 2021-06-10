@@ -1,6 +1,11 @@
-#Vue{
+.Vue{
     width: 30px;
     height: 30px;
+    position: absolute;
+    top: calc((100% - 10px) / 2);
+    right: 15px;
+    z-index: 10;
+    background-color: white;
 }
 
 
@@ -18,6 +23,7 @@
 #login .field {
     margin: 10px;
     width: 100%;
+    position: relative;
 }
 #login .field label {
     display: block;
@@ -64,4 +70,52 @@
     height: 100vh;
     top: 0;
     left: 0;
+}
+
+#verifs{
+    display: none;
+    position: absolute;
+    top: calc(-100% - 70px);
+    left: 0;
+    width: calc(100% - 10px);
+    background-color: ivory;
+    border-radius: 5px;
+    border: 5px groove rgb(204, 204, 192);
+    z-index: 999;
+}
+#verifs.display{
+    display: block;
+}
+
+#verifs > label > span::before{
+    content: '';
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    -moz-border-radius: 7.5px;
+    -webkit-border-radius: 7.5px;
+    border-radius: 7.5px;
+    background-color: red;
+    box-shadow: red 0 0 10px;
+    margin: 0 5px;
+}
+#verifs > label > span.ok::before{
+    background-color: green;
+    box-shadow: green 0 0 10px;
+}
+#verifs > label{
+    display: flex;
+    flex-direction: column;
+}
+#btnClose {
+    cursor: pointer;
+    margin-right: 2vh;
+    margin-top: -1vh;
+    float: right;
+    width: 20px;
+    height: 20px;
+}
+
+.field:nth-child(3){
+    position: relative;
 }

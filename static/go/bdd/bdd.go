@@ -3,8 +3,8 @@ package bdd
 import (
 	"database/sql"
 	"fmt"
-	"strings"
 	"strconv"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 
@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"errors"
+
+	"sync"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -279,7 +281,7 @@ func (m MyDB) GetAllBans() *[]structs.BanList {
 }
 
 //==================================================================================================
-func (m MyDB) CreateUser(username string, mail string, mdp string, avatar string) error {
+func (m MyDB) CreateUser(username string, mail string, mdp string) error {
 	rows, err := m.DB.Query("SELECT id FROM users where username like ?", username)
 	checkErr(err)
 
@@ -297,15 +299,15 @@ func (m MyDB) CreateUser(username string, mail string, mdp string, avatar string
 	mdp, err = hashMdp(mdp)
 	checkErr(err)
 
-	stmt, err := m.DB.Prepare("INSERT INTO users(username, mail, mdp, avatar) values(?,?,?,?)")
+	stmt, err := m.DB.Prepare("INSERT INTO users(username, mail, mdp) values(?,?,?)")
 	checkErr(err)
 
-	_, err = stmt.Exec(username, mail, mdp, avatar)
+	_, err = stmt.Exec(username, mail, mdp)
 	checkErr(err)
 
 	return nil
 }
-func (m MyDB) UpdasteUser(username string, mail string, avatar string, id int) bool {
+func (m MyDB) UpdateUser(username string, mail string, avatar string, id int) bool {
 	stmt, err := m.DB.Prepare("update users set uername=?, mail=?, avatar=? where id=?")
 	checkErr(err)
 
@@ -346,15 +348,27 @@ func (m MyDB) GetUser(id int) *structs.User {
 	return &user
 }
 func (m MyDB) GetUserBySession(token string) *structs.User {
+	user := structs.User{}
+	if token == "0" {
+		user.Id = 0
+		user.Username = ""
+		user.Mail = ""
+		user.Avatar = ""
+		user.SessionToken = ""
+		user.Role = 0
+		user.Verif = 0
+		return &user
+	}
 	rows, err := m.DB.Query("SELECT id,username,mail,avatar,role_id,verified FROM users where sessionToken=?", token)
 	checkErr(err)
-	user := structs.User{}
 
 	defer rows.Close()
 	if rows.Next() {
 		err = rows.Scan(&user.Id, &user.Username, &user.Mail, &user.Avatar, &user.Role, &user.Verif)
 		checkErr(err)
 	}
+	fmt.Printf("Session => %s\nUser : ", token)
+	fmt.Println(user)
 	return &user
 }
 func (m MyDB) UserExist(mail string) bool {
@@ -607,23 +621,24 @@ func (m MyDB) GetAllTickt(etat int) *[]structs.Ticket {
 		tik.User = *(m.GetUser(user))
 		tik.OpenBy = *(m.GetUser(openBy))
 		// tik.Date = time.Date(tik.Date)
-		tNow := time.Unix(int64(1623234148),int64(0))
+
+		tNow := time.Unix(int64(1623234148), int64(0))
 
 		tUnix := tNow.Unix()
-	
+
 		timeT := time.Unix(tUnix, 0)
-		
+
 		temp := timeT.String()
-		
+
 		fmt.Println(temp)
-	
-		temp = (strings.Split(temp," "))[0]
-		tab3 := strings.Split(temp,"-")
+
+		temp = (strings.Split(temp, " "))[0]
+		tab3 := strings.Split(temp, "-")
 		var tab2 []string
-		tab2 =append(tab2,tab3[2])
-		tab2 =append(tab2,tab3[1])
-		tab2 =append(tab2,tab3[0])
-		tik.Date = strings.Join(tab2,"/")
+		tab2 = append(tab2, tab3[2])
+		tab2 = append(tab2, tab3[1])
+		tab2 = append(tab2, tab3[0])
+		tik.Date = strings.Join(tab2, "/")
 
 		tab = append(tab, tik)
 	}
@@ -735,73 +750,59 @@ func (m MyDB) DateConversion(date int) string {
 		}
 	}
 
-	// if diff < 60 {
-	// 	fmt.Println(diff)
-	// 	temp +=strconv.Itoa(diff) + " Min.s"
-	// } else {
-	// 	diff /= 60
-	// 	if diff < 60 {
-	// 		fmt.Println(diff)
-	// 		temp +=strconv.Itoa(diff) + " H"
-	// 	} else {
-	// 		diff /= 60
-	// 		if diff < 24 {
-	// 			fmt.Println(diff)
-	// 			temp +=strconv.Itoa(diff) + " Jour.s"
-	// 		} else {
-	// 			fmt.Printl(diff)
-	// 			diff /= 24
-	// 			if diff < 30 {
-	// 				fmt.Println(diff)
-	// 				temp +=strconv.Itoa(diff) + " Mois"
-	// 			} else {
-	// 				diff /= 30
-	// 				diff /= 12
-	// 				fmt.Println(diff)
-	// 				emp += strconv.Itoa(diff) + " An.s"
-	//
-	//
-	//
-	// }
-
 	return temp
 }
 
-// func (m MyDB) GetStats() (string, error) {
-// 	rows, err := m.DB.Query("SELECT id, name from categories")
-// 	checkErr(err)
-// 	var ids []int
-// 	var names []string
-// 	var id int
-// 	var name string
-// 	result := "Categories,Users,Modos,Admins\n"
+func (m MyDB) GetStats() (string, error) {
+	rows, err := m.DB.Query("SELECT id, name from categories")
+	checkErr(err)
+	var ids []int
+	var names []string
+	var id int
+	var name string
+	result := "Category,Users,Modos,Admins"
 
-// 	defer rows.Close()
-// 	for rows.Next() {
-// 		err = rows.Scan(&id, &name)
-// 		checkErr(err)
-// 		names = append(names, name)
-// 		ids = append(ids, id)
-// 	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&id, &name)
+		checkErr(err)
+		names = append(names, name)
+		ids = append(ids, id)
+	}
 
-// 	t := time.Now()
-// 	wait := sync.WaitGroup{​​​​​​​​}​​​​​​​​
-// 	lock := sync.Mutex{​​​​​​​​}​​​​​​​​
-// 	for i:=0; i<len(ids); i++{
-// 		wait.Add(1)
-// 		go func(index int) {​​​​​​​​
-// 			getFromDatabase(index)
-// 			lock.Lock()
-// 			categories = append(categories, index)
-// 			lock.Unlock()
-// 			wait.Done()
-// 		}​​​​​​​​(i)
-// 	}​​​​​​​​
-// 	wait.Wait()
+	t := time.Now()
+	wait := sync.WaitGroup{}
+	lock := sync.Mutex{}
+	for i := 0; i < len(ids); i++ {
+		idstat := ids[i]
+		name := names[i]
+		wait.Add(1)
+		go func(index int) {
+			rows, err := m.DB.Query("select Users, Modos, Admins from (select count(p.id) Admins from posts p inner join users u on p.user_id=u.id inner join roles r on u.role_id=r.id where r.name like \"admin\" and p.categorie_id=?), (select count(p.id) Modos from posts p inner join users u on p.user_id=u.id inner join roles r on u.role_id=r.id where r.name like \"modo\" and p.categorie_id=?), (select count(p.id) Users from posts p inner join users u on p.user_id=u.id inner join roles r on u.role_id=r.id where r.name like \"user\" and p.categorie_id=?);", idstat, idstat, idstat)
+			checkErr(err)
+			var user int
+			var modo int
+			var admin int
 
-// 	fmt.Printf("ça nous a pris : %d ms", time.Now().Sub(t).Milliseconds())
-// 	fmt.Println(names)
-// 	fmt.Println(ids)
+			defer rows.Close()
 
-// 	return result, nil
-// }
+			lock.Lock()
+			for rows.Next() {
+				err = rows.Scan(&user, &modo, &admin)
+				checkErr(err)
+
+				result += "\n" + name + "," + strconv.Itoa(user) + "," + strconv.Itoa(modo) + "," + strconv.Itoa(admin)
+			}
+
+			lock.Unlock()
+			wait.Done()
+		}(i)
+	}
+	wait.Wait()
+	fmt.Printf("ça nous a pris : %d ms\n", time.Now().Sub(t).Milliseconds())
+	fmt.Println(names)
+	fmt.Println(ids)
+	// fmt.Println(result)
+
+	return result, nil
+}

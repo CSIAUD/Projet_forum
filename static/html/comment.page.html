@@ -4,37 +4,55 @@
 {{end}}
 {{define "main"}}
 <main>
-    {{range .Posts}}
-    <div id="post{{.Id}}">
-        <div id="block1">
-            <!--<div class="posts">
-                <img class="postimg" src="static/img/" alt="postimg">
-            </div> -->
+    {{with .Post}}
+    <div class="Posts{{.Id}}">
+         <div class="user">
+             {{.User.Avatar}}
+             Par {{.User.Username}}
+         </div>
+         <div class="category">
+             {{.Categorie}}
+         </div>
+         <div class="date">
+            Il y a {{.Date}}
+        </div>
+                
+        <div class="Posts">
+
+        </div>
+        <div id="Descriptif" class="Descriptif">
+            {{.Content}}
+            <!--Permet d'augmenter la height de la div de id="Descriptif" en cliquant sur "Lire la Suite"-->
+            <a href="javascript:document.getElementById('Descriptif').style.height='10vh';document.getElementById('Descriptif').releaseCapture();"> 
+                <u>Lire la Suite</u>
+            </a>
+            <!--Permet de réduire la -eight de la div de id="Descriptif" en cliquant sur "Fermer"-->
+            <div id="re001" style="display: block;">
+                <a href="javascript:document.getElementById('Descriptif').style.height='4vh';document.getElementById('Descriptif').releaseCapture();">
+                    <u>Fermer</u>
+                </a>
+            </div>
+        </div>
 
 
-            <div class="descriptif">
-                <div class="infos">
-                    <img class="avatar" src="static/img/{{.User.Avatar}}" alt="avatar">
-                    <p>Par {{.User.Username}} Il y a {{.Date}}</p>
-                    <p class="category"><span>{{.Categorie}}</span></p>
-                </div>
-                <div class="text">
-                <p>{{.Content}}</p>
-                </div>
-                <p id="like">Liked by {{.Likes}} users</p>
-            </div>     
+        
+        <div class="Likes">
+            {{.Likes}}
         </div>
         {{end}}
+
         {{range .Commentaires}}
-        <div class="comment">
-        
-            <p id="par">Par {{.User.Username}} Il y a {{.Date}}</p>
-            <p id="text-par">{{.Content}}</p>
-       
-        </div> 
+        <div class="Comment">
+            <img src="{{.User.Avatar}}"/>
+            <p>Par {{.User.Username}} il y a {{.Date}}</p>
+
+            <p>{{.Content}}</p>
+            
+            <div class="like">
+            </div>
+        </div>
         {{end}}
     </div>
-    
 </main>
 
 {{end}}

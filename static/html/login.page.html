@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="./static/css/login.css">
     <script src="static/js/afficher.js" defer></script>
 {{end}}
-{{define "main"}}email 
+{{define "main"}}
 <div id="popup">
     <div id="content1">
         <div class="box">
@@ -18,7 +18,7 @@
                 </div>
                 <div class="sidebar-footer">
                     <p class="desktop-only">
-                        <a class="button" href="account_creation.page.html">Créer un compte</a>
+                        <a class="button" href="signup">Créer un compte</a>
                     </p>
                 </div>
             </div>
@@ -44,6 +44,7 @@
                 }
                 %>-->
                 <div class="main-title">
+                    <a id="btnClose" href="index">&times;</a>
                     <h1>Connexion au Forum MLC</h1>
                 </div>
                 <form id="login" method="post" action="/login">
@@ -55,10 +56,8 @@
                     <div class="field">
                         <label for="password">Mot de passe : </label>
                         <input id="password" type="password" tabindex="2" accesskey="m" autocomplete="off" name="password" value="" required>
+                        <img onclick="Afficher(event,'password')" class="Vue" src="./static/img/oeil barre.png">
                     </div>
-                    <bouton onclick="Afficher('password')">
-                        <img id="Vue" src="/static/img/oeil barre.png">
-                    </bouton>
                     <!--<%
                     if (typeof service == 'undefined') {
                     %>-->

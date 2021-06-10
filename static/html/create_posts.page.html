@@ -1,19 +1,77 @@
 {{template "layout" .}}
 {{define "head"}}
+<script>
+    function allowDrop(ev) {
+      ev.preventDefault();
+    }
+    
+    function drag(ev) {
+      ev.dataTransfer.setData("text", ev.target.id);
+    }
+    
+    function drop(ev) {
+      ev.preventDefault();
+      var data = ev.dataTransfer.getData("text");
+      ev.target.appendChild(document.getElementById(data));
+    }
+</script>
+<link href="static/css/creat_post.css">
 {{end}}
 {{define "main"}}
 <main>
-    <div id="box">
-        <div id="D&D">
+    <div id="main1">
+        <h1>Creation Post</h1>
+        <div id="box1">
+            <div id="D&D">
+                <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+                <p>Déposer votre Image ici</p>
+            </div>
+            <div id="Descriptif">
+                <FORM>
+                    <TEXTAREA name="nom" rows=6 cols=40>Ecrivez ici</TEXTAREA>
+                </FORM>
+            </div>
+            <div id="Categorie">
+                <!--Listes des catégories disponible a la création d'un posts-->
+                <div>
+                    <input type="radio" id="Categorie" name="drone" value="Busines" checked>
+                    <label for="Busines">Busines</label>
+                </div>
+                <div>
+                    <input type="radio" id="Categorie" name="drone" value="Sport" checked>
+                    <label for="Sport">Sport</label>
+                </div>
+                <div>
+                    <input type="radio" id="Categorie" name="drone" value="Culture" checked>
+                    <label for="Culture">Culture</label>
+                </div>
+                <div>
+                    <input type="radio" id="Categorie" name="drone" value="Loisirs" checked>
+                    <label for="Loisirs">Loisirs</label>
+                </div>
+                <div>
+                    <input type="radio" id="Categorie" name="drone" value="Gaming" checked>
+                    <label for="Gaming">Gaming</label>
+                </div>
+                <div>
+                    <input type="radio" id="Categorie" name="drone" value="Animaux" checked>
+                    <label for="Animaux">Animaux</label>
+                </div>
+                <div>
+                    <input type="radio" id="Categorie" name="drone" value="Voyage" checked>
+                    <label for="Voyage">Voyage</label>
+                </div>
+                <div>
+                    <input type="radio" id="Categorie" name="drone" value="Santé" checked>
+                    <label for="Santé">Santé</label>
+                </div>
+                <div>
+                        <input type="radio" id="Categorie" name="drone" value="Education" checked>
+                    <label for="Education">Education</label>
+                </div>
+            </div>
 
         </div>
-        <div id="Descriptif">
-
-        </div>
-        <div id="Categorie">
-
-        </div>
-
     </div>
 </main>
 

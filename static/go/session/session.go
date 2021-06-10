@@ -40,8 +40,6 @@ func LogIn(mail string, password string, db bdd.MyDB, w http.ResponseWriter, r *
 	if db.UserExist(mail) {
 		id, err := db.CompareMdp(password, mail)
 		if err != nil {
-			fmt.Println(err)
-			fmt.Println("erreur1")
 			return false
 		} else {
 			session, err := r.Cookie("Session")
@@ -49,9 +47,6 @@ func LogIn(mail string, password string, db bdd.MyDB, w http.ResponseWriter, r *
 				fmt.Print("cookieError :")
 				fmt.Println(err)
 			} else {
-				fmt.Println(session)
-				fmt.Println(id)
-
 				db.SetSession(session.Value, id)
 				fmt.Println("session ok")
 			}

@@ -2,6 +2,7 @@
 {{define "head"}}
 <link rel="stylesheet" href="./static/css/login.css">
 <script src="static/js/afficher.js" defer></script>
+<script src="static/js/signup.js" defer></script>
 {{end}}
 {{define "main"}}
 <div id="popup">
@@ -19,7 +20,7 @@
                     </div>
                     <div class="sidebar-footer">
                         <p class="desktop-only">
-                            <a class="button" href="index">Acceuil</a>
+                            <a class="button" href="index">Accueil</a>
                         </p>
                     </div>
                 </div>
@@ -30,7 +31,7 @@
                     <form id="login" method="get" action="/signup">
                         <div class="field">
                             <label for="Pseudo">Pseudo : </label>
-                            <input id="Pseudo" type="Pseudo" tabindex="1" accesskey="i" autocomplete="off" name="Pseudo" value="" required>
+                            <input id="Pseudo" type="Pseudo" tabindex="1" accesskey="i" autocomplete="off" name="username" value="" required>
                         </div>
                         <div class="field">
                             <label for="email">E-mail : </label>
@@ -39,16 +40,25 @@
 
                         <div class="field">
                             <label for="password">Mot de passe : </label>
-                            <input id="password" type="password" tabindex="2" accesskey="m" autocomplete="off" name="password" value="" required>
+                            <input onkeyup="specs(event)" onfocus="toggle('verifs')" onblur="toggle('verifs')" id="password" type="password" tabindex="2" accesskey="m" autocomplete="off" name="password" value="" required>
+                            <img onclick="Afficher(event,'password')" class="Vue" src="./static/img/oeil barre.png">
+                            <div id="verifs">
+                                <label for="password">
+                                    Le mot de passe doit contenir : <br>
+                                    <span>8 Caractères minimum</span><br>
+                                    <span>Au moins 1 MAJUSCULE</span><br>
+                                    <span>Au moins 1 minuscule</span><br>
+                                    <span>Au moins 1 chiffre</span><br>
+                                    <span>Au moins 1 caractère spécial</span>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="field">
                             <label for="conf_password">Confirmation du mot de passe : </label>
                             <input id="conf_password" type="password" tabindex="2" accesskey="m" autocomplete="off" name="conf_password" value="" required>
+                            <img onclick="Afficher(event,'conf_password')" class="Vue" src="./static/img/oeil barre.png">
                         </div>
-                        <bouton onclick="Afficher('password')">
-                            <img id="Vue" src="./static/img/oeil barre.png">
-                        </bouton>
 
                         <input name="submit" type="submit" class="button" tabindex="6" accesskey="l" value="S'inscrire">
                     </form>

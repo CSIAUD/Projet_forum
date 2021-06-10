@@ -49,15 +49,16 @@ type Users struct {
 }
 
 type Commentaire struct {
-	Id        int
-	Content   string
-	Date      string
-	User      User
-	Post      Post
+	Id      int
+	Content string
+	Date    string
+	User    User
+	// Post      Post
 	CommentId int
 }
 type Commentaires struct {
 	Commentaires []Commentaire
+	Post         Post
 	Error        bool
 	User         User
 }
@@ -154,8 +155,11 @@ type Ticket struct {
 	OpenBy    User
 }
 type Tickets struct {
-	Tickets []Ticket
-	Error   bool
+	Wait  []Ticket
+	Open  []Ticket
+	Close []Ticket
+	Error bool
+	User  User
 }
 
 type BanList struct {

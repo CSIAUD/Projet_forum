@@ -11,6 +11,8 @@ let urlTestRegex = new RegExp("\#","g")
 
 
 window.addEventListener('load', () => {
+    let stats = getStats()
+    console.log(stats)
     if ((window.location.href).search(urlTestRegex) > 0){
         let url = (urlRegex.exec(window.location.href))[0]
         window.location.href = url
@@ -56,4 +58,35 @@ function cut(txt){
     let temp = ""
     for (let i=txt.length; i--; i>=0)temp += txt[i]
     return txt.slice(0,(0 - temp.indexOf('/')))
+}
+
+
+function getStats(){
+    var httpRequest
+    let btn = document.getElementById("ajaxButton")
+    btn.addEventListener('click', () => makeRequest());
+
+}
+function makeRequest() {
+    httpRequest = new XMLHttpRequest();
+
+    if (!httpRequest) {
+        alert('Abandon :( Impossible de créer une instance de XMLHTTP');
+        return false;
+    }
+    httpRequest.onreadystatechange = alertContents;
+    httpRequest.open('GET', 'getStats');
+    httpRequest.send();
+}
+
+function alertContents() {
+    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+        if (httpRequest.status === 200) {
+            console.log("ok")
+            alert(httpRequest.responseText);
+            return httpRequest.responseText
+        } else {
+            alert('Il y a eu un problème avec la requête.');
+        }
+    }
 }

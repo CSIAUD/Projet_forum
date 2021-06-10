@@ -27,6 +27,7 @@
 {{define "main"}}
 
 <main id="main">
+    <button id="ajaxButton" type="button">Faire une requête</button>
     <div id="menu">
         <a href="dashBoard" class="active">Statistiques</a>
         <a href="banList">BanList</a>
@@ -42,7 +43,6 @@
                 <div id="popupWeekStats"></div>
             </div>
 
-            <!-- <img src="./static/img/graph.png" alt=""> -->
         </div>
         <div id="statMonth">
             <h3>Le mois passé</h3>
@@ -51,7 +51,6 @@
             <div id="popupMonth">
                 <div id="popupMonthStats"></div>
             </div>
-            <!-- <img src="./static/img/graph.png" alt=""> -->
         </div>
         <div id="statAll">
             <h3>Tout</h3>
@@ -60,9 +59,7 @@
             <div id="popupAll">
                 <div id="AllStats"></div>
             </div>
-            <!-- <img src="./static/img/graph.png" alt=""> -->
         </div>
     </div>
 </main>
-    
 {{end}}
