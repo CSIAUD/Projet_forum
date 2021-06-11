@@ -9,3 +9,7 @@ function Afficher(ev,id){
         target.src = "./static/img/oeil barre.png"
     } 
 } 
+
+function IndexRedirect() {
+    window.location.href="index";
+}
