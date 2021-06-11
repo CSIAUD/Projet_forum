@@ -26,6 +26,7 @@
                 </div>
                 <div class="main">
                     <div class="main-title">
+                        <a id="btnClose" href="index">&times;</a>
                         <h1>Inscription MLC</h1>
                     </div>
                     <form id="login" method="get" action="/signup">
@@ -59,8 +60,10 @@
                             <input id="conf_password" type="password" tabindex="2" accesskey="m" autocomplete="off" name="conf_password" value="" required>
                             <img onclick="Afficher(event,'conf_password')" class="Vue" src="./static/img/oeil barre.png">
                         </div>
-
-                        <input name="submit" type="submit" class="button" tabindex="6" accesskey="l" value="S'inscrire">
+                        
+                        <form method="POST" action="index">
+                        <input onclick="IndexRedirect()" name="submit" type="submit" class="button" tabindex="6" accesskey="l" value="S'inscrire">
+                        </form>
                     </form>
                 </div>
             </div>
