@@ -2,15 +2,22 @@
 {{define "head"}}
 <script src="static/js/afficher.js" defer></script>
 <script src="static/js/copie.js" defer></script>
+<link rel="stylesheet" href="./static/css/share.css">   
+
 {{end}}
 
 {{define "main" }}
 <div id="share">
-    <div id="Sharebox">
-            <a id="shareclose" class="shareclose">&times;</a>
-            <p id="sharep">Voici l'URL de partage : <span id="tocopy">https://test123lol </span><input type="image" class="js-copy" data-target="#tocopy" src="static/img/copy-icon.png"></p><img id="shareimg" src="../img/5bkzlx.jpg">
-            
-    </div>
-
+    <!-- <div id="Sharebox"> -->
+        {{range .Posts}}
+            <a id="cross" href="index">&times;</a>
+            <div class="elemUrl">
+            <p id="sharep">Pour partager le post, <br> copie le lien suivant: </p>
+            <span id="tocopy">https://localhost:8000/comment?id={{.Id}}</span>
+            </div>
+            <input id="copy"  class="js-copy" data-target="#tocopy" value="Copier">
+            <!--<img id="shareimg" src="../img/5bkzlx.jpg">-->
+        {{end}} 
+    <!-- </div> -->
 </div>
 {{end}}

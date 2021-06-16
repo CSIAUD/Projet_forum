@@ -10,7 +10,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=KoHo:wght@200&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
+        <script src="https://unpkg.com/htmx.org@1.4.1"></script>
         {{block "head" .}}
         {{end}}
 </head>
@@ -18,7 +19,6 @@
     {{if not .Error}}
         {{template "header" .}}
     {{end}}
-    {{.User}}
     {{template "main" .}}
 </body>
 </html>

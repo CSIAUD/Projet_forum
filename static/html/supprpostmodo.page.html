@@ -1,0 +1,20 @@
+{{template "layout" .}}
+{{define "head"}}
+<link href="static/css/creat_post.css">
+<script src="./static/js/deletePost.js" defer></script>
+{{end}}
+{{define "main"}}
+<main>
+    <div id="DeletePostM">
+        <h1>Suppression de Post</h1>
+        <form id="box1" action="" method="GET">
+            <TEXTAREA id="content" name="content" rows=6 cols=40 placeholder="Motif de suppression du post"></TEXTAREA>
+            <input type="submit" id="content" value="Supprimer le post">
+            <input type="hidden" name="id" value="{{.Id}}">
+        </form>
+        <div>
+        </div>
+    </div>
+</main>
+
+{{end}}

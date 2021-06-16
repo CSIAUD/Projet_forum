@@ -1,0 +1,21 @@
+#boxverif {
+  width: auto;
+  max-width: 90%;
+  max-height: 90%;
+  height: auto;
+  max-width: 90%;
+  margin: 10vh auto 50px;
+  background-color: rgb(153 216 203 / 93%);
+  border-radius: 10px;
+  -ms-grid-columns: 1fr 2fr;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+}
+p, h2, a {
+  padding: 1vh;
+}
+a {
+  font-size: 30px;
+}

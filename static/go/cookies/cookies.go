@@ -3,6 +3,7 @@ package SetCookie
 import (
 	// "Forum/static/go/structs"
 	// "fmt"
+	"time"
 
 	"net/http"
 	"strconv"
@@ -13,7 +14,7 @@ import (
 
 var html string
 
-//set cookie en plus de donner un uuid
+//Création des cookies,pour le Session, la valeur est un uuid, autrement Reference a une valeur incrémenté
 func SetCookie(name string, value string, w http.ResponseWriter, r *http.Request) *http.Cookie {
 
 	cookie, err := r.Cookie(name)
@@ -22,9 +23,11 @@ func SetCookie(name string, value string, w http.ResponseWriter, r *http.Request
 		if name == "Session" {
 			value = (uuid.New()).String()
 		}
+		expiration := time.Now().Add(24 * time.Hour)
 		cookie = &http.Cookie{
 			Name:     name,
 			Value:    value,
+			Expires:  expiration,
 			HttpOnly: true,
 			Path:     "/",
 			SameSite: http.SameSiteLaxMode,
@@ -35,6 +38,7 @@ func SetCookie(name string, value string, w http.ResponseWriter, r *http.Request
 	return cookie
 }
 
+//on actualise la valeur du cookie référence en fonction de son avancé dans le forum
 func CookieActu(w http.ResponseWriter, r *http.Request, url string) *http.Cookie {
 
 	cookie, err := r.Cookie("Reference")
@@ -51,6 +55,7 @@ func CookieActu(w http.ResponseWriter, r *http.Request, url string) *http.Cookie
 	return cookie
 }
 
+//on incrémente la valeur du cookie Référence
 func IncCookieVal(w http.ResponseWriter, r *http.Request) *http.Cookie {
 	cookie, err := GetCookie("Reference", w, r)
 
@@ -64,18 +69,21 @@ func IncCookieVal(w http.ResponseWriter, r *http.Request) *http.Cookie {
 	return cookie
 }
 
+//fonction qui get le cookie d'après le nom
 func GetCookie(name string, w http.ResponseWriter, r *http.Request) (*http.Cookie, error) {
 	cookie, err := r.Cookie(name)
 	return cookie, err
 }
 
+//fonction qui détruit les cookies
 func DestroyCookie(w http.ResponseWriter, r *http.Request) {
 	// cookie, err := r.Cookie("SessionToken")
 
 	if r.URL.Path == "/logout" {
 		cookie := &http.Cookie{
-			Name:     "Session",
-			Value:    "0",
+			Name: "Session",
+			// Value:    "0",
+			MaxAge:   -1,
 			HttpOnly: true,
 			Path:     "/",
 			SameSite: http.SameSiteLaxMode,

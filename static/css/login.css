@@ -110,7 +110,7 @@
 #btnClose {
     cursor: pointer;
     margin-right: 2vh;
-    margin-top: -1vh;
+    margin-top: 1vh;
     float: right;
     width: 20px;
     height: 20px;

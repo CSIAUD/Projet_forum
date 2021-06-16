@@ -1,6 +1,8 @@
 {{template "layout" .}}
 {{define "head"}}
-    <script src="static/js/afficher.js" defer></script>
+<link rel="stylesheet" href="static/css/login.css">       
+<script src="static/js/afficher.js" defer></script>
+<script src="static/js/signup.js" defer></script>
 {{end}}
 {{define "main"}}
 <div id="content1">
@@ -13,11 +15,12 @@
                 <p class="desktop-only">
                     Nous vous conseillons de ne pas partager votre mot de passe avec d'autre utilisateurs !
                 </p>
-                <a href="login"><img class="retour" src="static/img/flècheretour.png"></a>
+                <a class="button" href="index">Accueil</a>
             </div>
         </div>
         <div class="main">
-            <form id="login" method="post" action="/login">
+            <a id="btnClose" href="index">&times;</a>
+            <form id="login" method="post" action="">
                 <div class="main-title">
                     <h1>Récupération du mot de passe</h1>
                 </div>
@@ -46,18 +49,17 @@
                         <div class="field">
                             <label for="password">Nouveau mot de passe </label>
                             <input id="password" type="password" tabindex="2" accesskey="m" autocomplete="off" name="password" value="" required>
+                            <img onclick="Afficher(event,'password')" class="Vue" src="./static/img/oeil barre.png">
                         </div>
                         <!--<%
                         if (typeof service == 'undefined') {
                         %>-->
                         <div class="field">
                             <label for="passwordConfirm">Confirmation du nouveau mot de passe </label>
-                            <input id="passwordConfirm" type="password" tabindex="2" accesskey="m" autocomplete="off" name="passwordConfirm" value="">
-                            <bouton onclick="Afficher('password')">
-                                <img id="Vue" src="static/img/oeil non barre.png">
-                            </bouton>
+                            <input id="passwordConfirm" type="password" tabindex="2" accesskey="m" autocomplete="off" name="conf_password" value="" requierd>
+                            <img onclick="Afficher(event,'passwordConfirm')" class="Vue" src="./static/img/oeil barre.png">
                         </div>
-                        <input name="submit" type="submit" class="button" tabindex="6" accesskey="l" value="S'enregistrer">
+                        <input name="submit" type="submit" class="button" tabindex="6" accesskey="l" value="Enregistrer">
                     </div>
                 </div>
             </form>

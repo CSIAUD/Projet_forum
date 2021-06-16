@@ -1,11 +1,14 @@
 {{template "layout" .}}
 {{define "head"}}
+<link rel="stylesheet" href="static/css/search.css">
+<script src="./static/js/search.js" defer></script>
 {{end}}
 {{define "main"}}
 
 <main>
+    {{$Role := .User.Role}}
     <div id="posts">
-        <div id="tri">
+        <!--<div id="tri">
             <div id="new">
                 <img src="static/img/new.png" alt="">
                 <a href="#">NEW</a>
@@ -14,80 +17,54 @@
                 <img src="static/img/top.png" alt="">
                 <a href="#">TOP RATE</a>
             </div>
-        </div>
-
-        <div id="post1">
+        </div>-->
+        {{if ge .User.Role 1}}
+        <a href="createPost"><button><img id="imgPost" src="./static/img/post.png"><p id="CreateP">Créer un post</p></button></a>
+        {{end}}
+        {{if or (eq $Role 2) (eq $Role 1) }}
+        <a id="DashBoard" href="banList">dashboard</a>
+        {{end}}
+        
+        {{range .Posts}}
+        <div id="post{{.Id}}">
             <div class="infos">
-                <img class="avatar" src="static/img/avatar.png" alt="avatar">
-                <p>Par Cyprien Siaud Il y a 15min</p>
-                <p class="category"><span>Business</span></p>
+                <img class="avatar" src="./static/img/{{.User.Avatar}}" alt="avatar">
+                <div class=elemUser>
+                <p>Par <a href="profil?id={{.User.Id}}">{{.User.Username}}</a> <p id="time">Il y a {{.Date}}</p></p>
+                </div>
+                <p class="category {{.Categorie}}"><span>{{.Categorie}}</span></p>
             </div>
-            <div class="container1">
-                <img id="imgpost" src="https://img-3.journaldesfemmes.fr/JRHeuU3dfNzTWV2zPL18MqHE-ZM=/748x499/smart/70294ab34b054cbd8d94ed45a6779d3e/recipe-jdf/398831.jpg" alt="">
-                <p class="text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ullamcorper dictum nunc dapibus pulvinar. Nulla pulvinar metus at venenatis facilisis. Integer ut elit urna. Donec et feugiat enim, non pretium diam. Donec nisi odio, porttitor vel tristique a, venenatis a massa. Cras sagittis sed nibh vitae pellentesque. Morbi et erat tellus. Nam nec orci eu nisi vestibulum congue. Donec tincidunt ex in tortor bibendum fringilla. Aliquam non erat ut dolor luctus aliquet. Nullam tempus magna eu tortor ultrices, eu volutpat mi pulvinar. Proin ultricies sapien sed nulla lobortis condimentum. Donec fermentum eget nulla a maximus. </p>
+            <div class="container">
+                <p>{{.Content}}</p>
             </div>
             <div class="control">
                 <span>
-                    <a href="#"><input type="image" id="like" alt="Login" src="static/img/like.png"></a>
-                    <a href="#"><input type="image" id="dislike" alt="Login" src="static/img/dislike.png"></a>
+                    <img hx-post="/vote?PostId={{.Id}}&Vote=1" hx-target="#likeInfo{{.Id}}" hx-trigger="click" hx-swap="innerText" src="./static/img/like2Blanc.png" alt="like" class="like">
+                    <img hx-post="/vote?PostId={{.Id}}&Vote=0" hx-target="#likeInfo{{.Id}}" hx-trigger="click" hx-swap="innerText" src="./static/img/dislike2Blanc.png" alt="dislike" class="dislike">
+                    {{if or (eq $Role 2) (eq $Role 1) }}
+                        <button><a href="supprpostmodo?id={{.Id}}">supprimer post</a></button>
+                    {{end}}
                 </span>
                 <span>
-                    <a href="comment"><input type="image" id="comment" alt="Login" src="static/img/comment.png"></a>
-                    <a href="share"><input type="image" id="share" alt="Login" src="static/img/share.png"></a>
+                    <a href="comment?id={{.Id}}"><img src="./static/img/comment.png" alt="comment"></a>
+                    <a href="share?id={{.Id}}"><img src="./static/img/share.png" alt="share"></a>
                 </span>
-                <p>Liked by 5 users</p>
+                <p id="likeInfo{{.Id}}">{{.Likes.Note}} like.s pour {{.Likes.Total}} vote.s</p>
             </div>
         </div>
+        {{end}}
     </div>
     <div id="categories">
-        <nav>
-            <ul>
-                <li class="deroulant">Catégories
-                    <ul class="sous">
-                        <li><a>
-                            <input type="checkbox" id="cat" name="scales" nochecked>
-                            <label for="cat">Busines</label>
-                        </a></li>
-                        <li><a>
-                            <input type="checkbox" id="cat2" name="scales" nochecked>
-                            <label for="cat2">Sport</label>
-                        </a></li>
-                        <li><a>
-                            <input type="checkbox" id="cat3" name="scales" nochecked>
-                            <label for="cat3">Culture</label>
-                        </a></li>
-                        <li><a>
-                            <input type="checkbox" id="cat4" name="scales" nochecked>
-                            <label for="cat4">Loisirs</label>
-                        </a></li>
-                        <li><a>
-                            <input type="checkbox" id="cat5" name="scales" nochecked>
-                            <label for="cat5">Cinéma</label>
-                        </a></li>
-                        <li><a>
-                            <input type="checkbox" id="cat6" name="scales" nochecked>
-                            <label for="cat6">Gaming</label>
-                        </a></li>
-                        <li><a>
-                            <input type="checkbox" id="cat7" name="scales" nochecked>
-                            <label for="cat7">Animaux</label>
-                        </a></li>
-                        <li><a>
-                            <input type="checkbox" id="cat8" name="scales" nochecked>
-                            <label for="cat8">Voyage</label>
-                        </a></li>
-                        <li><a>
-                            <input type="checkbox" id="cat9" name="scales" nochecked>
-                            <label for="cat9">Santé</label>
-                        </a></li>
-                        <li><a>
-                            <input type="checkbox" id="cat10" name="scales" nochecked>
-                            <label for="cat10">Education</label></a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
+        <form action="" method="GET">
+            <h2>Catégories</h2>
+            {{range .Categories}}
+                <span>
+                    <input type="checkbox" id="cat{{.Name}}" name="categorie" value="{{.Name}}">
+                    <label for="cat{{.Name}}">{{.Name}}</label>
+                </span>
+            {{end}}
+            <input type="submit" value="Appliquer">
+        </form>
     </div>
 </main>
 

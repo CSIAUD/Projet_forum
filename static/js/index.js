@@ -1,8 +1,8 @@
 function vote(ev){
-    let elem = ev.originalTarget
-    let userIdCookie = getCookie("Session")
+    let elem = ev.target
     let postId = ((((elem.parentElement).parentElement).parentElement).id).slice(4)
-    let vote = elem.attributes.alt.nodeValue =="like" ? "1" : "-1"
-    let url = "vote?Session="+userIdCookie+"&PostId="+postId+"&Vote="+vote
+    let vote = elem.attributes.alt.nodeValue =="like" ? "1" : "0"
+    let url = "vote?PostId="+postId+"&Vote="+vote
+    window.location.href = url
     console.log(url)
 }

@@ -1,6 +1,7 @@
 {{template "layout" .}}
 {{define "head"}}
     <link rel="stylesheet" href="static/css/banList.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <script src="static/js/banList.js" defer></script>
 {{end}}
 {{define "main"}}
@@ -10,13 +11,18 @@
         <a href="dashBoard">Statistiques</a>
         <a href="banList" class="active">BanList</a>
         <a href="tickets">Tickets</a>
+        {{if ne .User.Id 1}}
+        <a href="role">Rôles</a>
+        <a href="catModo" >Modérateurs</a>
+        <a href="categories">Catégories</a>
+        {{end}}
     </div>
     <div id="container" class="visible">
         <h2>Banlist</h2>
         <!-- {{.BanLists}} -->
         {{range .BanLists}}
         <div class="userBan">
-            <h3 {{if eq .BanDef "1" }}class="banDef"{{end}}>{{.User.Username}}</h3>
+            <h3 {{if eq .BanDef "1" }}class="banDef"{{end}}><i class="fas fa-exclamation-circle"></i> {{.User.Username}}</h3>
             <ul class="banList">
                 <li>{{if .BanDef}}
                         {{.BanDef}} depuis le {{.StartDate}} 

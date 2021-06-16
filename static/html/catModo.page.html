@@ -1,0 +1,47 @@
+ {{template "layout" .}}
+{{define "head"}}
+    <link rel="stylesheet" href="static/css/tickets.css">
+    <script src="static/js/modo.js" defer></script>
+{{end}}
+{{define "main"}}
+<main id="main">
+    <div id="menu">
+        <a href="dashBoard">Statistiques</a>
+        <a href="banList">BanList</a>
+        <a href="tickets">Tickets</a>
+        <a href="role">Rôles</a>
+        <a href="catModo" class="active">Modérateurs</a>
+        <a href="categories" >Catégories</a>
+    </div>
+    <div id="container" class="visible">
+        <h2>Catégories des Modérateurs</h2>
+        <div id="modo-container">
+            {{$Cats := .Categories}}
+
+            {{range .Modo}}
+            {{$UserCats := .Categories}}
+            <form class="roleForm" action="id={{.Id}}" method="GET">
+                <li id="username_{{.Username}}" name="user" id="user" value="{{.Id}}" class="list-elem">{{.Username}}
+                    <span class="catChecks">
+                        {{range $Cat := $Cats}}
+                        <span>
+                            <input type="checkbox" id="cat{{$Cat.Name}}" name="categorie" value="{{$Cat.Id}}" 
+                            {{range $UserCats}}
+                                {{if eq . $Cat.Id}}
+                                    checked
+                                {{end}}
+                            {{end}}>
+                            <label for="cat{{$Cat.Name}}">{{.Name}}</label>
+                        </span>
+                        {{end}}
+                    </span>
+                </li>
+                <input type="submit" value="enregistrer">
+            </form>
+            {{end}}
+            </ul>
+        </div>
+    </div>  
+</main>
+
+{{end}}

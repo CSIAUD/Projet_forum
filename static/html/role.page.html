@@ -1,0 +1,67 @@
+{{template "layout" .}}
+{{define "head"}}
+    <link rel="stylesheet" href="static/css/tickets.css">
+    <script src="static/js/tickets.js" defer></script>
+    <script src="static/js/searchUser.js" defer></script>
+{{end}}
+{{define "main"}}
+<main id="main">
+    <div id="menu">
+        <a href="dashBoard">Statistiques</a>
+        <a href="banList">BanList</a>
+        <a href="tickets">Tickets</a>
+        <a href="role" class="active">Rôles</a>
+        <a href="catModo" >Modérateurs</a>
+        <a href="categories" >Catégories</a>
+    </div>
+    <div id="container" class="visible">
+        <h2>Rôles</h2>
+        <div id="sub-container">
+            <form id="roleForm" action="" method="GET">
+                <input type="text" list="search-list" id="search" onkeyup="searchUser()" name="search" placeholder="Faites votre recherche ici...">
+                <select name="select" id="selectRol">
+                    <option value="3">Utilisateur</option>
+                    <option value="2">Modérateur</option>
+                    <option value="1">Administrateur</option>
+                </select>
+                <input type="submit" value="Enregistrer">
+            </form>
+            <datalist id="search-list"></datalist>
+            <div>
+
+                <h3>Utilisateurs</h3>
+
+                {{range .Users}}
+                
+                <ul class="list">
+                    <li onclick="toSearch(event)" id="username_{{.Username}}" class="list-elem">{{.Username}}</li>
+                 
+                </ul>
+                {{end}}
+            </div>
+            <div>
+                <h3>Modérateurs</h3>
+
+                {{range .Modo}} 
+                
+                <ul class="list">
+                    <li onclick="toSearch(event)" id="username_{{.Username}}" class="list-elem">{{.Username}}</li>
+                </ul>
+                {{end}}
+            </div>
+            <div>
+                <h3>Administrateurs</h3>
+
+                {{range .Admin}} 
+                
+                <ul class="list">
+                    <li onclick="toSearch(event)" id="username_{{.Username}}" class="list-elem">{{.Username}}</li>
+                </ul>
+                {{end}}
+            </div>
+            
+        </div>
+    </div>
+</main>
+
+{{end}}

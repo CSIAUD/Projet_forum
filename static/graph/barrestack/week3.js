@@ -2,6 +2,7 @@
 import define1 from "./week2.js";
 
 export default function define(runtime, observer) {
+  const content = (document.getElementById("sevenData").innerText).replaceAll("|", "\n")
   const main = runtime.module();
   const fileAttachments = new Map([["us-population-state-age.csv",new URL("./files/WeekData",import.meta.url)]]);
   main.builtin("FileAttachment", runtime.fileAttachments(Category => fileAttachments.get(Category)));
@@ -40,7 +41,7 @@ ${formatValue(d.data[d.key])}`);
 }
 );
   main.variable(observer("data")).define("data", ["d3","FileAttachment"], async function(d3,FileAttachment){return(
-d3.csvParse(await FileAttachment("us-population-state-age.csv").text(), (d, i, columns) => (d3.autoType(d), d.total = d3.sum(columns, c => d[c]), d)).sort((a, b) => b.total - a.total)
+d3.csvParse(content, (d, i, columns) => (d3.autoType(d), d.total = d3.sum(columns, c => d[c]), d)).sort((a, b) => b.total - a.total)
 )});
   main.variable(observer("series")).define("series", ["d3","data"], function(d3,data){return(
 d3.stack()

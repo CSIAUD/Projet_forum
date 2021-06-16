@@ -4,19 +4,6 @@ window.addEventListener('load', () =>{
     if (elem.classList.contains("display")) toggle("verifs")
 })
 
-function verif(ev){
-    ev.preventDefault()
-    let pass = ((ev.originalTarget).querySelectorAll("input[type='password']"))
-
-    if (pass[0].value==pass[1].value) {
-        return true
-        
-    } else {
-        return false
-    }
-    // console.log(pass[0].value==pass[1].value)
-
-}
 function specs(ev){
     let count = 0
     let upperRegex = new RegExp('([A-Z])')

@@ -1,3 +1,4 @@
+// On rend les éléments visibles (liste des ban) ou non 
 let bans = document.getElementsByClassName("userBan")
 for (ban of bans){
     let pos = ban.children[0].getBoundingClientRect()

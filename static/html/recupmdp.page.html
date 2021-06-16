@@ -1,0 +1,60 @@
+{{template "layout" .}}
+{{define "head"}}
+    <script src="static/js/afficher.js" defer></script>
+    <link rel="stylesheet" href="static/css/login.css">   
+{{end}}
+{{define "main"}}
+<div id="content1">
+    <div class="box">
+        <div class="sidebar">
+            <div class="sidebar-content">
+                <p class="logo_container">
+                    <img class="logo" src="static/img/logo.png"></p>
+                <h3 class="desktop-only">Bienvenue sur l'onglet de récupération de votre mot de passe</h3>
+                <p class="desktop-only">
+                    Nous vous conseillons de ne pas partager votre mot de passe avec d'autre utilisateurs !
+                </p>
+                <a class="button" href="index">Accueil</a>
+            </div>
+        </div>
+        <div class="main">
+            <form id="recupmdp" method="post" action="/recupmdp">
+                <div class="main-title">
+                    <a id="btnClose" href="index">&times;</a>
+                    <h1>Récupération du mot de passe</h1>
+                </div>
+                <!--<%
+                if (typeof error == 'string') {
+                %>
+                <div class="main-error">
+                    <p class="error">
+                        <strong><%= error %></strong>
+                    </p>
+                </div>
+                <%
+                }
+                if (typeof success == 'string') {
+                %>
+                <div class="main-error">
+                    <p class="success">
+                        <strong><%= success %></strong>
+                    </p>
+                </div>
+                <%
+                }
+                %>-->
+                <div class="main-content">
+                    <div class="form">    
+                        <div class="field">
+                            <label for="mail">Entrer votre email </label>
+                            <input id="mail" type="mail" tabindex="2" accesskey="m" autocomplete="on" name="mail" value="" required>
+                        </div>
+                        <input name="submit" type="submit" class="button" tabindex="6" accesskey="l" value="Envoyer un mail de récupération">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{end}}

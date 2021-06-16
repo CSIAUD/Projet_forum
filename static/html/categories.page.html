@@ -1,0 +1,49 @@
+{{template "layout" .}}
+{{define "head"}}
+    <link rel="stylesheet" href="static/css/tickets.css">
+    <script src="static/js/tickets.js" defer></script>
+    <script src="static/js/searchUser.js" defer></script>
+{{end}}
+{{define "main"}}
+<main id="main">
+    <div id="menu">
+        <a href="dashBoard">Statistiques</a>
+        <a href="banList">BanList</a>
+        <a href="tickets">Tickets</a>
+        <a href="role">Rôles</a>
+        <a href="catModo">Modérateurs</a>
+        <a href="categories" class="active">Catégories</a>
+    </div>
+    <div id="container" class="visible">
+        <h2>Gestion des catégories</h2>
+        <div id="sub-container">
+            <!-- <form id="catForm" action="" method="GET">
+                <ul class="list">
+                {{range .Categories}}
+                    <li id="categories_{{.Id}}" class="list-elem">
+                        <input type="text" name="name" value="{{.Name}}">
+                        <button type="submit" name="delete" value="{{.Id}}">Supprimer</button>
+                        <button type="submit" name="update" value="{{.Id}}">Modifier</button>
+                    </li>
+                {{end}}
+                </ul>
+            </form> -->
+            <div>
+                {{range .Categories}}
+                <form class="catForm" id="categories_{{.Id}}" action="" method="GET">
+                    <input type="text" name="name" value="{{.Name}}">
+                    <button type="submit" name="update" value="{{.Id}}">Modifier</button>
+                    <button type="submit" name="delete" value="{{.Id}}">Supprimer</button>
+                </form>
+                {{end}}
+                <form class="catForm" action="" method="GET">
+                    <input type="text" list="search-list" id="add" name="add" placeholder="Nouvelle Catégorie">
+                    <input type="submit" value="Enregistrer">
+                </form>
+            </div>
+            <datalist id="search-list"></datalist>
+        </div>
+    </div>
+</main>
+
+{{end}}

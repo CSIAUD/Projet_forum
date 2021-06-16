@@ -1,37 +1,55 @@
 {{template "layout" .}}
 {{define "head"}}
     <link rel="stylesheet" href="static/css/categorie.css">
-    <script src="static/js/categories.js" defer></script>
+    <script src="./static/js/categories.js" defer></script>
 
     <script type="module" defer>
-        import {Runtime, Library, Inspector} from "./static/graph/barrestack/runtime.js";
+        
+    import {Runtime, Library, Inspector} from "./static/graph/barrestack/runtime.js";
+// import {Runtime, Library, Inspector} from "./runtime.js";
     
-        import Weekdefine from "./static/graph/barrestack/week.js";
+    import Weekdefine from "./static/graph/barrestack/week.js";
+    
+    import Monthdefine from "./static/graph/barrestack/month.js";
+    
+    // import Alldefine from "./static/graph/barrestack/all.js";
+import define from "./static/graph/pannable/index.js";
+
+
+    window.addEventListener('load', (ev) => {
+        let target = document.getElementById("monthData")
+        let temp = (target.innerText).replace("|", "\n")
+        afficher(temp)
+    })
+
+    function afficher(txt){
         const weekruntime = new Runtime();
         const weekmain = weekruntime.module(Weekdefine, Inspector.into(document.getElementById("WeekStats")));
-        
-    
-        import Monthdefine from "./static/graph/barrestack/month.js";
-    
+
+        // const allruntime = new Runtime();
+        // const allmain = allruntime.module(Alldefine, Inspector.into(document.getElementById("AllStats")));
+
         const monthruntime = new Runtime();
         const monthmain = monthruntime.module(Monthdefine, Inspector.into(document.getElementById("MonthStats")));
-    
-    
-        import Alldefine from "./static/graph/barrestack/all.js";
-    
-        const allruntime = new Runtime();
-        const allmain = allruntime.module(Alldefine, Inspector.into(document.getElementById("AllStats")));
-    
+        
+        const allRuntime = new Runtime();
+        const allMain = allRuntime.module(define, Inspector.into(document.getElementById("AllStats")));
+    }
     </script>
+
 {{end}}
 {{define "main"}}
-
+<p id="sevenData" style="display: none;">{{.Stats.Seven}}</p>
+<p id="monthData" style="display: none;">{{.Stats.Month}}</p>
+<p id="allData" style="display: none;">{{.Stats.All}}</p>
 <main id="main">
-    <button id="ajaxButton" type="button">Faire une requête</button>
     <div id="menu">
         <a href="dashBoard" class="active">Statistiques</a>
         <a href="banList">BanList</a>
         <a href="tickets">Tickets</a>
+        <a href="role">Rôles</a>
+        <a href="catModo">Modérateurs</a>
+        <a href="categories">Catégories</a>
     </div>
     <div id="stats" class="visible">
         <h2>Statistiques</h2>

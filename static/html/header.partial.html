@@ -6,12 +6,15 @@
             <p id="logo">MLC<span>Forum</span></p>
         </div>
     </a>
-
     <div id="research">
+    {{if eq .Page "search"}}
+        <form action="" method="GET">
+            <input type="text" name="search" required>
+            <input type="submit" value="">
+        </form>
+    {{else}}
         <a href="search" class="search">Recherche</a>
-    </div>
-    <div id="researchForm">
-    
+    {{end}}
     </div>
     <div id="account">
         
@@ -21,7 +24,9 @@
         {{else}}
             <a href="logout" id="deconnect">Déconnexion</a>
         {{end}}
-        <a href="profil"><img src="/static/img/avatar.png" alt="avatar" id="avatar"></a>
+        {{if ne $id 0}}
+        <a href="profil?id={{$id}}"><img src="/static/img/avatar.png" alt="avatar" id="avatar"></a>
+        {{end}}
     </div>
 </header>
 {{end}}

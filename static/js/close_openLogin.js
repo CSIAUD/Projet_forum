@@ -1,3 +1,5 @@
+// Gestion de la pop up de login
+
 var btnPopup = document.getElementById('login');
 var overlay = document.getElementById('content');
 var btnClose = document.getElementById('btnClose');

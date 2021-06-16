@@ -15,63 +15,36 @@
       ev.target.appendChild(document.getElementById(data));
     }
 </script>
-<link href="static/css/creat_post.css">
+<link rel="stylesheet" href="static/css/creat_post.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+<script src="static/js/createPost.js" defer></script>
 {{end}}
 {{define "main"}}
 <main>
     <div id="main1">
         <h1>Creation Post</h1>
-        <div id="box1">
-            <div id="D&D">
-                <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                <p>Déposer votre Image ici</p>
+        <form onsubmit="recupPost(event)" class="box1" action="" method="GET">
+            <!-- <div id="D&D">
+                <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)"><p>Déposer votre Image ici</p></div>
+                <button id="" type="button">Ajouter une Image</button>
+                
+            </div> -->
+            <p id="inputPost" rows=6 cols=40 contenteditable="true">Entrez votre texte ici !</p>
+            <!-- <TEXTAREA name="content" rows=6 cols=40 placeholder="Ecrivez ici..."></TEXTAREA> -->
+            <input id="content" type="hidden"  name="content" value="">
+            <input id="categorie" type="hidden"  name="categorie" value="">
+            <select onchange="recupContent(event)">
+                {{range .Categories}}
+                    <option type="radio" id="Categorie{{.Id}}"  value="{{.Name}}">{{.Name}}</option>
+                {{end}}
+            </select>
+            <input type="hidden" name="userId" value="{{.User.Id}}">
+            <input class="sub" type="submit" value="Envoyer"> 
+            <div>
+            <i class="fas fa-dharmachakra"></i>
             </div>
-            <div id="Descriptif">
-                <FORM>
-                    <TEXTAREA name="nom" rows=6 cols=40>Ecrivez ici</TEXTAREA>
-                </FORM>
-            </div>
-            <div id="Categorie">
-                <!--Listes des catégories disponible a la création d'un posts-->
-                <div>
-                    <input type="radio" id="Categorie" name="drone" value="Busines" checked>
-                    <label for="Busines">Busines</label>
-                </div>
-                <div>
-                    <input type="radio" id="Categorie" name="drone" value="Sport" checked>
-                    <label for="Sport">Sport</label>
-                </div>
-                <div>
-                    <input type="radio" id="Categorie" name="drone" value="Culture" checked>
-                    <label for="Culture">Culture</label>
-                </div>
-                <div>
-                    <input type="radio" id="Categorie" name="drone" value="Loisirs" checked>
-                    <label for="Loisirs">Loisirs</label>
-                </div>
-                <div>
-                    <input type="radio" id="Categorie" name="drone" value="Gaming" checked>
-                    <label for="Gaming">Gaming</label>
-                </div>
-                <div>
-                    <input type="radio" id="Categorie" name="drone" value="Animaux" checked>
-                    <label for="Animaux">Animaux</label>
-                </div>
-                <div>
-                    <input type="radio" id="Categorie" name="drone" value="Voyage" checked>
-                    <label for="Voyage">Voyage</label>
-                </div>
-                <div>
-                    <input type="radio" id="Categorie" name="drone" value="Santé" checked>
-                    <label for="Santé">Santé</label>
-                </div>
-                <div>
-                        <input type="radio" id="Categorie" name="drone" value="Education" checked>
-                    <label for="Education">Education</label>
-                </div>
-            </div>
+        </form>
 
-        </div>
     </div>
 </main>
 

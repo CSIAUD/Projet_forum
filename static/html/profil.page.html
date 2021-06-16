@@ -1,100 +1,209 @@
 {{template "layout" .}}
 {{define "head"}}
-<script src="static/js/menu.js" defer></script>
 <link rel="stylesheet" href="static/css/profil.css">
-<script>
-
-    var tabs = document.querySelectorAll('.info-box li a');
-    var panels = document.querySelectorAll('.info-box article');
-    
-    for(i = 0; i < tabs.length; i++) {
-      var tab = tabs[i];
-      setTabHandler(tab, i);
-    }
-    
-    function setTabHandler(tab, tabPos) {
-      tab.onclick = function() {
-        for(i = 0; i < tabs.length; i++) {
-          tabs[i].className = '';
-        }
-    
-        tab.className = 'active';
-    
-        for(i = 0; i < panels.length; i++) {
-          panels[i].className = '';
-        }
-    
-        panels[tabPos].className = 'active-panel';
-      }
-    }
-    
-    </script>
+<script src="./static/js/profil.js" defer></script>
 {{end}}
 {{define "main"}}
-<main id="menu">
+  <main id="menu">
+    {{$User := .User}}
+    {{$Badges := .Badges.Badges}}
+    {{$Posts := .Posts}}
+    {{$Comment := .Comments.Commentaires}}
+      <!--<div id="{{.User.Id}}">
+          <div class="container_badges">
+              <div class="badges">
+                  <figure>
+                      <h3 id="badgesH3">Badges :</h3>
 
-    </div>
-    <div id="profil">
-        <div class="container_badges">
-            <div class="badges">
-                <figure>
-                    <h3 id="badgesH3">Badges :</h3>
-
-                    <figcaption>
-                        {{range .Badges}}
-                        <ul id="NbrBadges">
-                            <li><img class="BadgeImage" src="{{.Image}}"/> {{.Name}}</li>
-                        </ul>
+                      <figcaption>
+                        {{range $Badges}}
+                          <ul id="NbrBadges">
+                              <li><img class="BadgeImage" src="./static/img/{{.Image}}" alt="{{.Name}}"/></li>
+                          </ul>
                         {{end}}
-                    </figcaption>
-                    
-                </figure>
-                
-            </div>
-        </div>
-        
-        <div id="avatar_profil">
+                      </figcaption>
+                  </figure>
+              </div>
+          </div>-->
+        {{with .UserSession}}
+        <figure>
+          <div id="avatar_profil">
 
-            <div class="avatar_Profil">
-                <figure>
-                    
-                    <img id="avatar_profil" src="{{.User.Avatar}}"/>
-                    
-                    <figcaption id="nameuser">                      
-                    </figcaption>
-                </figure>
-            </div>
-        </div>
-        <section class="info-box">
+              <div class="avatar_Profil">
+                  <figure>
+
+                    <img class="avatar_profil" src="static/img/avatar.png" alt="avatar_profil">
+                      <figcaption id="nameuser">  
+                        {{.Username}} 
+                      </figcaption>
+                  </figure>
+              </div>
+          </div>
+          <figcaption>
+          {{if or (eq $User.Role 2) (eq $User.Role 1) }}
+            <button class="supp" id="buttonModo"><a href="deleteUser?userId={{.Id}}">supprimer l'utilisateur</a></button>
+          {{end}}
+
+          {{if eq $User.Id .Id }}
+          <button class="supp" id="buttonUser"><a href="deleteMyUser?userId={{.Id}}">Supprimer mon compte</a></button>
+          {{end}}
+          <section class="info-box">
             <ul>
-              <li><a href="#" class="active">Tab 1</a></li>
-              <li><a href="#">Tab 2</a></li>
-              <li><a href="#">Tab 3</a></li>
+              <li onclick="afficher(event)" id="linkpMedias" class="active"> Les commentaires</li>
+              {{if or (eq $User.Id .Id)  (or (eq $User.Role 1) (eq $User.Role 2))}}    
+              <li onclick="afficher(event)" id="linkpSup">Commentaires supprimés</li>
+              {{end}}
+              <li onclick="afficher(event)" id="linkposts">Les articles</li>
+              {{if or (eq $User.Id .Id)  (or (eq $User.Role 1) (eq $User.Role 2))}}
+              <li onclick="afficher(event)" id="linkpostsU">Articles supprimés</li>
+              {{end}}
+              <li onclick="afficher(event)" id="linkinfos">Les Infos</li>
+              <li onclick="afficher(event)" id="linkBadges"> Les Badges</li> 
             </ul>
-            <div class="panels">
-              <article class="active-panel">
-                <h2>The first tab</h2>
-          
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque turpis nibh, porttitor nec venenatis eu, pulvinar in augue. Vestibulum et orci scelerisque, vulputate tellus quis, lobortis dui. Vivamus varius libero at ipsum mattis efficitur ut nec nisl. Nullam eget tincidunt metus. Donec ultrices, urna maximus consequat aliquet, dui neque eleifend lorem, a auctor libero turpis at sem. Aliquam ut porttitor urna. Nulla facilisi.</p>
+
+            <div id="panels">
+              <article id="pMedias" class="active-panel">
+                <!-- <figure> -->
+                <h2>Les commentaires</h2>
+                <figcaption>
+                {{range $Comment}}
+                  {{if eq .Hidden false}}
+                  <div id="box_commentaire">
+                      <div id="Comment">
+                          <p> Il y a {{.Date}}</p>
+                          <p>{{.Content}}</p>
+                      </div>
+                  </div>
+                  {{end}}
+                {{end}}
+                </figcaption>
+                <!-- </figure> -->
+
               </article>
-              <article>
-                <h2>The second tab</h2>
-          
-                <p>This tab hasn't got any Lorem Ipsum in it. But the content isn't very exciting all the same.</p>
+              
+
+              {{if or (eq $User.Id .Id)  (or (eq $User.Role 1) (eq $User.Role 2))}}
+              <article id="pSup">
+                <!-- <figure> -->
+                <h2>Commentaires Supprimés</h2>
+                <figcaption>
+                {{range $Comment}}
+                {{if eq .Hidden true}}
+                <div id="box_commentaires">
+                    <div id="Comments">
+                        <p> Il y a {{.Date}}</p>
+                        <p>{{.Content}}</p>
+                    </div>
+                </div>
+                {{end}}
+                {{end}}
+                </figcaption>
+              <!-- </figure> -->
+
               </article>
-              <article>
-                <h2>The third tab</h2>
-          
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque turpis nibh, porttitor nec venenatis eu, pulvinar in augue. And now an ordered list: how exciting!</p>
-          
-                <ol>
-                  <li>dui neque eleifend lorem, a auctor libero turpis at sem.</li>
-                  <li>Aliquam ut porttitor urna.</li>
-                  <li>Nulla facilisi</li>
-                </ol>
+              {{end}}
+              
+              
+              <article id="posts">
+                <!-- <figure> -->
+                <h2>Les articles</h2>
+                <figcaption>
+                {{range $Posts}}
+                {{if eq .Hidden false}}
+                <div id="posts{{.Id}}">
+                    <div class="infos">
+                        <div class=elemUser>
+                        <p id="time">Il y a {{.Date}}</p>
+                        </div>
+                        <p class="category {{.Categorie}}"><span class="cat">{{.Categorie}}</span></p>
+                    </div>
+                    <div class="container">
+                        <p>{{.Content}}</p>
+                    </div>
+                    <div class="control">
+                        <span>
+                            <!-- <a href="comment?id={{.Id}}"><img src="./static/img/comment.png" alt="comment"></a> -->
+                            <a href="share?id={{.Id}}"><img src="./static/img/share.png" alt="share"></a>
+                        </span>
+                    </div>
+                </div>
+                {{end}}
+                {{end}}
+              </figcaption>
+                <!-- </figure> -->
               </article>
+              
+              {{if eq $User.Id .Id}}
+                <article id="postsU">
+                  <!-- <figure> -->
+                  <h2>Articles supprimés</h2>
+                  <figcaption>
+                  {{range $Posts}}
+                  {{if eq .Hidden true}}
+                  <div id="post{{.Id}}">
+                      <div class="infos">
+                          <div class=elemUser>
+                          <p id="time">Il y a {{.Date}}</p>
+                          </div>
+                          <p class="category {{.Categorie}}"><span class="cat">{{.Categorie}}</span></p>
+                      </div>
+                      <div class="container">
+                          <p>{{.Content}}</p>
+                      </div>
+                      <div class="control">
+                          <span>
+                              <!-- <a href="comment?id={{.Id}}"><img src="./static/img/comment.png" alt="comment"></a> -->
+                              <a href="share?id={{.Id}}"><img src="./static/img/share.png" alt="share"></a>
+                          </span>
+                      </div>
+                  </div>
+                  {{end}}
+                  {{end}}
+                </figcaption>
+                <!-- </figure> -->
+              </article>
+              {{end}}
+              
+              <article id="infos">
+                <figure>
+                <h2>Mes Infos</h2>
+
+                <figure id="text1">
+                  Pseudo :
+                  <figcaption id="nameuser">
+                    {{.Username}}
+                  </figcaption>
+                </figure>
+                <figure id="test2">
+                  Mail :
+                  <figcaption>
+                    {{.Mail}}
+                  </figcaption>
+                </figure>
+                </figure>
+              </article>
+
+              <article id="Badges">
+                <figure>
+                <h2>Les Badges</h2>
+                {{range $Badges}}
+                <figcaption>
+                  <div class="Badges">
+                    <img id="ImgBadges" src="static/img/{{.Image}}" alt="{{.Name}}">
+                    <p>{{.Name}}</p>
+                  </div>
+                </figcaption>
+                {{end}}
+                </figure>
+              </article>
+              
+
             </div>
           </section>
-</main>
 
-{{end}}
+        </div>
+        </figcaption>
+        </figure>
+      {{end}}
+  </main>
+  {{end}}

@@ -1,0 +1,14 @@
+{
+  "name": "@d3/pannable-chart",
+  "main": "9e990016a6064c5d@265.js",
+  "version": "265.0.0",
+  "homepage": "https://observablehq.com/@d3/pannable-chart",
+  "author": {
+    "name": "D3",
+    "url": "https://observablehq.com/@d3"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}

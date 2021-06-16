@@ -1,10 +1,13 @@
 {{template "layout" .}}
 {{define "head"}}
+<link rel="stylesheet" href="static/css/style.css">
+<link rel="stylesheet" href="static/css/verif.css">
 {{end}}
 {{define "main"}} 
 <main>
-    <div>
+    <div id="boxverif">
         <div class="title">
+
             <h2>Votre mail a été confirmé avec succès!</h2>
             
             <!--Image rond vert avec un v de check -->
@@ -12,12 +15,13 @@
         <div class="content">
             <p>Vous pouvez désormais intéragir avec les utilisateurs du forum!</p>
             
-            <a class="button" href="index">Retour à l'accueil</a>
-
             <p>En vous souhaitant une bonne navigation sur MLC Forum !</p>
+
             <!-- mettre le logo -->
+            <a id="backtoindex" href="index">Retourner à l'accueil</a>
         </div>
         
     </div>
+    
 </main>
 {{end}}

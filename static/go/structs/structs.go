@@ -47,20 +47,27 @@ type Users struct {
 	Users []User
 	Error bool
 }
+type UserToken struct {
+	Userid int
+	Token  string
+}
 
 type Commentaire struct {
-	Id      int
-	Content string
-	Date    string
-	User    User
-	// Post      Post
+	Id        int
+	Content   string
+	Date      string
+	Hidden    bool
+	User      User
+	Post      Post
 	CommentId int
+	Likes     Like
 }
 type Commentaires struct {
 	Commentaires []Commentaire
 	Post         Post
 	Error        bool
 	User         User
+	Page         string
 }
 
 type Categorie struct {
@@ -70,6 +77,8 @@ type Categorie struct {
 type Categories struct {
 	Categories []Categorie
 	Error      bool
+	User       User
+	Page       string
 }
 
 type Post struct {
@@ -79,12 +88,17 @@ type Post struct {
 	User      User
 	Categorie string
 	Hidden    bool
-	Likes     int
+	Likes     Like
 }
 type Posts struct {
 	Posts []Post
 	Error bool
 	User  User
+	Page  string
+}
+type Like struct {
+	Note  int
+	Total int
 }
 
 type Autorisation struct {
@@ -123,6 +137,7 @@ type PostLike struct {
 type Postlikes struct {
 	Postlikes []PostLike
 	Error     bool
+	Page      string
 }
 
 type Badge struct {
@@ -135,6 +150,7 @@ type BadgeUser struct {
 	User   User
 	Badges []Badge
 	Error  bool
+	Page   string
 }
 
 type Role struct {
@@ -142,9 +158,14 @@ type Role struct {
 	Name string
 }
 type Roles struct {
-	Roles []Role
 	Error bool
+	Modo  []User
+	Users []User
+	Admin []User
+	User  User
+	Page  string
 }
+
 type Ticket struct {
 	Id        int
 	Content   string
@@ -160,6 +181,7 @@ type Tickets struct {
 	Close []Ticket
 	Error bool
 	User  User
+	Page  string
 }
 
 type BanList struct {
@@ -175,9 +197,23 @@ type BanLists struct {
 	BanLists []BanList
 	Error    bool
 	User     User
+	Page     string
 }
 
 type Err0r struct {
 	Error bool
 	User  User
+	Page  string
+}
+
+type UserCat struct {
+	Username   string
+	Id         int
+	Categories []int
+}
+
+type Stats struct {
+	Seven string
+	Month string
+	All   string
 }

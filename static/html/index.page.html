@@ -4,37 +4,50 @@
 {{end}}
 {{define "main"}}
 <main>
+    
+    {{$User := .User}}
+    {{$Role := .User.Role}}
     <div id="posts">
-        <div id="tri">
-            <div id="new">
-                <img src="./static/img/new.png" alt="">
-                <a href="#">NEW</a>
-            </div>
-            <div id="top">
-                <img src="./static/img/top.png" alt="">
-                <a href="#">TOP RATE</a>
-            </div>
-        </div>
+        {{if ge .User.Role 1}}
+        <a href="createPost"><button><img id="imgPost" src="./static/img/post.png"><p id="CreateP">Créer un post</p></button></a>
+        {{end}}
+        {{if or (eq $Role 2) (eq $Role 1) }}
+        <a id="DashBoard" href="banList">dashboard</a>
+        {{end}}
         {{range .Posts}}
         <div id="post{{.Id}}">
             <div class="infos">
                 <img class="avatar" src="./static/img/{{.User.Avatar}}" alt="avatar">
-                <p>Par <a href="profil?id={{.User.Id}}">{{.User.Username}}</a> Il y a {{.Date}}</p>
+                <div class=elemUser>
+                <p>Par <a href="profil?id={{.User.Id}}">{{.User.Username}}</a> <p id="time">Il y a {{.Date}}</p></p>
+                </div>
                 <p class="category {{.Categorie}}"><span>{{.Categorie}}</span></p>
             </div>
             <div class="container">
                 <p>{{.Content}}</p>
             </div>
             <div class="control">
-                <span>
-                    <img onclick="vote(event)" src="./static/img/like.png" alt="like" class="like">
-                    <img onclick="vote(event)" src="./static/img/dislike.png" alt="dislike" class="dislike">
-                </span>
-                <span>
-                    <a href="comment?id={{.Id}}"><img src="./static/img/comment.png" alt="comment"></a>
-                    <a href="share?id={{.Id}}"><img src="./static/img/share.png" alt="share"></a>
-                </span>
-                <p>Liked by {{.Likes}} users</p>
+                <div>
+                    <span>
+                        {{if eq $User.Id 0 }}
+                            <img onclick="window.location.href = '/login'" src="./static/img/like2Blanc.png" alt="like" class="like">
+                            <img onclick="window.location.href = '/login'" src="./static/img/dislike2Blanc.png" alt="dislike" class="dislike">
+                        {{else}}
+                            <img hx-post="/vote?PostId={{.Id}}&Vote=1" hx-target="#likeInfo{{.Id}}" hx-trigger="click" hx-swap="innerText" src="./static/img/like2Blanc.png" alt="like" class="like">
+                            <img hx-post="/vote?PostId={{.Id}}&Vote=0" hx-target="#likeInfo{{.Id}}" hx-trigger="click" hx-swap="innerText" src="./static/img/dislike2Blanc.png" alt="dislike" class="dislike">
+                        {{end}}
+                    </span>
+                    <span>
+                        <a href="comment?id={{.Id}}"><img src="./static/img/comment.png" alt="comment"></a>
+                        <a href="share?id={{.Id}}"><img src="./static/img/share.png" alt="share"></a>
+                    </span>
+                </div>
+                <div>
+                    <p id="likeInfo{{.Id}}">{{.Likes.Note}} like.s pour {{.Likes.Total}} vote.s</p>
+                    {{if or (eq $Role 2) (eq $Role 1) }}
+                    <button class="supp"><a href="supprpostmodo?id={{.Id}}">supprimer post</a></button>
+                    {{end}}
+                </div>
             </div>
         </div>
         {{end}}

@@ -30,72 +30,82 @@
      padding : 1em;
  
 }
-#TEXTAREA{
-    min-height: 20vh;
-    min-width: 20vh;
-    margin: 10vh auto 50px;
-    background-color: #FFFFFF;
-    border-radius: 10px;
-    display: block;
-    padding: 0;
-    overflow: hidden;
-    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
-    height: 40vh;
-    max-width: 40vh;
-    max-height: 40vh;
+TEXTAREA{
+    resize: none;
 }
 #DRAGandDROP, #Categorie {
    float: left;
 }
 .box1 {
-    width: 900px;
-    max-width: 90%;
-    margin: 10vh auto 50px;
+    width: 100%;
+    /* margin: 5vh auto 50px; */
     border-radius: 10px;
-    display: -ms-grid;
-    -ms-grid-columns: 1fr 2fr;
-    display: block;
-    grid-gap: 0px;
-    grid-template-columns: 1fr 2fr;
-    grid-template-rows: 1fr;
-    grid-template-areas: "sidebar main";
+    display: flex;
+    flex-direction: column;
     padding: 0;
     overflow: hidden;
     align-items: center;
 }
+
 #lol {
     text-align: start;
 }
-html{
-    padding : 1em;
-    width: 100%;
-    height: 200px;
-    box-sizing: border-box;
-  
-    /* La couche la plus basse sera
-       peinte avec un gris clair uni */
-    background-color: rgba(179, 184, 219, 1);
-  
-    /* Ensuite on applique des gradients
-       linéaires les uns sur les autres
-       pour créer un effet de bandes colorées.
-       Comme vous pouvez le voir, les gradients
-       sont considérés et manipulés comme des
-       images */
-    background-image: linear-gradient(175deg, rgba(0,0,0,0) 95%, #B3B8DB 95%),
-                      linear-gradient( 85deg, rgba(0,0,0,0) 95%, #EBEDFF 95%),
-                      linear-gradient(175deg, rgba(0,0,0,0) 90%, #DED5B6 90%),
-                      linear-gradient( 85deg, rgba(0,0,0,0) 92%, #B6BBDE 92%),
-                      linear-gradient(175deg, rgba(0,0,0,0) 85%, #91855A 85%),
-                      linear-gradient( 85deg, rgba(0,0,0,0) 89%, #FFFBEB 89%),
-                      linear-gradient(175deg, rgba(0,0,0,0) 80%, #FFFBEB 80%),
-                      linear-gradient( 85deg, rgba(0,0,0,0) 86%, #B6BADE 86%),
-                      linear-gradient(175deg, rgba(0,0,0,0) 75%, #DED5B6 75%),
-                      linear-gradient( 85deg, rgba(0,0,0,0) 83%, #5A5F91 83%),
-                      linear-gradient(175deg, rgba(0,0,0,0) 70%, #EBECFF 70%),
-                      linear-gradient( 85deg, rgba(0,0,0,0) 80%, #D8D4BF 80%);
-    overflow: hidden;
-}
+
 #DRAGandDROP p {
     text-align: center;
+}
+#main1{
+    width: 30%;
+    background-color: rgba(255,255,240,0.8);
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 2rem;
+}
+#main1 h1{
+    text-align: center;
+}
+select,
+option{
+    text-align: center;
+    margin: 2vh;
+    background: none;
+    border-radius: 10px;
+    width: 166px;
+    border: 1px solid #7ce7ff;
+    font-size: initial;
+}
+select option{
+    background-color: rgb(104, 129, 146);
+    color: ivory;
+}
+select option:hover{
+    background-color: #7ce7ff !important;
+}
+#inputPost{
+    text-align: center;
+    font-size: 15px;
+    background-color: rgba(216, 249, 255, 0.73);
+    border: 1px solid #7ce7ff;
+    width: calc(100% - 2px);
+    min-height: 88px;
+    max-height: 150px;
+    overflow: auto;
+    border-radius: 10px;
+    align-items: center;
+    display: grid;
+}
+
+.sub {
+    background: none;
+    border-radius: 10px;
+    width: 166px;
+    border: 1px solid #7ce7ff;
+    font-size: larger;
+    margin-top: 1rem;
+}
+
+i {
+    color: #dcba9c;
+    font-size: 3rem;
+    margin-top: 1rem;
 }

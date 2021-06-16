@@ -1,19 +1,24 @@
-#avatar_profil{
-    height: 600px;
-    width: 600px;
-    border: none;
-    -moz-border-image: 75px;
-    -webkit-border-radius : 75px;
-    border-radius : 300px;
-    display: flex;
+.avatar_profil{
+  height: 200px;
+  width: 200px;
+  border: 5px solid #daa22fcf;
+  -moz-border-image: 75px;
+  -webkit-border-radius: 75px;
+  border-radius: 300px;
+  display: flex;
+  margin: auto;
+  /* transform: translateX(75px); */
 }
 #nameuser {
-    text-align: center;
-    font-size: 30px;
+  text-align: center;
+  font-size: 30px;
+  color: rgb(47, 184, 218);
+  text-shadow: 5px 3px 7px grey;
+  text-transform: capitalize;
 }
 .container_badges {
-    height: 400px;
-    width: 400px;
+    height: auto;
+    width: auto;
     position: absolute;
     left: 30px;
 }
@@ -34,20 +39,26 @@
     justify-content: space-around;
 }
 .badges {
-    width: auto;
-    max-width: 20vh;
-    height: auto;
-    max-height: 40vh;
-    min-height: 10vh;
-    background-color: #FFFFFF;
-    border-radius: 10px;
-    display: block;
-    overflow: hidden;
-    box-shadow: 0px 0px 10px 0px rgb(0 0 0 / 20%);
+  width: auto;
+  max-width: 21vh;
+  height: auto;
+  /* max-height: 40vh; */
+  min-height: 10vh;
+  background-color: rgb(70 73 220 / 65%);
+  border-radius: 15px;
+  display: block;
+  overflow: hidden;
+  box-shadow: 0px 0px 10px 0px rgb(0 0 0 / 20%);
+  color: white;
 }
-.container_badges, #avatar_profil {
+.BadgeImage {
+width: auto;
+max-width: 21vh;
+height: auto;
+}
+/* .container_badges, #avatar_profil {
 display: flex;
-}
+} */
 #menu {
 margin-top: 3vh;
 }
@@ -59,4 +70,161 @@ display: block;
 }
 #menu3:active{
 display: block;
+}
+html {
+    font-family: sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  /* info-box setup */
+
+  .info-box {
+    width: 870px;
+    height: 400px;
+    margin: 40px auto 0;
+  }
+
+  /* styling info-box tabs */
+
+  .info-box ul {
+    /* border: 1px solid blue; */
+    overflow: hidden;
+    border-radius: 10px;
+    height: 50px;
+    padding: 0;
+    background: #3c57b4;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .info-box li {
+    float: left;
+    list-style-type: none;
+    width: 170px;
+    height: 50px;
+    font-size: 20px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .info-box li a {
+    display: inline-block;
+    text-decoration: none;
+    width: 100%;
+    line-height: 50px;
+    background: white;
+    color: black;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .info-box li:focus, .info-box li:hover {
+    background-color: rgba(47, 184, 218, 0.699);
+    color: black;
+    font-weight: bolder;
+  }
+
+  .info-box li.active {
+    background-color: #2ebde5;
+    color: black;
+    font-weight: bolder;
+  }
+
+  /* styling info-box panels */
+
+  .info-box #panels {
+    clear: both;
+    position: relative;
+    height: 352px;
+    min-height: 700px;
+  }
+
+  .info-box article {
+    background-color: #03000a;
+    color: #d29f32;
+    /* position: absolute; */
+    text-align: center;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    /* height: 348px; */
+    width: 53vh;
+    top: 0;
+    left: 0;
+    border: 1px solid #daa22fcf;
+    /* display: flex; */
+
+  }
+
+  .info-box .active-panel {
+    z-index: 1;
+  }
+#panels > * {
+    width: 100%;
+    border-radius: 15px;
+} 
+#text1, #text2 {
+font-size: 20px;
+}
+#nameuser{
+  font-family: system-ui;
+}
+
+article {
+  display: block;
+}
+.infos {
+  padding-top:50px;
+}
+div[id^=post]:not(#posts) {
+  background-color:rgb(253, 225, 147);
+}
+
+#infos h2,
+#postsU h2,
+#posts h2,
+#pSup h2,
+#pMedias h2 {
+  margin: 50px auto;
+  text-align: center;
+  padding-bottom:20px;
+  border-bottom:1px solid orange;
+
+}
+
+.supp {
+  border-radius: 10px;
+  background: linear-gradient(0.25turn, rgba(25,0,155,.8), rgba(1,204,254,.8));
+  outline: none;
+  border: 1px solid #e3d6c9;
+  color: #e3d6c9;
+  padding: 5px;
+  text-align: right;
+
+}
+#buttonModo {
+  margin: 0 0 0 280px;
+}
+#buttonUser {
+  margin: 0 50px 0 0;
+}
+
+.supp a {
+  color: #fff6ec;
+}
+
+.supp a:hover {
+  color: rgb(255, 197, 143);
+}
+#ImgBadges {
+  height: 40px;
+  width: 40px;
 }

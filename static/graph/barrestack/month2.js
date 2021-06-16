@@ -1,5 +1,5 @@
 // https://observablehq.com/@d3/color-legend@703
-export default function Monthdefine(runtime, observer) {
+export default function Monthdefine(runtime, observer, content) {
   const main = runtime.module();
   main.variable(observer()).define(["md"]);
   main.variable(observer()).define(["legend","d3"], function(legend,d3){return(

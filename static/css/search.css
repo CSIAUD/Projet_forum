@@ -1,0 +1,27 @@
+#research input[type='submit']{
+    width: 35px;
+    height: 35px;
+    background-image: url("../img/loupe.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-color: transparent;
+    border: none;
+}
+#research input[type='text']{
+    width: 250px;
+    height: 25px;
+    border-radius: 25px;
+}
+#research form{
+    margin: auto;
+}
+#categories {
+    margin-top:100px;
+}
+#categories form{
+    display: flex;
+    flex-direction: column;
+}
+#categories form > span{
+    margin: 6px 5px;
+}

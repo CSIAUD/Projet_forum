@@ -1,58 +1,87 @@
 {{template "layout" .}}
 {{define "head"}}
-<link href="static/css/comment.css">
+<link rel="stylesheet" href="static/css/comment.css">
+<script src="static/js/index.js" defer></script>
 {{end}}
 {{define "main"}}
 <main>
-    {{with .Post}}
-    <div class="Posts{{.Id}}">
-         <div class="user">
-             {{.User.Avatar}}
-             Par {{.User.Username}}
-         </div>
-         <div class="category">
-             {{.Categorie}}
-         </div>
-         <div class="date">
-            Il y a {{.Date}}
-        </div>
-                
-        <div class="Posts">
-
-        </div>
-        <div id="Descriptif" class="Descriptif">
-            {{.Content}}
-            <!--Permet d'augmenter la height de la div de id="Descriptif" en cliquant sur "Lire la Suite"-->
-            <a href="javascript:document.getElementById('Descriptif').style.height='10vh';document.getElementById('Descriptif').releaseCapture();"> 
-                <u>Lire la Suite</u>
-            </a>
-            <!--Permet de réduire la -eight de la div de id="Descriptif" en cliquant sur "Fermer"-->
-            <div id="re001" style="display: block;">
-                <a href="javascript:document.getElementById('Descriptif').style.height='4vh';document.getElementById('Descriptif').releaseCapture();">
-                    <u>Fermer</u>
-                </a>
+    <div id="Posts">
+        {{$User := .User}}
+            {{with .Post}}
+            <div id="post{{.Id}}">
+                <div class="infos">
+                    <img class="avatar" src="./static/img/{{.User.Avatar}}" alt="avatar">
+                    <p>Par <a href="profil?id={{.User.Id}}">{{.User.Username}}</a> Il y a {{.Date}}</p>
+                    <p class="category {{.Categorie}}"><span>{{.Categorie}}</span></p>
+                </div>
+                <div class="container">
+                    <p>{{.Content}}</p>
+                </div>
+                <div class="control">
+                    <span>
+                        {{if eq $User.Id 0 }}
+                            <img onclick="window.location.href = '/login'" src="./static/img/like2Blanc.png" alt="like" class="like">
+                            <img onclick="window.location.href = '/login'" src="./static/img/dislike2Blanc.png" alt="dislike" class="dislike">
+                        {{else}}
+                            <img hx-post="/vote?PostId={{.Id}}&Vote=1" hx-target="#likeInfo{{.Id}}" hx-trigger="click" hx-swap="innerText" src="./static/img/like2Blanc.png" alt="like" class="like">
+                            <img hx-post="/vote?PostId={{.Id}}&Vote=0" hx-target="#likeInfo{{.Id}}" hx-trigger="click" hx-swap="innerText" src="./static/img/dislike2Blanc.png" alt="dislike" class="dislike">
+                        {{end}}
+                        {{if eq $User.Id .User.Id}}
+                        <button><a href="supprpost?id={{.Id}}">supprimer post</a></button>
+                        {{else if or (eq $User.Role 2) (eq $User.Role 1) }}
+                        <button><a href="supprpostmodo?comment={{.Id}}">supprimer post</a></button>
+                        {{end}}
+                        
+                    </span>
+                    <span>
+                        <a href="share?id={{.Id}}"><img src="./static/img/share.png" alt="share"></a>
+                    </span>
+                <p id="likeInfo{{.Id}}">{{.Likes.Note}} like.s pour {{.Likes.Total}} vote.s</p>
+                </div>
             </div>
-        </div>
-
-
+            {{end}}
         
-        <div class="Likes">
-            {{.Likes}}
-        </div>
-        {{end}}
-
-        {{range .Commentaires}}
-        <div class="Comment">
-            <img src="{{.User.Avatar}}"/>
-            <p>Par {{.User.Username}} il y a {{.Date}}</p>
-
-            <p>{{.Content}}</p>
-            
-            <div class="like">
+        <div id="commentaire">
+            <p id="textco">Les Commentaires</p>
+            {{ $len := len .Commentaires }} 
+            {{if eq $len 0}}
+                <p id="nocomment"> Il n'y as pas de commentaire</p>
+            {{else}}
+            {{range .Commentaires}}
+            <div id="box_commentaire">
+                <div id="Comment">
+                    <img class="avatar" src="./static/img/{{.User.Avatar}}" alt="avatar">
+                    <p>Par <a href="profil?id={{.User.Id}}">{{.User.Username}}</a> Il y a {{.Date}}</p>
+                    <p>{{.Content}}</p>
+                    <span>
+                        <!-- <img onclick="vote(event)" src="./static/img/like2Blanc.png" alt="like" class="like">
+                        <img onclick="vote(event)" src="./static/img/dislike2Blanc.png" alt="dislike" class="dislike"> -->
+                        {{if eq $User.Id .User.Id}}
+                        <button><a href="supprcomment?id={{.Id}}">supprimer commentaire</a></button>
+                        {{else if or (eq $User.Role 2) (eq $User.Role 1) }}
+                        <button><a href="supprcommentmodo?comment={{.Id}}">supprimer commentaire</a></button>
+                        {{end}}
+                    </span>
+                </div>
             </div>
+            {{end}}
+            {{end}}
+            <!--<a class="arrow_box"> 
+                <u id="affiche">Afficher plus de commentaire (mettre js pour print plus de commentaire)</u>
+            </a>-->
+            {{if ne $User.Id 0 }}
+            <form id="box1" action="" method="GET">
+                <TEXTAREA name="content" rows=6 cols=40 placeholder="Ecrivez votre commentaire..."></TEXTAREA>
+                <div>
+                    <input type="hidden" name="userId" value="{{.User.Id}}">
+                    <input type="hidden" name="id" value="{{.Post.Id}}">
+                    <input class="sub" type="submit" value="Envoyer">
+                </div>
+            </form>
+            {{end}}
         </div>
-        {{end}}
+        
     </div>
-</main>
 
+</main>
 {{end}}
