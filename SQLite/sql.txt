@@ -1,0 +1,123 @@
+drop table if exists posts;
+drop table if exists roles;
+drop table if exists commentaires;
+drop table if exists autorisations;
+drop table if exists badges;
+drop table if exists badgeUser;
+drop table if exists categories;
+drop table if exists users;
+drop table if exists banList;
+drop table if exists tickets;
+drop table if exists commentLike;
+drop table if exists postLike;
+drop table if exists roleAuth;
+
+Create table roles(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name TEXT NOT NULL
+);
+
+Create table autorisations(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name TEXT NOT NULL
+);
+
+Create table badges(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name TEXT NOT NULL,
+    image TEXT NOT NULL    
+);
+
+Create table categories(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    name TEXT NOT NULL
+);
+
+Create table users(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    username TEXT NOT NULL,
+    mail TEXT NOT NULL,
+    mdp TEXT NOT NULL,
+    avatar TEXT default '',
+    sessionToken TEXT default '',
+    deleted BLOB default 0,
+    role_id INTEGER NOT NULL default 3,
+    FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+Create table banList(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    startDate INTEGER NOT NULL default CURRENT_TIMESTAMP,
+    endDate INTEGER NOT NULL,
+    raison TEXT NOT NULL,
+    banDef BLOB NOT NULL,
+    user_id INTEGER NOT NULL,
+    bannedBy INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (bannedBy) REFERENCES users(id)
+);
+
+Create table posts(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    content TEXT NOT NULL,
+    date INTEGER NOT NULL default CURRENT_TIMESTAMP,
+    user_id INTEGER NOT NULL,
+    categorie_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (categorie_id) REFERENCES categories(id)
+);
+
+Create table commentaires(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    content TEXT NOT NULL,
+    date INTEGER NOT NULL default CURRENT_TIMESTAMP,
+    user_id INTEGER NOT NULL,
+    post_id INTEGER,
+    commentaire_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id),
+    FOREIGN KEY (commentaire_id) REFERENCES commentaires(id)
+);
+
+Create table roleAuth(
+    role_id INTEGER NOT NULL,
+    autorisation_id INTEGER NOT NULL,
+    primary key (role_id, autorisation_id),
+    FOREIGN KEY (role_id) REFERENCES roles(id),
+    FOREIGN KEY (autorisation_id) REFERENCES autorisations(id)
+);
+
+Create table badgeUser(
+    user_id INTEGER NOT NULL,
+    badge_id INTEGER NOT NULL,
+    PRIMARY KEY(user_id, badge_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (badge_id) REFERENCES badges(id)
+);
+
+Create table postLike(
+    user_id INTEGER NOT NULL,
+    post_id INTEGER NOT NULL,
+    vote INTEGER NOT NULL,
+    PRIMARY KEY(user_id, post_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id)
+);
+
+Create table commentLike(
+    user_id INTEGER NOT NULL,
+    comment_id INTEGER NOT NULL,
+    vote INTEGER NOT NULL,
+    PRIMARY KEY(user_id, comment_id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (comment_id) REFERENCES comments(id)
+);
+
+Create table tickets(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    content TEXT NOT NULL,
+    date INT NOT NULL,
+    etat BLOB NOT NULL,
+    user_id NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);

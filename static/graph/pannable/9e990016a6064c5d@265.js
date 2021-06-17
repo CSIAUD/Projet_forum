@@ -49,7 +49,7 @@ This [area chart](/@d3/area-chart) supports horizontal panning. Try scrolling le
 420
 )});
   main.variable(observer("margin")).define("margin", function(){return(
-{top: 20, right: 20, bottom: 30, left: 30}
+{top: 20, right: 20, bottom: 30, left: 40}
 )});
   main.variable(observer("x")).define("x", ["d3","data","margin","width"], function(d3,data,margin,width){return(
 d3.scaleUtc()
@@ -63,7 +63,7 @@ d3.scaleLinear()
 )});
   main.variable(observer("xAxis")).define("xAxis", ["height","margin","d3","x","width"], function(height,margin,d3,x,width){return(
 g => g
-    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .attr("transform", `translate(10,${height - margin.bottom})`)
     .call(d3.axisBottom(x).ticks(d3.utcMonth.every(1200 / width)).tickSizeOuter(0))
 )});
   main.variable(observer("yAxis")).define("yAxis", ["margin","d3","y","data"], function(margin,d3,y,data){return(

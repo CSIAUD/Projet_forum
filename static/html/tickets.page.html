@@ -9,9 +9,11 @@
         <a href="dashBoard">Statistiques</a>
         <a href="banList">BanList</a>
         <a href="tickets" class="active">Tickets</a>
-        <a href="role" >Rôles</a>
-        <a href="catModo">Modérateurs</a>
-        <a href="categories" >Catégories</a>
+        {{if eq .User.Role 1}}
+        <a href="role">Rôles</a>
+        <a href="catModo" >Modérateurs</a>
+        <a href="categories">Catégories</a>
+        {{end}}
     </div>
     <div id="container" class="visible">
         <h2>Tickets</h2>

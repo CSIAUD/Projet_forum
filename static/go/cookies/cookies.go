@@ -81,8 +81,8 @@ func DestroyCookie(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path == "/logout" {
 		cookie := &http.Cookie{
-			Name: "Session",
-			// Value:    "0",
+			Name:     "Session",
+			Value:    "0",
 			MaxAge:   -1,
 			HttpOnly: true,
 			Path:     "/",

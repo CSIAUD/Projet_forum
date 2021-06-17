@@ -6,23 +6,15 @@
     <script type="module" defer>
         
     import {Runtime, Library, Inspector} from "./static/graph/barrestack/runtime.js";
-// import {Runtime, Library, Inspector} from "./runtime.js";
+    // import {Runtime, Library, Inspector} from "./runtime.js";
     
     import Weekdefine from "./static/graph/barrestack/week.js";
     
     import Monthdefine from "./static/graph/barrestack/month.js";
     
     // import Alldefine from "./static/graph/barrestack/all.js";
-import define from "./static/graph/pannable/index.js";
+    import define from "./static/graph/pannable/index.js";
 
-
-    window.addEventListener('load', (ev) => {
-        let target = document.getElementById("monthData")
-        let temp = (target.innerText).replace("|", "\n")
-        afficher(temp)
-    })
-
-    function afficher(txt){
         const weekruntime = new Runtime();
         const weekmain = weekruntime.module(Weekdefine, Inspector.into(document.getElementById("WeekStats")));
 
@@ -34,7 +26,6 @@ import define from "./static/graph/pannable/index.js";
         
         const allRuntime = new Runtime();
         const allMain = allRuntime.module(define, Inspector.into(document.getElementById("AllStats")));
-    }
     </script>
 
 {{end}}
@@ -47,9 +38,11 @@ import define from "./static/graph/pannable/index.js";
         <a href="dashBoard" class="active">Statistiques</a>
         <a href="banList">BanList</a>
         <a href="tickets">Tickets</a>
+        {{if eq .User.Role 1}}
         <a href="role">Rôles</a>
-        <a href="catModo">Modérateurs</a>
+        <a href="catModo" >Modérateurs</a>
         <a href="categories">Catégories</a>
+        {{end}}
     </div>
     <div id="stats" class="visible">
         <h2>Statistiques</h2>

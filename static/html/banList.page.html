@@ -11,7 +11,7 @@
         <a href="dashBoard">Statistiques</a>
         <a href="banList" class="active">BanList</a>
         <a href="tickets">Tickets</a>
-        {{if ne .User.Id 1}}
+        {{if eq .User.Role 1}}
         <a href="role">Rôles</a>
         <a href="catModo" >Modérateurs</a>
         <a href="categories">Catégories</a>

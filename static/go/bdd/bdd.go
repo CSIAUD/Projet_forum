@@ -1081,7 +1081,7 @@ func (m MyDB) GetStats(nb int) (string, error) { // Récupérer les statistiques
 			if dates[i] > start+86400 {
 				counts = append(counts, count)
 				dateF = append(dateF, m.intToDate(start))
-				fmt.Printf("%s => %d\n ", m.intToDate(start), count)
+				// fmt.Printf("%s => %d\n ", m.intToDate(start), count)
 				for start < dates[i] {
 					start += 86400
 				}
@@ -1089,13 +1089,12 @@ func (m MyDB) GetStats(nb int) (string, error) { // Récupérer les statistiques
 			}
 			count++
 		}
-		// fmt.Println(counts)
-		// fmt.Println(dateF)
 		for i := 0; i < len(counts); i++ {
 			result += "|" + dateF[i] + "," + strconv.Itoa(counts[i])
 		}
-		fmt.Println(result)
 	} else {
+		// temps := strings.Split(time.Now().String(), " ")[0]
+		temps := int(time.Now().Unix())
 		rows, err := m.DB.Query("SELECT id, name from categories")
 		checkErr(err)
 		var ids []int
@@ -1119,7 +1118,7 @@ func (m MyDB) GetStats(nb int) (string, error) { // Récupérer les statistiques
 			name := names[i]
 			wait.Add(1)
 			go func(index int) {
-				rows, err := m.DB.Query("select Users, Modos, Admins from (select count(p.id) Admins from posts p inner join users u on p.user_id=u.id inner join roles r on u.role_id=r.id where r.name like \"admin\" and p.categorie_id=?), (select count(p.id) Modos from posts p inner join users u on p.user_id=u.id inner join roles r on u.role_id=r.id where r.name like \"modo\" and p.categorie_id=?), (select count(p.id) Users from posts p inner join users u on p.user_id=u.id inner join roles r on u.role_id=r.id where r.name like \"user\" and p.categorie_id=?);", idstat, idstat, idstat)
+				rows, err := m.DB.Query("select Users, Modos, Admins from (select count(p.id) Admins from posts p inner join users u on p.user_id=u.id inner join roles r on u.role_id=r.id where r.name like \"admin\" and p.categorie_id=? and date>?), (select count(p.id) Modos from posts p inner join users u on p.user_id=u.id inner join roles r on u.role_id=r.id where r.name like \"modo\" and p.categorie_id=? and date>?), (select count(p.id) Users from posts p inner join users u on p.user_id=u.id inner join roles r on u.role_id=r.id where r.name like \"user\" and p.categorie_id=? and date>?);", idstat, temps-nb*86400, idstat, temps-nb*86400, idstat, temps-nb*86400)
 				checkErr(err)
 				var user int
 				var modo int
@@ -1140,7 +1139,6 @@ func (m MyDB) GetStats(nb int) (string, error) { // Récupérer les statistiques
 			}(i)
 		}
 		wait.Wait()
-		fmt.Println(result)
 	}
 	return result, nil
 }

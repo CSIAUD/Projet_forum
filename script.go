@@ -41,11 +41,11 @@ func main() {
 
 	http.Handle("/", http.HandlerFunc(redirectTo404))
 	http.Handle("/index", http.HandlerFunc(index)) // Modo a optionnalité en + pour supprimer le post
-	http.Handle("/dashBoard", mwIsLogged(http.HandlerFunc(dashBoard)))
+	http.Handle("/dashBoard", mwIsLogged(mwIsModo(http.HandlerFunc(dashBoard))))
 	http.Handle("/banList", mwIsLogged(mwIsModo(http.HandlerFunc(banList))))
-	http.Handle("/supprpostmodo", mwIsModo(http.HandlerFunc(deletePostModo)))
+	http.Handle("/supprpostmodo", mwIsLogged(mwIsModo(http.HandlerFunc(deletePostModo))))
 	http.Handle("/supprpost", mwIsLogged(http.HandlerFunc(deletePost))) //delete posts avec justification pour Modo
-	http.Handle("/supprcommentmodo", mwIsModo(http.HandlerFunc(deleteCommentModo)))
+	http.Handle("/supprcommentmodo", mwIsLogged(mwIsModo(http.HandlerFunc(deleteCommentModo))))
 	http.Handle("/supprcomment", mwIsLogged(http.HandlerFunc(deleteComment)))
 	http.Handle("/deleteUser", mwIsLogged(mwIsAdmin(http.HandlerFunc(deleteUser))))
 	http.Handle("/deleteMyUser", mwIsLogged(http.HandlerFunc(deleteMyUser)))
@@ -63,7 +63,7 @@ func main() {
 	http.Handle("/catModo", mwIsLogged(mwIsAdmin(http.HandlerFunc(catModo))))
 	http.Handle("/categories", mwIsLogged(mwIsAdmin(http.HandlerFunc(categories))))
 	http.Handle("/signup", mwIsNotLogged(http.HandlerFunc(signup)))
-	http.Handle("/login", mwIsNotLogged(http.HandlerFunc(login)))
+	http.Handle("/login", http.HandlerFunc(login))
 	http.Handle("/logout", mwIsLogged(http.HandlerFunc(logout)))
 	http.Handle("/404", http.HandlerFunc(error404))
 	http.Handle("/getStats", mwIsLogged(mwIsModo(http.HandlerFunc(getStat))))
@@ -72,7 +72,7 @@ func main() {
 	http.Handle("/vote", mwIsLogged(http.HandlerFunc(vote)))
 	http.Handle("/createPost", mwIsLogged(http.HandlerFunc(createPost)))
 
-	db.DB, err = sql.Open("sqlite3", "./SQLite/mlcData.db")
+	db.DB, err = sql.Open("sqlite3", "./SQLite/mlcData2.db")
 	if err != nil {
 		panic(err)
 	}
@@ -96,23 +96,29 @@ func main() {
 //middleware pour vérifier que l'utilisateur est bien connecté avant d'accéder à la page
 func mwIsLogged(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_, err := session.GetUserByCookie(db, w, r)
-		if err != nil {
-			http.Redirect(w, r, "/login", 302)
-		} else {
-			InitialCookie(w, r)
-			next.ServeHTTP(w, r)
-			fmt.Println("C0nn3cté")
-		}
+		// _, err := session.GetUserByCookie(db, w, r)
+		// if err != nil {
+		// 	http.Redirect(w, r, "/login", 302)
+		// } else {
+		// 	InitialCookie(w, r)
+		// 	next.ServeHTTP(w, r)
+		// 	fmt.Println("C0nn3cté")
+		// }
+		next.ServeHTTP(w, r)
 	})
 }
 
 //middleware pour vérifier que l'utilisateur n'est pas connecté avant d'accéder à la page
 func mwIsNotLogged(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("Executing middlewareLogin")
-		next.ServeHTTP(w, r)
-		fmt.Println("Executing middlewareLogin again")
+		_, err := session.GetUserByCookie(db, w, r)
+		if err != nil {
+			InitialCookie(w, r)
+			next.ServeHTTP(w, r)
+			fmt.Println("Non C0nn3cté")
+		} else {
+			http.Redirect(w, r, "/index", 302)
+		}
 	})
 }
 
@@ -319,9 +325,16 @@ func dashBoard(w http.ResponseWriter, r *http.Request) {
 	data.Stats.Seven, _ = db.GetStats(7)
 	data.Stats.All, _ = db.GetStats(0)
 
+	user, err := session.GetUserByCookie(db, w, r)
+	if err != nil {
+		data.User = structs.User{}
+	} else {
+		data.User = user
+	}
+
 	// fmt.Println(stats)
 	errorGestion(w, r)
-	err := tmplCache["categorie_dashboard.page.html"].Execute(w, data)
+	err = tmplCache["categorie_dashboard.page.html"].Execute(w, data)
 	if err != nil {
 		panic(err)
 	}
@@ -984,7 +997,7 @@ func catModo(w http.ResponseWriter, r *http.Request) {
 		// }
 
 		fmt.Println("Redirect to CatModo")
-		// http.Redirect(w, r, "/catModo", 302)
+		http.Redirect(w, r, "/catModo", 302)
 
 	}
 }
